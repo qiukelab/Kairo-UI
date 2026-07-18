@@ -1,5 +1,4 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-import { ThemePresetSwitcher } from '@/components/theme-preset-switcher';
 import type { Locale } from '@/lib/i18n';
 
 export const GITHUB_REPO_URL = 'https://github.com/qiukelab/Kairo-UI';
@@ -29,9 +28,20 @@ function navLinks(locale: Locale): NonNullable<BaseLayoutProps['links']> {
 export function baseOptions(locale: Locale = 'en'): BaseLayoutProps {
   return {
     nav: {
-      title: 'Kairo',
+      // JSX rather than a bare string so the wordmark can carry its own type
+      // scale — Fumadocs renders `nav.title` inside a `text-sm` wrapper, which
+      // left the brand smaller than the sidebar links beneath it.
+      title: <span className="text-lg font-semibold tracking-tight">Kairo</span>,
       url: locale === 'th' ? '/th' : '/',
-      children: <ThemePresetSwitcher />,
+      // The preset switcher used to hang here; it now lives in the nav bar
+      // itself (`PresetToggleButton` in `components/nav-controls.tsx`),
+      // alongside the theme, locale and GitHub controls.
+      //
+      // Note this whole `nav` object is only read by layouts that render
+      // Fumadocs' stock header. The docs shell replaces that header wholesale
+      // via `slots={{ header: DocsHeader }}`, and the landing page does not use
+      // `HomeLayout` at all — `links`, `githubUrl` and `searchToggle` below are
+      // still consumed by the sidebar, so the object stays.
     },
     links: navLinks(locale),
     githubUrl: GITHUB_REPO_URL,

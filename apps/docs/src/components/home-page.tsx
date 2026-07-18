@@ -1,11 +1,21 @@
 import type { ReactNode, SVGProps } from 'react';
 import { Link } from '@tanstack/react-router';
-import { Badge, Button, Card, CardDescription, CardHeader, CardTitle } from '@kairo-ui/react';
-import { HomeLayout } from 'fumadocs-ui/layouts/home';
+import {
+  Badge,
+  Button,
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Tab,
+  TabPanel,
+  Tabs,
+  TabsList,
+} from '@kairo-ui/react';
 import { ComponentPreview } from '@/components/component-preview';
-import { HOME_COPY } from '@/lib/home-copy';
+import { HomeNav } from '@/components/home-nav';
+import { HOME_COPY, INSTALL_COMMANDS, THEMING_SNIPPET } from '@/lib/home-copy';
 import type { Locale } from '@/lib/i18n';
-import { baseOptions } from '@/lib/layout.shared';
 
 function Icon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -57,85 +67,166 @@ function docsLink(locale: Locale, splat: string) {
     : ({ to: '/docs/$', params: { _splat: splat } } as const);
 }
 
+/** Small caps section marker, the way the reference labels each band. */
+function SectionLabel({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex items-center gap-4">
+      <span className="text-xs font-medium tracking-widest text-fd-muted-foreground uppercase">
+        {children}
+      </span>
+      <span className="h-px flex-1 bg-fd-border" />
+    </div>
+  );
+}
+
 export function HomePage({ locale }: { locale: Locale }) {
   const copy = HOME_COPY[locale];
 
   return (
-    <HomeLayout {...baseOptions(locale)}>
-      <main className="flex flex-1 flex-col">
-        {/* Hero */}
-        <section className="border-b border-fd-border">
-          <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-6 pt-20 pb-16 text-center sm:pt-28 sm:pb-24">
-            <Badge variant="soft" intent="primary">
-              {copy.badge}
-            </Badge>
-            <h1 className="text-4xl font-semibold tracking-tight text-fd-foreground sm:text-5xl md:text-6xl">
-              {copy.title}
-            </h1>
-            <p className="max-w-2xl text-lg text-fd-muted-foreground">{copy.description}</p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Link {...docsLink(locale, '')} className="kairo-btn" data-variant="solid" data-size="lg">
-                {copy.ctaPrimary}
-              </Link>
-              <Link
-                {...docsLink(locale, 'components/button')}
-                className="kairo-btn"
-                data-variant="outline"
-                data-size="lg"
-              >
-                {copy.ctaSecondary}
-              </Link>
-            </div>
-            <ul className="flex flex-wrap items-center justify-center gap-2 pt-2">
-              {copy.pills.map((pill) => (
-                <li key={pill}>
-                  <Badge variant="outline">{pill}</Badge>
-                </li>
+    /*
+      Split landing page: the pitch is pinned on the left while the supporting
+      material scrolls on the right.
+
+      `sticky` rather than `fixed` — a fixed pane is taken out of flow, so it
+      cannot reserve its own column and the scrolling side has to be padded by
+      a hard-coded width to avoid sliding underneath it. A sticky pane keeps
+      its grid column, and the whole thing degrades to a plain stacked page
+      below `lg` with no separate mobile branch.
+
+      This page deliberately does not use `HomeLayout`: its header duplicated
+      the brand against the pinned pane's own wordmark and put a second GitHub
+      link above the nav bar's. `HomeNav` carries those controls instead.
+    */
+    <main className="flex flex-col lg:grid lg:grid-cols-2 lg:items-start">
+      {/*
+        Pinned pane. `h-dvh` + `overflow-hidden` is the contract: it fills
+        exactly one viewport and never scrolls, so `justify-between` can push
+        the wordmark to the top and the pills to the bottom against a known
+        height. Anything that would overflow is a signal the copy is too long
+        for the pane, not something to solve with a scrollbar.
+      */}
+      {/* `min-w-0` on BOTH columns is load-bearing: `grid-cols-2` is
+          `1fr 1fr`, and `1fr` means `minmax(auto, 1fr)` — a track refuses to
+          shrink below its content's min-content width. The scrolling column
+          holds a nav bar of `whitespace-nowrap` tabs and code blocks, whose
+          combined min-content easily exceeds half the viewport, so it stole
+          space until this pane collapsed to a sliver. `min-w-0` overrides that
+          floor and lets the fractions actually split the row evenly. */}
+      <div className="kairo-hero-grid flex min-w-0 flex-col justify-between gap-10 border-fd-border px-6 py-10 lg:sticky lg:top-0 lg:h-dvh lg:overflow-hidden lg:border-e lg:px-12 lg:py-10">
+        <Link
+          to={locale === 'th' ? '/th' : '/'}
+          className="text-2xl font-semibold tracking-tight text-fd-foreground"
+        >
+          Kairo
+        </Link>
+
+        <div className="flex flex-col items-start gap-5">
+          <Badge variant="soft" intent="primary">
+            {copy.badge}
+          </Badge>
+          <h1 className="text-4xl font-semibold tracking-tight text-balance text-fd-foreground xl:text-5xl">
+            {copy.title}
+          </h1>
+          <p className="max-w-lg text-fd-muted-foreground xl:text-lg">{copy.description}</p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link {...docsLink(locale, '')} className="kairo-btn" data-variant="solid" data-size="lg">
+              {copy.ctaPrimary}
+            </Link>
+            <Link
+              {...docsLink(locale, 'components/button')}
+              className="kairo-btn"
+              data-variant="outline"
+              data-size="lg"
+            >
+              {copy.ctaSecondary}
+            </Link>
+          </div>
+        </div>
+
+        {/* Anchored to the bottom of the pinned pane, the way the reference
+            keeps its secondary links out of the headline's way. */}
+        <ul className="flex flex-wrap items-center gap-2">
+          {copy.pills.map((pill) => (
+            <li key={pill}>
+              <Badge variant="outline">{pill}</Badge>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="flex min-w-0 flex-col">
+        <HomeNav locale={locale} />
+
+        {/* Overview: lead paragraph + install snippet + what it stands on */}
+          <section className="flex flex-col gap-6 border-b border-fd-border px-6 py-12 lg:px-12">
+            <SectionLabel>{copy.overviewLabel}</SectionLabel>
+            <p className="max-w-2xl text-fd-foreground">{copy.lead}</p>
+
+            <Tabs defaultValue={INSTALL_COMMANDS[0].id}>
+              <TabsList>
+                {INSTALL_COMMANDS.map((entry) => (
+                  <Tab key={entry.id} value={entry.id}>
+                    {entry.id}
+                  </Tab>
+                ))}
+              </TabsList>
+              {INSTALL_COMMANDS.map((entry) => (
+                <TabPanel key={entry.id} value={entry.id}>
+                  <pre className="overflow-x-auto border border-fd-border bg-fd-secondary px-4 py-3 text-sm">
+                    <code>{entry.command}</code>
+                  </pre>
+                </TabPanel>
               ))}
-            </ul>
-          </div>
-        </section>
+            </Tabs>
 
-        {/* Live preview */}
-        <section className="mx-auto w-full max-w-4xl px-6 py-16">
-          <div className="mb-8 text-center">
-            <h2 className="text-2xl font-semibold tracking-tight text-fd-foreground sm:text-3xl">
-              {copy.previewHeading}
-            </h2>
-            <p className="mt-2 text-fd-muted-foreground">{copy.previewDescription}</p>
-          </div>
-          <ComponentPreview
-            code={`<Button variant="solid">Solid</Button>\n<Button variant="outline">Outline</Button>\n<Button variant="ghost">Ghost</Button>`}
-          >
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <Button variant="solid">Solid</Button>
-              <Button variant="outline">Outline</Button>
-              <Button variant="ghost">Ghost</Button>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2">
+              <span className="text-xs font-medium tracking-widest text-fd-muted-foreground uppercase">
+                {copy.builtOnLabel}
+              </span>
+              {copy.builtOn.map((item) => (
+                <span key={item} className="text-sm text-fd-muted-foreground">
+                  {item}
+                </span>
+              ))}
             </div>
-          </ComponentPreview>
-        </section>
+          </section>
 
-        {/* Feature grid */}
-        <section className="border-t border-fd-border bg-fd-muted/30">
-          <div className="mx-auto max-w-6xl px-6 py-20">
-            <div className="mx-auto mb-12 max-w-2xl text-center">
-              <h2 className="text-2xl font-semibold tracking-tight text-fd-foreground sm:text-3xl">
-                {copy.featuresHeading}
-              </h2>
-              <p className="mt-2 text-fd-muted-foreground">{copy.featuresDescription}</p>
-            </div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Live preview */}
+          <section className="flex flex-col gap-6 border-b border-fd-border px-6 py-12 lg:px-12">
+            <SectionLabel>{copy.previewHeading}</SectionLabel>
+            <p className="max-w-2xl text-fd-muted-foreground">{copy.previewDescription}</p>
+            <ComponentPreview
+              code={`<Button variant="solid">Solid</Button>\n<Button variant="outline">Outline</Button>\n<Button variant="ghost">Ghost</Button>`}
+            >
+              <div className="flex flex-wrap items-center gap-3">
+                <Button variant="solid">Solid</Button>
+                <Button variant="outline">Outline</Button>
+                <Button variant="ghost">Ghost</Button>
+              </div>
+            </ComponentPreview>
+          </section>
+
+          {/* Feature grid — numbered, in the reference's two-up rhythm */}
+          <section className="flex flex-col gap-6 border-b border-fd-border px-6 py-12 lg:px-12">
+            <SectionLabel>{copy.featuresHeading}</SectionLabel>
+            <p className="max-w-2xl text-fd-muted-foreground">{copy.featuresDescription}</p>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               {copy.features.map((feature, index) => (
                 <Card key={feature.title}>
                   <CardHeader>
-                    <div
-                      className="mb-1 flex size-9 items-center justify-center rounded-md"
-                      style={{
-                        backgroundColor: 'var(--kairo-accent)',
-                        color: 'var(--kairo-accent-foreground)',
-                      }}
-                    >
-                      {FEATURE_ICONS[index]}
+                    <div className="mb-1 flex items-center gap-3">
+                      <span className="font-mono text-xs text-fd-muted-foreground">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <span
+                        className="flex size-9 items-center justify-center"
+                        style={{
+                          backgroundColor: 'var(--kairo-accent)',
+                          color: 'var(--kairo-accent-foreground)',
+                        }}
+                      >
+                        {FEATURE_ICONS[index]}
+                      </span>
                     </div>
                     <CardTitle>{feature.title}</CardTitle>
                     <CardDescription>{feature.description}</CardDescription>
@@ -143,25 +234,46 @@ export function HomePage({ locale }: { locale: Locale }) {
                 </Card>
               ))}
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Closing CTA */}
-        <section className="mx-auto w-full max-w-3xl px-6 py-20 text-center">
-          <h2 className="text-2xl font-semibold tracking-tight text-fd-foreground sm:text-3xl">
-            {copy.closingHeading}
-          </h2>
-          <p className="mx-auto mt-2 max-w-xl text-fd-muted-foreground">{copy.closingDescription}</p>
-          <pre className="mx-auto mt-6 w-fit overflow-x-auto rounded-lg border border-fd-border bg-fd-secondary px-4 py-3 text-left text-sm">
-            <code>pnpm add @kairo-ui/react @kairo-ui/theme</code>
-          </pre>
-          <div className="mt-6 flex justify-center">
-            <Link {...docsLink(locale, '')} className="kairo-btn" data-variant="solid" data-size="lg">
+          {/* Theming — code beside the claims it backs up */}
+          <section className="flex flex-col gap-6 border-b border-fd-border px-6 py-12 lg:px-12">
+            <SectionLabel>{copy.themingHeading}</SectionLabel>
+            <p className="max-w-2xl text-fd-muted-foreground">{copy.themingDescription}</p>
+            <div className="grid grid-cols-1 gap-px border border-fd-border bg-fd-border xl:grid-cols-[1.4fr_1fr]">
+              {/* Same `minmax(auto, 1fr)` trap as the page columns — without
+                  `min-w-0` the snippet's longest line sets this track's floor
+                  and pushes the points list off the edge. */}
+              <pre className="min-w-0 overflow-x-auto bg-fd-secondary p-4 text-xs leading-relaxed">
+                <code>{THEMING_SNIPPET}</code>
+              </pre>
+              <ul className="flex flex-col gap-px bg-fd-border">
+                {copy.themingPoints.map((point) => (
+                  <li key={point.title} className="flex-1 bg-fd-background p-4">
+                    <p className="text-sm font-medium text-fd-foreground">{point.title}</p>
+                    <p className="mt-1 text-sm text-fd-muted-foreground">{point.description}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+
+          {/* Closing CTA */}
+          <section className="flex flex-col items-start gap-4 px-6 py-12 lg:px-12">
+            <h2 className="text-2xl font-semibold tracking-tight text-fd-foreground">
+              {copy.closingHeading}
+            </h2>
+            <p className="max-w-xl text-fd-muted-foreground">{copy.closingDescription}</p>
+            <Link
+              {...docsLink(locale, '')}
+              className="kairo-btn"
+              data-variant="solid"
+              data-size="lg"
+            >
               {copy.finalCta}
             </Link>
-          </div>
-        </section>
-      </main>
-    </HomeLayout>
+          </section>
+      </div>
+    </main>
   );
 }

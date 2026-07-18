@@ -17,6 +17,7 @@ import {
   ViewOptionsPopover,
 } from 'fumadocs-ui/layouts/notebook/page';
 import browserCollections from 'collections/browser';
+import { DocsHeader } from '@/components/docs-header';
 import { getMDXComponents } from '@/components/mdx';
 import { SidebarBanner } from '@/components/sidebar-banner';
 import { baseOptions, GITHUB_REPO_URL } from '@/lib/layout.shared';
@@ -106,6 +107,10 @@ export function DocsPageBody({
       {...baseOptions(locale)}
       tree={pageTree}
       sidebar={{ collapsible: true, banner: <SidebarBanner locale={locale} /> }}
+      // Swap in the same bar the landing page uses. `DocsHeader` re-declares
+      // `--fd-header-height` and re-hosts the sidebar trigger, which the
+      // default header owned — see the notes in that file.
+      slots={{ header: DocsHeader }}
     >
       <Suspense>
         {docsClientLoader.useContent(path, {
