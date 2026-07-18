@@ -14,6 +14,7 @@
     "@kairo-ui/motion-react": "workspace:*",
     "@kairo-ui/react": "workspace:*",
     "@kairo-ui/theme": "workspace:*",
+    "@orama/orama": "3.1.18",
     "@tanstack/react-router": "1.170.18",
     "@tanstack/react-start": "1.168.30",
     "fumadocs-core": "16.11.5",

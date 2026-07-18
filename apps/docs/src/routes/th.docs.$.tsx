@@ -9,18 +9,18 @@ import { source } from '@/lib/source';
 const serverLoader = createServerFn({ method: 'GET' })
   .validator((slugs: string[]) => slugs)
   .handler(async ({ data: slugs }) => {
-    const page = source.getPage(slugs, 'en');
+    const page = source.getPage(slugs, 'th');
     if (!page) throw notFound();
 
     return {
       path: page.path,
       title: page.data.title,
       description: page.data.description,
-      pageTree: await source.serializePageTree(source.getPageTree('en')),
+      pageTree: await source.serializePageTree(source.getPageTree('th')),
     };
   });
 
-export const Route = createFileRoute('/docs/$')({
+export const Route = createFileRoute('/th/docs/$')({
   component: Page,
   loader: async ({ params }) => {
     const slugs = params._splat?.split('/') ?? [];

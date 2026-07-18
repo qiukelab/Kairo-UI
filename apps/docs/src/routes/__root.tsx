@@ -1,7 +1,8 @@
-import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
+import { createRootRoute, HeadContent, Outlet, Scripts, useRouter, useRouterState } from '@tanstack/react-router';
 import { RootProvider } from 'fumadocs-ui/provider/tanstack';
 import { NotFound } from '@/components/not-found';
 import { SearchDialog } from '@/components/search-dialog';
+import { LOCALE_ITEMS, localeFromPathname, toLocalePath } from '@/lib/i18n';
 import appCss from '@/styles/app.css?url';
 
 export const Route = createRootRoute({
@@ -25,14 +26,33 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+  const router = useRouter();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const locale = localeFromPathname(pathname);
+
   return (
     // `attribute: 'class'` matches @kairo-ui/theme's `.dark` toggle convention (already the default, set explicitly for clarity).
-    <html lang="en" suppressHydrationWarning>
+    // `lang` reflects the active locale — `@kairo-ui/theme`'s `:lang(th)` typography rules only apply when this is set correctly.
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body className="flex flex-col min-h-screen">
-        <RootProvider theme={{ attribute: 'class' }} search={{ SearchDialog }}>
+        <RootProvider
+          theme={{ attribute: 'class' }}
+          search={{ SearchDialog }}
+          i18n={{
+            locale,
+            locales: LOCALE_ITEMS,
+            // Fumadocs' own default redirect assumes every locale (including
+            // the default one) is always prefixed, which doesn't hold here
+            // (`hideLocale: 'default-locale'`, see `lib/i18n.ts`) — so it's
+            // overridden to mirror the current path into the target locale.
+            onLocaleChange: (target) => {
+              router.navigate({ href: toLocalePath(pathname, target as 'en' | 'th') });
+            },
+          }}
+        >
           <Outlet />
         </RootProvider>
         <Scripts />

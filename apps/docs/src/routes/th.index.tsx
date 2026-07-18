@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { HomePage } from '@/components/home-page';
 
-export const Route = createFileRoute('/')({
-  component: () => <HomePage locale="en" />,
+export const Route = createFileRoute('/th/')({
+  component: () => <HomePage locale="th" />,
 });

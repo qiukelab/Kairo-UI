@@ -1,0 +1,58 @@
+---
+title: Button
+description: อีลีเมนต์สำหรับคลิกที่มีสามรูปแบบ solid, outline และ ghost ในสามขนาด
+---
+
+import { Button } from '@kairo-ui/react';
+
+## การใช้งาน
+
+```tsx
+import { Button } from '@kairo-ui/react';
+
+export function Example() {
+  return <Button>Click me</Button>;
+}
+```
+
+## Variants
+
+<ComponentPreview code={`<Button variant="solid">Solid</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>`}>
+  <div className="flex flex-wrap items-center gap-3">
+    <Button variant="solid">Solid</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="ghost">Ghost</Button>
+  </div>
+</ComponentPreview>
+
+## ขนาด
+
+<ComponentPreview code={`<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>`}>
+  <div className="flex flex-wrap items-center gap-3">
+    <Button size="sm">Small</Button>
+    <Button size="md">Medium</Button>
+    <Button size="lg">Large</Button>
+  </div>
+</ComponentPreview>
+
+## ปิดการใช้งาน
+
+<ComponentPreview code={`<Button disabled>Disabled</Button>`}>
+  <div className="flex flex-wrap items-center gap-3">
+    <Button disabled>Disabled</Button>
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop        | Type                             | Default   | Description                                  |
+| ----------- | --------------------------------- | --------- | --------------------------------------------- |
+| `variant`   | `'solid' \| 'outline' \| 'ghost'` | `'solid'` | รูปแบบการแสดงผลของปุ่ม                          |
+| `size`      | `'sm' \| 'md' \| 'lg'`            | `'md'`    | ขนาดของปุ่ม                                     |
+| `type`      | `'button' \| 'submit' \| 'reset'` | `'button'`| attribute `type` ของ `<button>` ดั้งเดิม        |
+| `className` | `string`                          | —         | รวมกับคลาสพื้นฐาน `kairo-btn`                   |
+| ...         | `ButtonHTMLAttributes<HTMLButtonElement>` | —  | รับ props ดั้งเดิมของ `<button>` ที่เหลือทั้งหมด (เช่น `onClick`, `disabled`, `aria-*`) |

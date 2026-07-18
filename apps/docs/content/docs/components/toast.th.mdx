@@ -1,0 +1,126 @@
+---
+title: Toast
+description: การแจ้งเตือนชั่วคราวที่คิวแบบ imperative และแสดงผลซ้อนกันที่มุมจอ สร้างบน Base UI
+---
+
+import { ToastDemo } from '@/components/demos/toast-demo';
+
+## การใช้งาน
+
+```tsx
+import { ToastProvider, useToast } from '@kairo-ui/react';
+
+function SaveButton() {
+  const toast = useToast();
+
+  return (
+    <button
+      onClick={() =>
+        toast.add({ title: 'Saved', description: 'Your changes have been saved.' })
+      }
+    >
+      Save
+    </button>
+  );
+}
+
+export function App() {
+  return (
+    <ToastProvider>
+      <SaveButton />
+    </ToastProvider>
+  );
+}
+```
+
+Mount `ToastProvider` ไว้ครั้งเดียวใกล้ root ของแอป (หรือ subtree ใดก็ได้)
+ต่างจาก Base UI wrapper อื่น ๆ ของ Kairo ตรงที่ไม่มีอีลีเมนต์ `<Toast>`
+ให้วางตรงตำแหน่งที่ต้องการให้ toast ปรากฏ — `ToastProvider` จะ render
+viewport แบบ fixed-position ที่จัดสไตล์ไว้แล้วภายในตัวเอง (Base UI's
+`Toast.Portal` > `Toast.Viewport` โดยแต่ละ toast มีแถวที่จัดสไตล์เป็น
+ค่าเริ่มต้น: `Toast.Root` + `Toast.Title` + `Toast.Description` + ปุ่ม action
+(ถ้ามี) + ปุ่มปิด) เรียก `useToast()` จาก component ใดก็ได้ที่อยู่ภายใน
+provider เพื่อรับ `{ toasts, add, close, update, promise }` แล้วคิว toast
+แบบ imperative — ไม่ต้องเขียน toast เป็น JSX เอง แค่ `add(...)` title/description
+เข้าไป Kairo จะ render ให้เอง ระบบโต้ตอบและ accessibility ทั้งหมด (ตัวจับเวลา
+ปิดอัตโนมัติ, swipe-to-dismiss, การประกาศ `aria-live`, การจัดการโฟกัส)
+มาจาก `@base-ui/react`
+
+รูปแบบ viewport ที่รวมมาให้นี้เป็นรูปแบบเดียวที่ wrapper ของ Kairo เปิดให้ใช้
+ส่วน primitive ดั้งเดิมของ Base UI (`Toast.Root`/`Title`/`Description`/`Action`/
+`Close`/`Positioner`/`Arrow` รวมถึง `Toast.createToastManager()`) ยังใช้ได้
+โดยตรงจาก `@base-ui/react/toast` สำหรับกรณีขั้นสูง — เช่น toast แบบ "Copied"
+ที่ยึดตำแหน่งกับ trigger element หรือ viewport อิสระหลายชุด — ซึ่งต้องใช้
+`Toast.Provider` มากกว่าหนึ่งตัวและอยู่นอกขอบเขตของ wrapper สะดวกใช้ตัวนี้
+
+ปุ่มปิดเป็นของ Kairo เอง (ไม่ใช่ `Toast.Close` ของ Base UI) เชื่อมตรงกับ
+`close(id)` ของ manager: `Toast.Close` ของ Base UI จะซ่อนตัวเองจาก
+assistive tech (`aria-hidden`) ยกเว้นตอนที่ viewport ถูก hover/focus อยู่
+ซึ่งเหมาะกับ demo แบบ stack ที่ยุบซ้อนกันของมันเอง แต่ไม่เหมาะกับ layout
+แบบ stack ที่มองเห็นเต็มตลอดของ Kairo — ปุ่มปิดที่นี่จึงถูกประกาศเสมอแทน
+
+## เรียก toast
+
+<ComponentPreview
+  code={`function ShowToastButton() {
+  const toast = useToast();
+
+  return (
+    <Button
+      variant="outline"
+      onClick={() =>
+        toast.add({ title: 'Saved', description: 'Your changes have been saved.' })
+      }
+    >
+      Show toast
+    </Button>
+  );
+}
+
+<ToastProvider>
+  <ShowToastButton />
+</ToastProvider>`}
+>
+  <ToastDemo />
+</ComponentPreview>
+
+## Props
+
+### `ToastProvider`
+
+| Prop                | Type              | Default | Description                                                                                                      |
+| ------------------- | ------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `limit`             | `number`            | `3`     | จำนวน toast สูงสุดที่แสดงพร้อมกัน ส่วนที่เกินจะยังคง mount อยู่ (`data-limited`, `inert`) แทนที่จะถูกลบออก |
+| `timeout`           | `number`            | `5000`  | เวลา (ms) ก่อน toast จะปิดอัตโนมัติ ตั้งเป็น `0` เพื่อปิดการปิดอัตโนมัติ |
+| `toastManager`      | `ToastManager`      | —       | manager ที่สร้างจาก `createToastManager()` สำหรับคิว toast จากนอก React tree |
+| `viewportClassName` | `string`            | —       | รวมกับคลาสพื้นฐาน `kairo-toast-viewport` บน viewport ที่ `ToastProvider` render ไว้ภายใน |
+| `children`          | `React.ReactNode`   | —       | แอป (หรือ subtree) ของคุณ |
+
+### `useToast()`
+
+คืนค่า (ต้องเรียกจากภายใน `ToastProvider`):
+
+| Property  | Type                                                            | Description                                                                 |
+| --------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `toasts`  | `ToastObject[]`                                                     | คิว toast ปัจจุบันแบบ live (ตัวล่าสุดอยู่ก่อน) |
+| `add`     | `(options: ToastManagerAddOptions) => string`                       | คิว toast ใหม่ คืนค่า `id` รับ `title`, `description`, `timeout`, `type`, `priority`, `actionProps`, `onClose`, `onRemove` |
+| `close`   | `(id?: string) => void`                                             | ปิด toast ตาม `id` หรือปิดทั้งหมดถ้าไม่ระบุ |
+| `update`  | `(id: string, options: ToastManagerUpdateOptions) => void`          | อัปเดต toast ที่มีอยู่ในที่เดิม (เช่น เปลี่ยน toast "กำลังบันทึก…" เป็น "บันทึกแล้ว") |
+| `promise` | `(promise: Promise, options: ToastManagerPromiseOptions) => Promise` | คิว toast แบบ loading ที่จะอัปเดตเป็น success/error เมื่อ `promise` จบการทำงาน |
+
+### `createToastManager()`
+
+สร้าง manager แบบ standalone (มีรูปแบบเดียวกัน `{ add, close, update, promise }`
+แต่ไม่มี array `toasts` แบบ reactive) ที่คิว toast จากนอก React tree ได้ —
+เช่นจาก fetch handler หรือ router loader ส่งผลลัพธ์ไปที่ prop `toastManager`
+ของ `ToastProvider` เพื่อให้ render สิ่งที่ manager คิวไว้
+
+```tsx
+const toastManager = createToastManager();
+
+// ที่ไหนก็ได้ รวมถึงนอก component:
+toastManager.add({ description: 'Copied' });
+
+// ครั้งเดียว ใกล้ root:
+<ToastProvider toastManager={toastManager}>{children}</ToastProvider>;
+```

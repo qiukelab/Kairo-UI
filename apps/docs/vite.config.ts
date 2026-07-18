@@ -22,9 +22,18 @@ export default defineConfig({
         // Seeded explicitly (not just relying on auto-discovery) so the
         // crawl always has a starting point even if that heuristic changes.
         { path: '/' },
+        // The Thai home page is otherwise unreachable by crawling: the
+        // language switcher (`fumadocs-ui`'s `LanguageSelect`) changes
+        // locale via an `onClick` handler, not a real `<a href>`, so there is
+        // no link anywhere for the crawler to follow. Seeding this one page
+        // is enough, though — from there, `crawlLinks` discovers every
+        // `/th/docs/...` page through the (real, `<a href>`-based) sidebar
+        // links rendered by the Thai page tree.
+        { path: '/th' },
         // Has no `component` (server-route-only), so it is never picked up
         // by automatic static-path discovery or link crawling.
         { path: '/static-search-en.json' },
+        { path: '/static-search-th.json' },
         // Prerendered as `404.html` (not `404/index.html`) so Cloudflare's
         // `not_found_handling: "404-page"` can serve it for any unmatched path.
         { path: '/404', prerender: { autoSubfolderIndex: false } },

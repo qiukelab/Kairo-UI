@@ -1,0 +1,42 @@
+---
+title: ธีม
+description: ตัวอย่าง design token ของ Kairo แบบ live ในทุกโหมดและพรีเซ็ต
+---
+
+เพิ่งเริ่มใช้ Kairo? เริ่มจากคู่มือ[การติดตั้ง](/th/docs)ก่อน เพื่อโหลด
+`@kairo-ui/theme/styles.css` ในแอปของคุณ — เนื้อหาด้านล่างสมมติว่าทำขั้นตอนนี้แล้ว
+
+## ระบบธีมทำงานอย่างไร
+
+Token ของ Kairo เป็น CSS custom property ธรรมดา ควบคุมด้วยกลไกอิสระสองอย่าง:
+
+- **Mode** — คลาส `.dark` บน `<html>` จะเลือกใช้ตัวแปรชุด dark ของทุก token
+  ตัวสลับสว่าง/มืดในตัวของ Fumadocs (ด้านบนของ sidebar) ทำงานผ่าน
+  [`next-themes`](https://github.com/pacocoursey/next-themes) ซึ่งตั้งค่า
+  `attribute="class"` ไว้ใน `RootProvider` จึงสลับคลาสเดียวกับที่ token ของ
+  Kairo ต้องการพอดี
+- **Preset** — attribute `data-kairo-theme="ocean" | "sunset"` บน `<html>`
+  จะเปลี่ยนชุดสี ส่วนพรีเซ็ต `default` คือสถานะที่ไม่มี attribute นี้เลย
+
+ทั้งสองอย่างควบคุมผ่าน API เล็ก ๆ ที่ไม่ผูกกับเฟรมเวิร์กใดโดยเฉพาะ
+จาก `@kairo-ui/theme`:
+
+```ts
+import { setMode, setPreset, setTheme } from '@kairo-ui/theme';
+
+setMode('dark'); // สลับคลาส `.dark` บน <html>
+setPreset('ocean'); // ตั้ง data-kairo-theme="ocean" บน <html>
+setTheme({ preset: 'sunset', mode: 'light' }); // ตั้งทั้งสองอย่างพร้อมกัน
+```
+
+ลองเลยด้านล่าง: สลับพรีเซ็ตด้วยตัวเลือก แล้วสลับโหมดสว่าง/มืดจากปุ่มใน
+sidebar สีตัวอย่าง ค่ารัศมี เงา และตัวอย่างการเคลื่อนไหวทุกอันจะอ่านค่าจาก
+CSS variable แบบ live จึงอัปเดตให้เห็นทันที
+
+## พรีเซ็ต
+
+<ThemePresetSwitcher />
+
+## Tokens
+
+<TokenShowcase />

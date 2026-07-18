@@ -1,0 +1,127 @@
+---
+title: การติดตั้ง
+description: ติดตั้ง Kairo และเชื่อมต่อกับโปรเจกต์ Next.js App Router หรือ Vite
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+Kairo เป็นไลบรารี React component ที่มีน้ำหนักเบาและปรับธีมได้ แบ่งเป็นสองแพ็กเกจ:
+`@kairo-ui/react` สำหรับตัว component และ
+[`@kairo-ui/theme`](/th/docs/theming) สำหรับตัวแปร CSS และสไตล์พื้นฐานที่
+component เหล่านั้นอ่านค่ามาใช้ ไม่ต้องใช้ Tailwind ไม่ต้องมี CSS-in-JS
+runtime — แค่สไตล์ชีตไฟล์เดียว
+
+## ติดตั้ง
+
+```bash tab="pnpm"
+pnpm add @kairo-ui/react @kairo-ui/theme
+```
+
+```bash tab="npm"
+npm install @kairo-ui/react @kairo-ui/theme
+```
+
+```bash tab="yarn"
+yarn add @kairo-ui/react @kairo-ui/theme
+```
+
+```bash tab="bun"
+bun add @kairo-ui/react @kairo-ui/theme
+```
+
+ต้องติดตั้งทั้งสองแพ็กเกจ: `@kairo-ui/theme` มี design token `--kairo-*`
+และ CSS ของ component ส่วน `@kairo-ui/react` มีตัว component ที่ render
+มาร์กอัปซึ่งใช้คลาสเหล่านั้น
+
+## ตั้งค่าในเฟรมเวิร์กของคุณ
+
+Import `@kairo-ui/theme/styles.css` **ครั้งเดียว** ใกล้ root ของแอป
+จากนั้นใช้ component ได้จากทุกที่
+
+<Tabs items={['Next.js', 'Vite']}>
+<Tab value="Next.js">
+
+```tsx title="app/layout.tsx"
+import '@kairo-ui/theme/styles.css';
+import type { ReactNode } from 'react';
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+```tsx title="app/page.tsx"
+import { Button } from '@kairo-ui/react';
+
+export default function Page() {
+  return <Button>Click me</Button>;
+}
+```
+
+Component แบบ static — Button, Badge, Card, Input, Spinner — ไม่มี
+`'use client'` และ render เป็น Server Component ที่ไม่มี JS ใน App Router
+ส่วน component ที่โต้ตอบได้ — Avatar, Checkbox, Dialog, Switch, Tabs,
+Tooltip — มี `'use client'` ในตัวเองอยู่แล้ว จึงใช้งานแบบเดียวกันได้เลย
+โดยไม่ต้องตั้งค่าเพิ่ม
+
+</Tab>
+<Tab value="Vite">
+
+```tsx title="src/main.tsx"
+import '@kairo-ui/theme/styles.css';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);
+```
+
+```tsx title="src/App.tsx"
+import { Button } from '@kairo-ui/react';
+
+export default function App() {
+  return <Button>Click me</Button>;
+}
+```
+
+</Tab>
+</Tabs>
+
+## โหมดมืด
+
+ทุก token จะตอบสนองต่อคลาส `.dark` บน `<html>` จะสลับคลาสนี้ด้วยวิธีไหนก็ได้
+หรือใช้ helper ที่ปลอดภัยสำหรับ SSR ของ `@kairo-ui/theme`:
+
+```ts
+import { setMode } from '@kairo-ui/theme';
+
+setMode('dark'); // เพิ่มคลาส `.dark` ให้ <html>
+setMode('light'); // เอาออก
+```
+
+เอกสารชุดนี้สลับคลาสเดียวกันผ่าน
+[`next-themes`](https://github.com/pacocoursey/next-themes) (ตั้งค่าด้วย
+`attribute="class"`) — การตั้งค่า dark mode แบบ class-based รูปแบบไหนก็ใช้ได้
+
+## ขั้นตอนถัดไป
+
+<Cards>
+  <Card
+    title="ธีม"
+    href="/th/docs/theming"
+    description="พรีเซ็ต, API อย่าง setPreset/setMode/setTheme และตัวอย่าง token แบบ live"
+  />
+  <Card
+    title="คอมโพเนนต์"
+    href="/th/docs/components/button"
+    description="ดูคอมโพเนนต์ทั้ง 11 ตัวพร้อม props ของแต่ละตัว"
+  />
+</Cards>

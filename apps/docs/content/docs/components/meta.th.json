@@ -1,0 +1,19 @@
+{
+  "title": "คอมโพเนนต์",
+  "pages": [
+    "button",
+    "input",
+    "select",
+    "checkbox",
+    "switch",
+    "tabs",
+    "badge",
+    "avatar",
+    "card",
+    "spinner",
+    "popover",
+    "tooltip",
+    "dialog",
+    "toast"
+  ]
+}
