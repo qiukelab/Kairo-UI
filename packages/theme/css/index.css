@@ -7,7 +7,10 @@
 @import "./components/checkbox.css";
 @import "./components/dialog.css";
 @import "./components/input.css";
+@import "./components/popover.css";
+@import "./components/select.css";
 @import "./components/spinner.css";
 @import "./components/switch.css";
 @import "./components/tabs.css";
+@import "./components/toast.css";
 @import "./components/tooltip.css";

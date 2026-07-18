@@ -64,6 +64,14 @@
       "types": "./dist/input/index.d.mts",
       "import": "./dist/input/index.mjs"
     },
+    "./popover": {
+      "types": "./dist/popover/index.d.mts",
+      "import": "./dist/popover/index.mjs"
+    },
+    "./select": {
+      "types": "./dist/select/index.d.mts",
+      "import": "./dist/select/index.mjs"
+    },
     "./spinner": {
       "types": "./dist/spinner/index.d.mts",
       "import": "./dist/spinner/index.mjs"
@@ -75,6 +83,10 @@
     "./tabs": {
       "types": "./dist/tabs/index.d.mts",
       "import": "./dist/tabs/index.mjs"
+    },
+    "./toast": {
+      "types": "./dist/toast/index.d.mts",
+      "import": "./dist/toast/index.mjs"
     },
     "./tooltip": {
       "types": "./dist/tooltip/index.d.mts",

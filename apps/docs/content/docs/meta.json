@@ -1,4 +1,4 @@
 {
   "title": "Kairo Docs",
-  "pages": ["index", "theming", "components"]
+  "pages": ["index", "theming", "motion", "components"]
 }

@@ -1,0 +1,78 @@
+{
+  "name": "@kairo-ui/motion-react",
+  "version": "0.0.0",
+  "description": "Optional Motion-powered animation addon for Kairo.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Kairo Contributors",
+  "homepage": "https://github.com/qiukelab/Kairo-UI#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qiukelab/Kairo-UI.git",
+    "directory": "packages/motion-react"
+  },
+  "bugs": {
+    "url": "https://github.com/qiukelab/Kairo-UI/issues"
+  },
+  "keywords": [
+    "react",
+    "motion",
+    "animation",
+    "ui",
+    "design-system",
+    "typescript"
+  ],
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./transitions": {
+      "types": "./dist/transitions/index.d.mts",
+      "import": "./dist/transitions/index.mjs"
+    },
+    "./variants": {
+      "types": "./dist/variants/index.d.mts",
+      "import": "./dist/variants/index.mjs"
+    },
+    "./animated-number": {
+      "types": "./dist/animated-number/index.d.mts",
+      "import": "./dist/animated-number/index.mjs"
+    },
+    "./reveal": {
+      "types": "./dist/reveal/index.d.mts",
+      "import": "./dist/reveal/index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint ."
+  },
+  "peerDependencies": {
+    "motion": "^12.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@kairo-ui/tsconfig": "workspace:*",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "jsdom": "29.1.1",
+    "motion": "12.42.2",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "tsdown": "0.22.9",
+    "typescript": "5.9.3",
+    "unrun": "0.3.1",
+    "vitest": "4.1.10"
+  }
+}

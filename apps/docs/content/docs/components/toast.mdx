@@ -1,0 +1,128 @@
+---
+title: Toast
+description: Transient notifications queued imperatively and rendered in a stacked corner viewport, built on Base UI.
+---
+
+import { ToastDemo } from '@/components/demos/toast-demo';
+
+## Usage
+
+```tsx
+import { ToastProvider, useToast } from '@kairo-ui/react';
+
+function SaveButton() {
+  const toast = useToast();
+
+  return (
+    <button
+      onClick={() =>
+        toast.add({ title: 'Saved', description: 'Your changes have been saved.' })
+      }
+    >
+      Save
+    </button>
+  );
+}
+
+export function App() {
+  return (
+    <ToastProvider>
+      <SaveButton />
+    </ToastProvider>
+  );
+}
+```
+
+Mount `ToastProvider` once near the root of your app (or a subtree). Unlike
+Kairo's other Base UI wrappers, there's no `<Toast>` element to place inline
+where a toast should appear — `ToastProvider` also renders a styled,
+fixed-position viewport internally (Base UI's `Toast.Portal` >
+`Toast.Viewport`, populated with a default styled row per toast: `Toast.Root`
++ `Toast.Title` + `Toast.Description` + an optional action button + a close
+button). Call `useToast()` from any component rendered inside the provider to
+get `{ toasts, add, close, update, promise }` and queue toasts imperatively —
+there's no toast content to author as JSX; you `add(...)` a title/description
+and Kairo renders it. All interaction and accessibility logic (auto-dismiss
+timers, swipe-to-dismiss, `aria-live` announcements, focus management) comes
+from `@base-ui/react`.
+
+This bundled-viewport shape is the only one Kairo's wrapper exposes. Base
+UI's underlying primitives (`Toast.Root`/`Title`/`Description`/`Action`/
+`Close`/`Positioner`/`Arrow`, plus `Toast.createToastManager()`) are still
+available directly from `@base-ui/react/toast` for advanced cases — e.g.
+anchored "Copied" toasts positioned against a trigger element, or multiple
+independent viewports — which need more than one `Toast.Provider` and are out
+of scope for this convenience wrapper.
+
+The close button is Kairo's own (not Base UI's `Toast.Close`), wired directly
+to the manager's `close(id)`: Base UI's `Toast.Close` hides itself from
+assistive tech (`aria-hidden`) unless the viewport is hovered/focused, which
+fits its own collapsed "peeking" stack demo but not Kairo's plain, always-fully-
+visible stacked layout — so it's always announced with the toast here instead.
+
+## Trigger a toast
+
+<ComponentPreview
+  code={`function ShowToastButton() {
+  const toast = useToast();
+
+  return (
+    <Button
+      variant="outline"
+      onClick={() =>
+        toast.add({ title: 'Saved', description: 'Your changes have been saved.' })
+      }
+    >
+      Show toast
+    </Button>
+  );
+}
+
+<ToastProvider>
+  <ShowToastButton />
+</ToastProvider>`}
+>
+  <ToastDemo />
+</ComponentPreview>
+
+## Props
+
+### `ToastProvider`
+
+| Prop                | Type              | Default | Description                                                                                                      |
+| ------------------- | ------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `limit`             | `number`            | `3`     | Maximum number of toasts displayed at once; older ones past the limit stay mounted (`data-limited`, `inert`) instead of being removed. |
+| `timeout`           | `number`            | `5000`  | Default time (ms) before a toast auto-dismisses. `0` disables auto-dismiss.                                             |
+| `toastManager`      | `ToastManager`      | —       | A manager created via `createToastManager()`, for queuing toasts from outside the React tree.                          |
+| `viewportClassName` | `string`            | —       | Merged with the base `kairo-toast-viewport` class on the viewport `ToastProvider` renders internally.                   |
+| `children`          | `React.ReactNode`   | —       | Your app (or subtree).                                                                                                  |
+
+### `useToast()`
+
+Returns (must be called from inside `ToastProvider`):
+
+| Property  | Type                                                            | Description                                                                 |
+| --------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `toasts`  | `ToastObject[]`                                                     | The current, live toast queue (newest first).                                      |
+| `add`     | `(options: ToastManagerAddOptions) => string`                       | Queues a toast; returns its `id`. Accepts `title`, `description`, `timeout`, `type`, `priority`, `actionProps`, `onClose`, `onRemove`.  |
+| `close`   | `(id?: string) => void`                                             | Dismisses a toast by `id`, or every toast if omitted.                               |
+| `update`  | `(id: string, options: ToastManagerUpdateOptions) => void`          | Updates an existing toast in place (e.g. flip a "Saving…" toast to "Saved").        |
+| `promise` | `(promise: Promise, options: ToastManagerPromiseOptions) => Promise` | Queues a loading toast that updates to a success/error toast when `promise` settles. |
+
+### `createToastManager()`
+
+Creates a standalone manager (the same `{ add, close, update, promise }`
+shape, without the reactive `toasts` array) that can queue toasts from
+outside the React tree — e.g. a fetch handler or router loader. Pass the
+result to `ToastProvider`'s `toastManager` prop so it renders whatever the
+manager queues.
+
+```tsx
+const toastManager = createToastManager();
+
+// anywhere, including outside a component:
+toastManager.add({ description: 'Copied' });
+
+// once, near the root:
+<ToastProvider toastManager={toastManager}>{children}</ToastProvider>;
+```

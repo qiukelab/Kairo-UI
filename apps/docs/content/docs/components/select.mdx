@@ -1,0 +1,147 @@
+---
+title: Select
+description: A dropdown listbox for choosing a value from a predefined list, built on Base UI.
+---
+
+import { SelectDemo } from '@/components/demos/select-demo';
+
+## Usage
+
+```tsx
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Select defaultValue="apple">
+      <SelectTrigger aria-label="Fruit">
+        <SelectValue placeholder="Select a fruit" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="apple">Apple</SelectItem>
+        <SelectItem value="banana">Banana</SelectItem>
+        <SelectItem value="orange">Orange</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+}
+```
+
+`Select` groups the parts (it renders no DOM element of its own — the same as
+Base UI's `Select.Root`). `SelectTrigger` renders Base UI's `Select.Trigger`
+plus a default chevron icon, so you only need to place a `SelectValue` inside
+it. `SelectContent` composes Base UI's `Select.Portal` > `Select.Positioner` +
+`Select.Popup` in one call. `role="combobox"`/`"listbox"`/`"option"`, keyboard
+navigation & typeahead, and a hidden `<input>` for form submission all come
+from `@base-ui/react`.
+
+## Grouped options, a separator & a controlled select
+
+<ComponentPreview
+  code={`<Select items={fruits} defaultValue="apple">
+  <SelectTrigger aria-label="Fruit" className="w-40">
+    <SelectValue placeholder="Select a fruit" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="apple">Apple</SelectItem>
+    <SelectItem value="banana">Banana</SelectItem>
+    <SelectSeparator />
+    <SelectGroup>
+      <SelectGroupLabel>Citrus</SelectGroupLabel>
+      <SelectItem value="orange">Orange</SelectItem>
+    </SelectGroup>
+  </SelectContent>
+</Select>
+
+<Select items={fruits} value={value} onValueChange={setValue}>
+  <SelectTrigger aria-label="Fruit (controlled)" className="w-40">
+    <SelectValue placeholder="Select a fruit" />
+  </SelectTrigger>
+  <SelectContent>
+    {fruits.map((fruit) => (
+      <SelectItem key={fruit.value} value={fruit.value}>
+        {fruit.label}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>`}
+>
+  <SelectDemo />
+</ComponentPreview>
+
+Passing the `items` prop to `Select` renders the matching label in the
+trigger (via `SelectValue`) instead of the raw `value` — see Base UI's
+[Formatting the value](https://base-ui.com/react/components/select#formatting-the-value)
+guide.
+
+## Props
+
+### `Select`
+
+| Prop              | Type                                     | Default | Description                                                              |
+| ----------------- | ------------------------------------------ | ------- | ------------------------------------------------------------------------------ |
+| `value`           | `any`                                       | —       | Controlled value. Use with `onValueChange`.                                    |
+| `defaultValue`    | `any`                                       | —       | Initial value for an uncontrolled select.                                       |
+| `onValueChange`   | `(value: any, eventDetails) => void`        | —       | Called when the selected value changes.                                         |
+| `open`            | `boolean`                                   | —       | Controlled open state. Use with `onOpenChange`.                                 |
+| `defaultOpen`     | `boolean`                                   | `false` | Initial open state for an uncontrolled select.                                  |
+| `onOpenChange`    | `(open: boolean, eventDetails) => void`     | —       | Called when the popup opens or closes.                                          |
+| `items`           | `Record<string, ReactNode> \| Array<{ value, label }>` | — | Data used to render the matching label for the current value in `SelectValue`. |
+| `multiple`        | `boolean`                                   | `false` | Whether multiple items can be selected.                                         |
+| `disabled`        | `boolean`                                   | `false` | Prevents user interaction.                                                      |
+| `name`            | `string`                                    | —       | Identifies the field when a form is submitted.                                  |
+| ...               | `Select.Root` props from `@base-ui/react/select` | — | All other Base UI `Select.Root` props are passed through.                       |
+
+### `SelectTrigger`
+
+Renders a native `<button>` with `role="combobox"`, `children` (typically a
+`SelectValue`), and a default chevron icon appended after it.
+
+### `SelectValue`
+
+| Prop          | Type                            | Default | Description                                                    |
+| ------------- | ---------------------------------- | ------- | -------------------------------------------------------------------- |
+| `placeholder` | `ReactNode`                        | —       | Shown when no value is selected.                                      |
+| `children`    | `ReactNode \| (value: any) => ReactNode` | — | Custom render function to format the selected value.                  |
+
+### `SelectContent`
+
+| Prop                   | Type                                  | Default | Description                                                                       |
+| ---------------------- | ---------------------------------------- | ------- | ---------------------------------------------------------------------------------------- |
+| `side`                 | `'top' \| 'bottom' \| 'left' \| 'right'` | —       | Which side of the trigger to render the popup against.                                    |
+| `align`                | `'start' \| 'center' \| 'end'`           | —       | How to align the popup relative to `side`.                                                |
+| `sideOffset`           | `number`                                 | `4`     | Distance in pixels between the trigger and the popup.                                     |
+| `alignItemWithTrigger` | `boolean`                                | `true`  | Whether the popup overlaps the trigger so the selected item's text lines up with it.       |
+| `className`            | `string`                                 | —       | Merged with the base `kairo-select-popup` class on the popup element.                     |
+| ...                    | `Select.Popup` props from `@base-ui/react/select` | — | All other Base UI `Select.Popup` props (e.g. `finalFocus`) are passed through.             |
+
+### `SelectItem`
+
+| Prop        | Type      | Default | Description                                                    |
+| ----------- | --------- | ------- | -------------------------------------------------------------------- |
+| `value`     | `any`     | —       | The value of this item (required).                                    |
+| `disabled`  | `boolean` | `false` | Prevents the item from being selected.                                |
+| `className` | `string`  | —       | Merged with the base `kairo-select-item` class.                       |
+
+Renders `children` inside Base UI's `Select.ItemText`, preceded by a
+check-mark `Select.ItemIndicator` (present in the DOM only for the selected
+item).
+
+### `SelectGroup` / `SelectGroupLabel`
+
+`SelectGroup` groups related items; `SelectGroupLabel` is an accessible label
+automatically associated with its parent `SelectGroup`.
+
+### `SelectSeparator`
+
+A visual divider between items/groups. Hidden from the accessibility tree
+(`aria-hidden="true"`) by default, since the listbox role only permits
+`option`/`group` children.
+
+All other props from `@base-ui/react/select`'s corresponding part are passed
+through on each Kairo component.

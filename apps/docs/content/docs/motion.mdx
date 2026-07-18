@@ -1,0 +1,107 @@
+---
+title: Motion
+description: An optional, Motion-powered animation addon — install it only if you need JS-driven motion.
+---
+
+import { MotionDemo } from '@/components/demos/motion-demo';
+
+`@kairo-ui/motion-react` is an **optional addon**. `@kairo-ui/react` and
+`@kairo-ui/theme` stay entirely motion-free — [Motion](https://motion.dev)
+(`motion`) is only ever a peer dependency of this addon, never of the core
+packages. Reach for it when an interaction genuinely needs JS-driven
+animation (springs, scroll-triggered reveals, interpolated numbers) rather
+than the CSS transitions Kairo's components already ship with.
+
+## Install
+
+```bash tab="pnpm"
+pnpm add @kairo-ui/motion-react motion
+```
+
+```bash tab="npm"
+npm install @kairo-ui/motion-react motion
+```
+
+```bash tab="yarn"
+yarn add @kairo-ui/motion-react motion
+```
+
+```bash tab="bun"
+bun add @kairo-ui/motion-react motion
+```
+
+### Peer dependencies
+
+- `motion` `^12.0.0`
+- `react` `^18.0.0 || ^19.0.0`
+- `react-dom` `^18.0.0 || ^19.0.0`
+
+This package doesn't re-export Motion's own API — import `motion`,
+`AnimatePresence` and friends directly from `motion/react` alongside it.
+
+## transitions
+
+Motion `Transition` presets mirroring `@kairo-ui/theme`'s CSS motion tokens
+(`--kairo-duration-*` / `--kairo-ease-*`), so JS-driven animation stays in
+lockstep with Kairo's CSS-first components.
+
+```ts
+import { transitions } from '@kairo-ui/motion-react/transitions';
+
+transitions.fast; // { duration: 0.15, ease: [0.4, 0, 0.2, 1] }
+transitions.normal; // { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
+transitions.slow; // { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
+transitions.emphasized; // a spring standing in for --kairo-ease-emphasized
+```
+
+## variants
+
+Reusable Motion `Variants` with `hidden`/`visible` states — `fade`,
+`slideUp`, `slideDown`, `scale` — each using `transitions.normal` by default.
+
+```tsx
+import { motion } from 'motion/react';
+import { variants } from '@kairo-ui/motion-react/variants';
+
+<motion.div initial="hidden" animate="visible" variants={variants.fade} />;
+```
+
+## AnimatedNumber & Reveal
+
+<ComponentPreview
+  code={`<AnimatedNumber value={value} />
+<Button onClick={() => setValue((current) => current + 137)}>Add 137</Button>
+
+<Reveal variant="slideUp">
+  I animate in the first time I scroll into view.
+</Reveal>`}
+>
+  <MotionDemo />
+</ComponentPreview>
+
+## Props
+
+### AnimatedNumber
+
+| Prop         | Type                         | Default                                | Description                                                          |
+| ------------ | ----------------------------- | ---------------------------------------- | ------------------------------------------------------------------------ |
+| `value`      | `number`                      | —                                         | The number to display, and spring-animate towards on change.            |
+| `format`     | `(value: number) => string`   | locale integer (`Intl.NumberFormat`)     | Formats the (possibly mid-spring) number for display.                    |
+| `transition` | `SpringOptions`                | Motion's default spring                 | Spring options controlling how the number animates between values.      |
+| `className`  | `string`                      | —                                         | Passed through to the rendered `<span>`.                                 |
+| ...          | native `<span>` props          | —                                         | All other native span attributes are passed through.                    |
+
+### Reveal
+
+| Prop        | Type                                              | Default     | Description                                                       |
+| ----------- | ---------------------------------------------------| ------------ | ---------------------------------------------------------------------- |
+| `variant`   | `'fade' \| 'slideUp' \| 'slideDown' \| 'scale'`    | `'slideUp'`  | Which entrance shape to play.                                          |
+| `delay`     | `number`                                            | `0`          | Delay, in seconds, before the entrance transition starts.               |
+| `amount`    | `number`                                            | `0.3`        | Fraction of the element that must be visible before it reveals.        |
+| `once`      | `boolean`                                            | `true`       | Whether the reveal plays only once, the first time it's in view.       |
+| `className` | `string`                                             | —            | Passed through to the rendered `<div>`.                                |
+| ...         | native `<div>` props                                 | —            | All other native div attributes are passed through.                    |
+
+Both components respect `useReducedMotion()`: when the user prefers reduced
+motion, `AnimatedNumber` snaps straight to the formatted value and `Reveal`
+renders its children immediately, visible and untransformed.

@@ -1,0 +1,101 @@
+/**
+ * Kairo Popover.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-popover-popup`          — Base UI's `Popover.Popup`, the main
+ *     DOM node Kairo styles directly. `Popover.Root`/`Trigger`/`Portal`/
+ *     `Positioner` are unstyled pass-throughs (positioning comes from Base
+ *     UI's floating-ui-driven inline styles on the Positioner, same as
+ *     Tooltip).
+ *   - `.kairo-popover-arrow`          — Base UI's `Popover.Arrow`, optional.
+ *     Drawn as a rotated square via `::before`; the two edges facing the
+ *     popup body are hidden per `[data-side]` so only the two edges forming
+ *     the visible pointer remain, matching the shared `--kairo-popover`/
+ *     `--kairo-border` colors used by the popup.
+ *   - `[data-starting-style]` / `[data-ending-style]` — present on the popup
+ *     while it is mounting/unmounting for the open/close transition; drives
+ *     the enter/exit `animation` here, reusing the shared
+ *     `kairo-zoom-in`/`kairo-zoom-out` `@keyframes` from `base.css` (same
+ *     reasoning as Tooltip: the popup itself carries no positioning
+ *     transform of its own — that lives on the Positioner — so the shared
+ *     keyframes apply as-is without needing to compose a translate).
+ *   - `[data-open]` / `[data-closed]` — present for the *entire* time the
+ *     popup is open/closed (not just the transition); not used for animation
+ *     here (that's what starting/ending-style are for) but available for
+ *     other state-based styling.
+ *   - `[data-side]`                   — `'top' | 'bottom' | 'left' | 'right'
+ *     | 'inline-end' | 'inline-start'`, which side the popup/arrow is
+ *     positioned against; used below to orient the arrow's visible edges for
+ *     the four cardinal sides.
+ *   - `[data-instant]`                — present when Base UI wants the
+ *     open/close to be instant (e.g. moving between triggers); animation is
+ *     suppressed in that case.
+ *
+ * `prefers-reduced-motion: reduce` is already handled globally in `base.css`
+ * for any `[class*='kairo-']` element, so no extra guard is needed here.
+ *
+ * Note for future Vue port: Base UI emits `data-starting-style`/
+ * `data-ending-style`/`data-open`/`data-closed`/`data-side` on the popup and
+ * arrow; Reka UI (Vue) instead exposes `data-state='open'|'closed'` plus
+ * `data-side` on `PopoverContent`/`PopoverArrow` with no starting/ending-style
+ * equivalent — add dual selectors and drive enter/exit off `data-state`
+ * transitions (plus Reka's own `<Transition>`-based enter/exit classes) when
+ * porting.
+ */
+
+.kairo-popover-popup {
+  z-index: 50;
+  max-width: 20rem;
+  padding: 1rem;
+  border: 1px solid var(--kairo-border);
+  border-radius: var(--kairo-radius-lg);
+  background-color: var(--kairo-popover);
+  color: var(--kairo-popover-foreground);
+  box-shadow: var(--kairo-shadow-lg);
+}
+
+.kairo-popover-popup[data-starting-style] {
+  animation: kairo-zoom-in var(--kairo-duration-fast) var(--kairo-ease-out);
+}
+
+.kairo-popover-popup[data-ending-style] {
+  animation: kairo-zoom-out var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-popover-popup[data-instant] {
+  animation: none;
+}
+
+.kairo-popover-arrow {
+  width: 0.625rem;
+  height: 0.625rem;
+}
+
+.kairo-popover-arrow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: rotate(45deg);
+  background-color: var(--kairo-popover);
+  border: 1px solid var(--kairo-border);
+}
+
+.kairo-popover-arrow[data-side='top']::before {
+  border-top: none;
+  border-left: none;
+}
+
+.kairo-popover-arrow[data-side='bottom']::before {
+  border-right: none;
+  border-bottom: none;
+}
+
+.kairo-popover-arrow[data-side='left']::before {
+  border-bottom: none;
+  border-left: none;
+}
+
+.kairo-popover-arrow[data-side='right']::before {
+  border-top: none;
+  border-right: none;
+}
