@@ -1,0 +1,105 @@
+name: Bug report
+description: Report something that isn't working as expected.
+title: '[Bug]: '
+labels: ['bug', 'needs triage']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report! Please fill out as much of this as you can — it helps us reproduce and fix the issue faster.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component is affected?
+      options:
+        - Button
+        - Input
+        - Checkbox
+        - Switch
+        - Tabs
+        - Badge
+        - Avatar
+        - Card
+        - Spinner
+        - Tooltip
+        - Dialog
+        - Theme / theming (@kairo-ui/theme)
+        - Docs site
+        - Other / not component-specific
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce the issue? A minimal repro repo or CodeSandbox link is very helpful.
+      placeholder: |
+        1. Install `@kairo-ui/react` and `@kairo-ui/theme`
+        2. Render `<... />`
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened? Include error messages, screenshots, or console output if relevant.
+    validations:
+      required: true
+
+  - type: input
+    id: package-version
+    attributes:
+      label: Package version(s)
+      description: Version of `@kairo-ui/react` and/or `@kairo-ui/theme` you're using.
+      placeholder: e.g. @kairo-ui/react@0.1.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Framework
+      options:
+        - Next.js (App Router)
+        - Next.js (Pages Router)
+        - Vite
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: react-version
+    attributes:
+      label: React version
+      placeholder: e.g. 19.0.0
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser (if relevant)
+      placeholder: e.g. Chrome 129, Safari 18
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Anything else that might help — logs, screenshots, related issues.
+    validations:
+      required: false

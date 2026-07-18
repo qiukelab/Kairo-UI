@@ -1,0 +1,39 @@
+---
+title: Switch
+description: A toggle control for binary on/off state, built on Base UI.
+---
+
+import { SwitchDemo } from '@/components/demos/switch-demo';
+
+## Usage
+
+```tsx
+import { Switch } from '@kairo-ui/react';
+
+export function Example() {
+  return <Switch defaultChecked aria-label="Airplane mode" />;
+}
+```
+
+## Default, controlled & disabled
+
+<ComponentPreview
+  code={`<Switch defaultChecked aria-label="Default (uncontrolled)" />
+<Switch checked={checked} onCheckedChange={setChecked} aria-label="Controlled" />
+<Switch disabled defaultChecked aria-label="Disabled" />`}
+>
+  <SwitchDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop              | Type                                                    | Default | Description                                                      |
+| ----------------- | -------------------------------------------------------- | ------- | ------------------------------------------------------------------ |
+| `checked`         | `boolean`                                                 | —       | Controlled checked state. Use with `onCheckedChange`.               |
+| `defaultChecked`  | `boolean`                                                  | `false` | Initial checked state for an uncontrolled switch.                   |
+| `onCheckedChange` | `(checked: boolean, eventDetails) => void`                | —       | Called when the switch is activated or deactivated.                 |
+| `disabled`        | `boolean`                                                  | `false` | Prevents user interaction.                                           |
+| `name`            | `string`                                                   | —       | Identifies the field when a form is submitted.                      |
+| `value`           | `string`                                                   | —       | The value submitted with the form when the switch is on.            |
+| `className`       | `string`                                                    | —       | Merged with the base `kairo-switch` class.                          |
+| ...               | `React.ComponentPropsWithoutRef<typeof Switch.Root>` from `@base-ui/react/switch` | — | All other Base UI `Switch.Root` props (e.g. `required`, `readOnly`) are passed through. |

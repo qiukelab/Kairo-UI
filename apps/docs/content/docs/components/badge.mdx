@@ -1,0 +1,53 @@
+---
+title: Badge
+description: A small label for statuses, counts and metadata, with solid, soft and outline variants across five intents.
+---
+
+import { Badge } from '@kairo-ui/react';
+
+## Usage
+
+```tsx
+import { Badge } from '@kairo-ui/react';
+
+export function Example() {
+  return <Badge intent="success">Active</Badge>;
+}
+```
+
+## Variants
+
+<ComponentPreview code={`<Badge variant="solid">Solid</Badge>
+<Badge variant="soft">Soft</Badge>
+<Badge variant="outline">Outline</Badge>`}>
+  <div className="flex flex-wrap items-center gap-3">
+    <Badge variant="solid">Solid</Badge>
+    <Badge variant="soft">Soft</Badge>
+    <Badge variant="outline">Outline</Badge>
+  </div>
+</ComponentPreview>
+
+## Intents
+
+<ComponentPreview code={`<Badge intent="default">Default</Badge>
+<Badge intent="primary">Primary</Badge>
+<Badge intent="success">Success</Badge>
+<Badge intent="warning">Warning</Badge>
+<Badge intent="danger">Danger</Badge>`}>
+  <div className="flex flex-wrap items-center gap-3">
+    <Badge intent="default">Default</Badge>
+    <Badge intent="primary">Primary</Badge>
+    <Badge intent="success">Success</Badge>
+    <Badge intent="warning">Warning</Badge>
+    <Badge intent="danger">Danger</Badge>
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop        | Type                                                              | Default     | Description                             |
+| ----------- | -------------------------------------------------------------------- | ------------ | ------------------------------------------ |
+| `variant`   | `'solid' \| 'soft' \| 'outline'`                                    | `'solid'`    | Visual style of the badge.                 |
+| `intent`    | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger'`       | `'default'`  | Semantic color of the badge.               |
+| `className` | `string`                                                             | —            | Merged with the base `kairo-badge` class.  |
+| ...         | `HTMLAttributes<HTMLSpanElement>`                                    | —            | All other native `<span>` props are passed through. |

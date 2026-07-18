@@ -1,0 +1,71 @@
+---
+title: Tooltip
+description: A small popup that displays extra information for an element on hover or focus, built on Base UI.
+---
+
+import { TooltipDemo } from '@/components/demos/tooltip-demo';
+
+## Usage
+
+```tsx
+import { Tooltip } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Tooltip content="Saved to your library">
+      <button type="button">Hover me</button>
+    </Tooltip>
+  );
+}
+```
+
+`children` is the trigger element — Kairo renders it directly (via Base UI's
+`render` composition) and merges the hover/focus interaction handlers onto it,
+so no extra DOM wrapper is introduced. `content` is the popup's contents.
+
+If you render many tooltips, wrap a subtree once in `<TooltipProvider>` so
+adjacent tooltips share open/close delay timing (hovering from one trigger to
+the next then opens instantly); a single `<Tooltip>` works fine without one.
+
+## Sides & shared delay group
+
+<ComponentPreview
+  code={`<TooltipProvider>
+  <Tooltip content="Saved to your library">
+    <Button variant="outline">Top (default)</Button>
+  </Tooltip>
+  <Tooltip content="Deletes this item permanently" side="bottom">
+    <Button variant="outline">Bottom</Button>
+  </Tooltip>
+  <Tooltip content="Opens in a new tab" side="right">
+    <Button variant="outline">Right</Button>
+  </Tooltip>
+</TooltipProvider>`}
+>
+  <TooltipDemo />
+</ComponentPreview>
+
+## Props
+
+### `Tooltip`
+
+| Prop         | Type                                                          | Default    | Description                                                                    |
+| ------------ | -------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------- |
+| `children`   | `ReactElement`                                                  | —          | The trigger element. Required.                                                     |
+| `content`    | `ReactNode`                                                     | —          | The popup's contents. Required.                                                    |
+| `side`       | `'top' \| 'bottom' \| 'left' \| 'right' \| 'inline-end' \| 'inline-start'` | `'top'`    | Which side of the trigger to render the popup against.                             |
+| `align`      | `'start' \| 'center' \| 'end'`                                  | `'center'` | How to align the popup relative to `side`.                                          |
+| `sideOffset` | `number`                                                        | `8`        | Distance in pixels between the trigger and the popup.                              |
+| `delay`      | `number`                                                        | `600`      | How long to wait before opening the tooltip, in ms.                                |
+| `closeDelay` | `number`                                                        | `0`        | How long to wait before closing the tooltip, in ms.                                 |
+| `open`       | `boolean`                                                       | —          | Controlled open state. Use with `onOpenChange`.                                     |
+| `defaultOpen`| `boolean`                                                       | `false`    | Initial open state for an uncontrolled tooltip.                                     |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`                       | —          | Called when the tooltip opens or closes.                                            |
+| `className`  | `string`                                                        | —          | Merged with the base `kairo-tooltip-popup` class on the popup element.              |
+| ...          | `Tooltip.Root` props from `@base-ui/react/tooltip`              | —          | All other Base UI `Tooltip.Root` props (e.g. `trackCursorAxis`, `disabled`) are passed through. |
+
+### `TooltipProvider`
+
+Groups multiple `Tooltip`s so they share open/close delay timing. Accepts
+`delay`, `closeDelay`, and `timeout` props — see Base UI's
+[`Tooltip.Provider`](https://base-ui.com/react/components/tooltip) docs.

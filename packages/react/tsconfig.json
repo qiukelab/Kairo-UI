@@ -1,0 +1,4 @@
+{
+  "extends": "@kairo-ui/tsconfig/react-library.json",
+  "include": ["src"]
+}

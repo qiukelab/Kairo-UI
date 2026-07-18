@@ -1,0 +1,38 @@
+---
+title: Avatar
+description: Displays a user's profile picture, with an automatic fallback to initials or text, built on Base UI.
+---
+
+import { AvatarDemo } from '@/components/demos/avatar-demo';
+
+## Usage
+
+```tsx
+import { Avatar } from '@kairo-ui/react';
+
+export function Example() {
+  return <Avatar src="/jane.png" alt="Jane Doe" fallback="JD" />;
+}
+```
+
+## Sizes, fallback & broken images
+
+<ComponentPreview
+  code={`<Avatar src="/jane.png" alt="Jane Doe" fallback="JD" />
+<Avatar fallback="AK" />
+<Avatar size="sm" fallback="SM" />
+<Avatar size="lg" fallback="LG" />`}
+>
+  <AvatarDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop        | Type                       | Default | Description                                                                             |
+| ----------- | -------------------------- | ------- | ----------------------------------------------------------------------------------------- |
+| `src`       | `string`                   | —       | The image source URL.                                                                      |
+| `alt`       | `string`                   | —       | Accessible alt text describing the image.                                                  |
+| `fallback`  | `ReactNode`                | —       | Rendered when there's no `src`, or the image fails/hasn't finished loading (e.g. initials). |
+| `size`      | `'sm' \| 'md' \| 'lg'`     | `'md'`  | Size of the avatar.                                                                         |
+| `className` | `string`                   | —       | Merged with the base `kairo-avatar` class.                                                  |
+| ...         | `React.ComponentPropsWithoutRef<typeof Avatar.Root>` from `@base-ui/react/avatar` | — | All other Base UI `Avatar.Root` props are passed through. |

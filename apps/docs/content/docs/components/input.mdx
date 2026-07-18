@@ -1,0 +1,50 @@
+---
+title: Input
+description: A native text input styled with Kairo's theme, supporting disabled and invalid states.
+---
+
+import { Input } from '@kairo-ui/react';
+
+## Usage
+
+```tsx
+import { Input } from '@kairo-ui/react';
+
+export function Example() {
+  return <Input placeholder="Email address" aria-label="Email address" />;
+}
+```
+
+## Default
+
+<ComponentPreview code={`<Input placeholder="Email address" aria-label="Email address" />`}>
+  <div className="flex w-full max-w-sm flex-wrap items-center gap-3">
+    <Input placeholder="Email address" aria-label="Email address" />
+  </div>
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview code={`<Input placeholder="Disabled" aria-label="Disabled input" disabled />`}>
+  <div className="flex w-full max-w-sm flex-wrap items-center gap-3">
+    <Input placeholder="Disabled" aria-label="Disabled input" disabled />
+  </div>
+</ComponentPreview>
+
+## Invalid
+
+<ComponentPreview code={`<Input aria-label="Email address" aria-invalid="true" defaultValue="not-an-email" />`}>
+  <div className="flex w-full max-w-sm flex-wrap items-center gap-3">
+    <Input aria-label="Email address" aria-invalid="true" defaultValue="not-an-email" />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop           | Type                                     | Default   | Description                                                       |
+| -------------- | ------------------------------------------ | ---------- | --------------------------------------------------------------------- |
+| `type`         | `string`                                   | `'text'`   | Native `<input>` `type` attribute (e.g. `'email'`, `'password'`).      |
+| `aria-invalid` | `boolean \| 'true' \| 'false'`             | —          | Marks the input invalid; styled with a danger border.                 |
+| `disabled`     | `boolean`                                   | —          | Prevents user interaction; styled with reduced opacity.               |
+| `className`    | `string`                                    | —          | Merged with the base `kairo-input` class.                             |
+| ...            | `InputHTMLAttributes<HTMLInputElement>`     | —          | All other native `<input>` props (e.g. `value`, `onChange`, `placeholder`) are passed through. |

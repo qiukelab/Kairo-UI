@@ -1,0 +1,98 @@
+/**
+ * Kairo Checkbox.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-checkbox`               — base class on the Root `<span>` (the
+ *     visible box); Base UI renders a visually hidden `<input>` alongside it
+ *     for native form semantics.
+ *   - `.kairo-checkbox-indicator`     — base class on the check/dash icon
+ *     container (always mounted here via `keepMounted`, faded/scaled in and
+ *     out purely with CSS).
+ *   - `.kairo-checkbox-icon-check` / `.kairo-checkbox-icon-indeterminate` —
+ *     the two embedded SVG icons; exactly one is shown at a time.
+ *   - `[data-checked]` / `[data-unchecked]` — checked state, present on both
+ *     the Root and the Indicator. Mutually exclusive with `[data-indeterminate]`
+ *     (Base UI omits both when indeterminate).
+ *   - `[data-indeterminate]`          — mixed state, present on both Root and
+ *     Indicator.
+ *   - `[data-disabled]`               — disabled state.
+ *   - `:focus-visible`                — keyboard focus ring (the Root `<span>`
+ *     is itself the focusable/tabbable element, same as Switch).
+ *
+ * Note for future Vue port: Base UI emits `[data-checked]`/`[data-unchecked]`/
+ * `[data-indeterminate]`; Reka UI (Vue) emits
+ * `[data-state='checked'|'unchecked'|'indeterminate']` — add dual selectors
+ * when porting.
+ */
+
+.kairo-checkbox {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 1px solid var(--kairo-border);
+  border-radius: var(--kairo-radius-sm);
+  cursor: pointer;
+  background-color: var(--kairo-background);
+  transition:
+    background-color var(--kairo-duration-fast) var(--kairo-ease-standard),
+    border-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-checkbox:focus-visible {
+  outline: 2px solid var(--kairo-ring);
+  outline-offset: 2px;
+}
+
+.kairo-checkbox[data-checked],
+.kairo-checkbox[data-indeterminate] {
+  background-color: var(--kairo-primary);
+  border-color: var(--kairo-primary);
+}
+
+.kairo-checkbox[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kairo-checkbox-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--kairo-primary-foreground);
+  opacity: 0;
+  transform: scale(0.5);
+  transition:
+    opacity var(--kairo-duration-fast) var(--kairo-ease-standard),
+    transform var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-checkbox-indicator[data-checked],
+.kairo-checkbox-indicator[data-indeterminate] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.kairo-checkbox-icon-check,
+.kairo-checkbox-icon-indeterminate {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.kairo-checkbox-icon-indeterminate {
+  display: none;
+}
+
+.kairo-checkbox-indicator[data-indeterminate] .kairo-checkbox-icon-check {
+  display: none;
+}
+
+.kairo-checkbox-indicator[data-indeterminate] .kairo-checkbox-icon-indeterminate {
+  display: block;
+}

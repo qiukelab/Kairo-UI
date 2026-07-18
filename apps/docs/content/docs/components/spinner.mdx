@@ -1,0 +1,45 @@
+---
+title: Spinner
+description: A circular loading indicator that adapts to the surrounding text color.
+---
+
+import { Spinner } from '@kairo-ui/react';
+
+## Usage
+
+```tsx
+import { Spinner } from '@kairo-ui/react';
+
+export function Example() {
+  return <Spinner aria-label="Loading" />;
+}
+```
+
+## Sizes
+
+<ComponentPreview code={`<Spinner size="sm" />
+<Spinner size="md" />
+<Spinner size="lg" />`}>
+  <div className="flex flex-wrap items-center gap-3">
+    <Spinner size="sm" />
+    <Spinner size="md" />
+    <Spinner size="lg" />
+  </div>
+</ComponentPreview>
+
+## Custom label
+
+<ComponentPreview code={`<Spinner aria-label="Loading results" />`}>
+  <div className="flex flex-wrap items-center gap-3">
+    <Spinner aria-label="Loading results" />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop         | Type                               | Default     | Description                                          |
+| ------------ | ----------------------------------- | ------------ | ------------------------------------------------------ |
+| `size`       | `'sm' \| 'md' \| 'lg'`              | `'md'`       | Size of the spinner.                                   |
+| `aria-label` | `string`                             | `'Loading'`  | Accessible name announced to assistive technology.      |
+| `className`  | `string`                             | —            | Merged with the base `kairo-spinner` class.             |
+| ...          | `HTMLAttributes<HTMLSpanElement>`    | —            | All other native `<span>` props are passed through.     |

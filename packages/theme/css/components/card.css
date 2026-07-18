@@ -1,0 +1,54 @@
+/**
+ * Kairo Card.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-card`              — root container, always present.
+ *   - `.kairo-card-header`       — header region (title + description).
+ *   - `.kairo-card-title`        — heading text (rendered as `<h3>`).
+ *   - `.kairo-card-description` — supporting/secondary text.
+ *   - `.kairo-card-content`      — main body region.
+ *   - `.kairo-card-footer`       — footer region (actions, meta).
+ */
+
+.kairo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-block: 1.5rem;
+  background-color: var(--kairo-card);
+  color: var(--kairo-card-foreground);
+  border: 1px solid var(--kairo-border);
+  border-radius: var(--kairo-radius-lg);
+  box-shadow: var(--kairo-shadow-sm);
+  font-family: var(--kairo-font-sans);
+}
+
+.kairo-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding-inline: 1.5rem;
+}
+
+.kairo-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.kairo-card-description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--kairo-muted-foreground);
+}
+
+.kairo-card-content {
+  padding-inline: 1.5rem;
+}
+
+.kairo-card-footer {
+  display: flex;
+  align-items: center;
+  padding-inline: 1.5rem;
+}

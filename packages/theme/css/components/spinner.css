@@ -1,0 +1,43 @@
+/**
+ * Kairo Spinner.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-spinner`                — base class, always present.
+ *   - `[data-size="sm|md|lg"]`        — sizing.
+ *
+ * Uses `currentColor` for the ring so it inherits the surrounding text
+ * color; consumers recolor it the same way they would recolor text (e.g.
+ * `className="text-primary"` or an inline `color` style).
+ */
+
+.kairo-spinner {
+  display: inline-block;
+  box-sizing: border-box;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 9999px;
+  color: currentColor;
+  animation: kairo-spin var(--kairo-duration-slow) linear infinite;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Sizes                                                                   */
+/* ---------------------------------------------------------------------- */
+
+.kairo-spinner[data-size='sm'] {
+  width: 1rem;
+  height: 1rem;
+  border-width: 2px;
+}
+
+.kairo-spinner[data-size='md'] {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-width: 2px;
+}
+
+.kairo-spinner[data-size='lg'] {
+  width: 2rem;
+  height: 2rem;
+  border-width: 3px;
+}

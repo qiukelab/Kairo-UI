@@ -1,0 +1,70 @@
+---
+title: Card
+description: A container for grouping related content, composed from Header, Title, Description, Content and Footer parts.
+---
+
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@kairo-ui/react';
+
+## Usage
+
+```tsx
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Project Alpha</CardTitle>
+        <CardDescription>A short summary of the project.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p>Card body content goes here.</p>
+      </CardContent>
+      <CardFooter>
+        <span>Updated 2 days ago</span>
+      </CardFooter>
+    </Card>
+  );
+}
+```
+
+## Example
+
+<ComponentPreview code={`<Card>
+  <CardHeader>
+    <CardTitle>Project Alpha</CardTitle>
+    <CardDescription>A short summary of the project.</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>Card body content goes here.</p>
+  </CardContent>
+  <CardFooter>
+    <span>Updated 2 days ago</span>
+  </CardFooter>
+</Card>`}>
+  <Card className="w-full max-w-sm">
+    <CardHeader>
+      <CardTitle>Project Alpha</CardTitle>
+      <CardDescription>A short summary of the project.</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <p>Card body content goes here.</p>
+    </CardContent>
+    <CardFooter>
+      <span>Updated 2 days ago</span>
+    </CardFooter>
+  </Card>
+</ComponentPreview>
+
+## Props
+
+Each part forwards a `ref` to its underlying native element, merges a custom `className` with its own base `kairo-card-*` class, and spreads all other native props through.
+
+| Component          | Underlying element | Base class               |
+| ------------------- | -------------------- | --------------------------- |
+| `Card`              | `<div>`              | `kairo-card`                |
+| `CardHeader`        | `<div>`              | `kairo-card-header`         |
+| `CardTitle`         | `<h3>`               | `kairo-card-title`          |
+| `CardDescription`   | `<p>`                | `kairo-card-description`    |
+| `CardContent`       | `<div>`              | `kairo-card-content`        |
+| `CardFooter`        | `<div>`              | `kairo-card-footer`         |

@@ -1,0 +1,45 @@
+---
+title: Theming
+description: Live showcase of Kairo's design tokens across modes and presets.
+---
+
+New to Kairo? Start with the [Installation](/docs) guide to get
+`@kairo-ui/theme/styles.css` loaded in your app — everything below assumes
+that's already done.
+
+## How theming works
+
+Kairo's tokens are plain CSS custom properties, scoped by two independent
+mechanisms:
+
+- **Mode** — a `.dark` class on `<html>` selects the dark variant of every
+  token. Fumadocs' built-in light/dark toggle (top of the sidebar) is powered
+  by [`next-themes`](https://github.com/pacocoursey/next-themes), configured
+  with `attribute="class"` in `RootProvider`, so it toggles the exact class
+  Kairo's tokens expect.
+- **Preset** — a `data-kairo-theme="ocean" | "sunset"` attribute on `<html>`
+  swaps the color palette. The `default` preset is simply the absence of the
+  attribute.
+
+Both are controlled through a tiny, framework-agnostic API exported by
+`@kairo-ui/theme`:
+
+```ts
+import { setMode, setPreset, setTheme } from '@kairo-ui/theme';
+
+setMode('dark'); // toggles `.dark` on <html>
+setPreset('ocean'); // sets `data-kairo-theme="ocean"` on <html>
+setTheme({ preset: 'sunset', mode: 'light' }); // both at once
+```
+
+Try it below: switch presets with the picker, and toggle light/dark from the
+sidebar's theme switch. Every swatch, radius, shadow and motion sample reads
+its value straight from the live CSS variables, so it updates immediately.
+
+## Preset
+
+<ThemePresetSwitcher />
+
+## Tokens
+
+<TokenShowcase />

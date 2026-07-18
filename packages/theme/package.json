@@ -1,0 +1,54 @@
+{
+  "name": "@kairo-ui/theme",
+  "version": "0.0.0",
+  "description": "CSS design tokens and themes for Kairo.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Kairo Contributors",
+  "homepage": "https://github.com/qiukelab/Kairo-UI#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qiukelab/Kairo-UI.git",
+    "directory": "packages/theme"
+  },
+  "bugs": {
+    "url": "https://github.com/qiukelab/Kairo-UI/issues"
+  },
+  "keywords": [
+    "css",
+    "design-tokens",
+    "design-system",
+    "theme",
+    "theming",
+    "css-variables",
+    "dark-mode",
+    "ui"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./styles.css": "./css/index.css",
+    "./css/*": "./css/*"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@kairo-ui/tsconfig": "workspace:*",
+    "tsdown": "0.22.9",
+    "typescript": "5.9.3",
+    "unrun": "0.3.1"
+  }
+}

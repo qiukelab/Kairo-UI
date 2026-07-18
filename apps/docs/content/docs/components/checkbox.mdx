@@ -1,0 +1,41 @@
+---
+title: Checkbox
+description: A tri-state (checked/unchecked/indeterminate) control, built on Base UI.
+---
+
+import { CheckboxDemo } from '@/components/demos/checkbox-demo';
+
+## Usage
+
+```tsx
+import { Checkbox } from '@kairo-ui/react';
+
+export function Example() {
+  return <Checkbox defaultChecked aria-label="Accept terms" />;
+}
+```
+
+## Default, controlled, indeterminate & disabled
+
+<ComponentPreview
+  code={`<Checkbox defaultChecked aria-label="Default (uncontrolled)" />
+<Checkbox checked={checked} onCheckedChange={setChecked} aria-label="Controlled" />
+<Checkbox indeterminate aria-label="Indeterminate" />
+<Checkbox disabled defaultChecked aria-label="Disabled" />`}
+>
+  <CheckboxDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop              | Type                                                                                 | Default | Description                                                       |
+| ----------------- | ------------------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------- |
+| `checked`         | `boolean`                                                                              | —       | Controlled checked state. Use with `onCheckedChange`.                  |
+| `defaultChecked`  | `boolean`                                                                               | `false` | Initial checked state for an uncontrolled checkbox.                    |
+| `indeterminate`   | `boolean`                                                                               | `false` | Whether the checkbox is in a mixed state (neither checked nor unchecked). |
+| `onCheckedChange` | `(checked: boolean, eventDetails) => void`                                             | —       | Called when the checkbox is ticked or unticked.                        |
+| `disabled`        | `boolean`                                                                               | `false` | Prevents user interaction.                                             |
+| `name`            | `string`                                                                                | —       | Identifies the field when a form is submitted.                        |
+| `value`           | `string`                                                                                | —       | The value submitted with the form when the checkbox is checked.       |
+| `className`       | `string`                                                                                | —       | Merged with the base `kairo-checkbox` class.                          |
+| ...               | `React.ComponentPropsWithoutRef<typeof Checkbox.Root>` from `@base-ui/react/checkbox` | —       | All other Base UI `Checkbox.Root` props (e.g. `required`, `readOnly`) are passed through. |

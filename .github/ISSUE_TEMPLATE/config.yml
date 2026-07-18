@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question / start a discussion
+    url: https://github.com/qiukelab/Kairo-UI/discussions
+    about: For questions, ideas, or anything that isn't a bug or a concrete feature request.
+  - name: Documentation
+    url: https://github.com/qiukelab/Kairo-UI/tree/main/apps/docs
+    about: Getting-started guides, theming docs and component reference (run locally with `pnpm --filter @kairo-ui/docs dev`).

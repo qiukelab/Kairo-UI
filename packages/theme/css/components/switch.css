@@ -1,0 +1,69 @@
+/**
+ * Kairo Switch.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-switch`                 — base class on the Root/track, always present.
+ *   - `.kairo-switch-thumb`           — base class on the movable Thumb.
+ *   - `[data-checked]` / `[data-unchecked]` — on/off state, present on both
+ *     the Root and the Thumb.
+ *   - `[data-disabled]`               — disabled state.
+ *   - `:focus-visible`                — keyboard focus ring (Base UI's Root
+ *     `<span>` is itself the focusable/tabbable element; the hidden `<input>`
+ *     it renders alongside is `tabindex="-1"`, so the ring keys off the Root).
+ *
+ * Note for future Vue port: Base UI emits `[data-checked]`/`[data-unchecked]`;
+ * Reka UI (Vue) emits `[data-state='checked'|'unchecked']` — add dual
+ * selectors when porting.
+ */
+
+.kairo-switch {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 1.5rem;
+  padding: 2px;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  background-color: var(--kairo-input);
+  transition: background-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-switch:focus-visible {
+  outline: 2px solid var(--kairo-ring);
+  outline-offset: 2px;
+}
+
+.kairo-switch[data-checked] {
+  background-color: var(--kairo-primary);
+}
+
+.kairo-switch[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kairo-switch-thumb {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  background-color: var(--kairo-background);
+  box-shadow: var(--kairo-shadow-sm);
+  transform: translateX(0);
+  transition: transform var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+/*
+ * Track is a 2.75rem/1.5rem (44px/24px) box-sizing:border-box box with a 2px
+ * padding and a 1px border on every side, so the flex content area the thumb
+ * lives in is only 38px wide (44 - 2*1 border - 2*2 padding). The 1.25rem
+ * (20px) thumb therefore has 18px (1.125rem) of room to travel so it lands
+ * flush against the right inner edge.
+ */
+.kairo-switch-thumb[data-checked] {
+  transform: translateX(1.125rem);
+}

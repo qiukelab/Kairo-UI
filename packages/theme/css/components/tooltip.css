@@ -1,0 +1,60 @@
+/**
+ * Kairo Tooltip.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-tooltip-popup`          — base class on Base UI's
+ *     `Tooltip.Popup`, the only DOM node Kairo styles directly. `Tooltip.Root`
+ *     renders no element of its own, and `Tooltip.Trigger`/`Positioner`/
+ *     `Portal` are unstyled pass-throughs (positioning comes from Base UI's
+ *     floating-ui-driven inline styles on the Positioner).
+ *   - `[data-starting-style]` / `[data-ending-style]` — present on the popup
+ *     while it is mounting/unmounting for the open/close transition; drives
+ *     the enter/exit `animation` here, reusing the shared
+ *     `kairo-zoom-in`/`kairo-zoom-out` `@keyframes` from `base.css`.
+ *   - `[data-open]` / `[data-closed]` — present for the *entire* time the
+ *     popup is open/closed (not just the transition); not used for animation
+ *     here (that's what starting/ending-style are for) but available for
+ *     other state-based styling.
+ *   - `[data-side]`                   — `'top' | 'bottom' | 'left' | 'right'
+ *     | 'inline-end' | 'inline-start'`, which side the popup is positioned
+ *     against; available if per-side animation direction is ever wanted.
+ *   - `[data-instant]`                — present when Base UI wants the
+ *     open/close to be instant (e.g. moving between adjacent tooltips inside
+ *     a shared `TooltipProvider` group); animation is suppressed in that
+ *     case so tooltips don't visibly re-animate while the group is active.
+ *
+ * `prefers-reduced-motion: reduce` is already handled globally in `base.css`
+ * for any `[class*='kairo-']` element, so no extra guard is needed here.
+ *
+ * Note for future Vue port: Base UI emits `data-starting-style`/
+ * `data-ending-style`/`data-open`/`data-closed` on the popup; Reka UI (Vue)
+ * instead exposes a single `data-state='closed'|'delayed-open'|
+ * 'instant-open'` on `TooltipContent` with no starting/ending-style
+ * equivalent — add dual selectors and drive enter/exit off `data-state`
+ * transitions (plus Reka's own `<Transition>`-based enter/exit classes) when
+ * porting.
+ */
+
+.kairo-tooltip-popup {
+  z-index: 50;
+  max-width: 20rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: var(--kairo-radius-md);
+  background-color: var(--kairo-popover);
+  color: var(--kairo-popover-foreground);
+  box-shadow: var(--kairo-shadow-md);
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+}
+
+.kairo-tooltip-popup[data-starting-style] {
+  animation: kairo-zoom-in var(--kairo-duration-fast) var(--kairo-ease-out);
+}
+
+.kairo-tooltip-popup[data-ending-style] {
+  animation: kairo-zoom-out var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-tooltip-popup[data-instant] {
+  animation: none;
+}

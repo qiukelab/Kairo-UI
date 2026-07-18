@@ -1,0 +1,204 @@
+/**
+ * Kairo design tokens.
+ *
+ * Semantic, CSS-variable–based design tokens (shadcn/ui-style) expressed in
+ * oklch(). Every component in the Kairo system reads colors, radii,
+ * typography, shadows and motion curves from these `--kairo-*` custom
+ * properties instead of hard-coded values, so consumers can re-skin the
+ * entire library by swapping the `data-kairo-theme` attribute and/or the
+ * `.dark` class on `<html>` — see `@kairo-ui/theme`'s `setPreset`/`setMode`.
+ *
+ * Presets:
+ *   - default (no attribute)        — neutral, shadcn-style base palette.
+ *   - [data-kairo-theme="ocean"]    — blue / teal family.
+ *   - [data-kairo-theme="sunset"]   — orange / rose family.
+ *
+ * Every preset defines a light (`:root` / `[data-kairo-theme="…"]`) and dark
+ * (`.dark` / `.dark[data-kairo-theme="…"]`) variant. All `*-foreground`
+ * tokens are tuned to meet WCAG AA contrast (>= 4.5:1) against the surface
+ * they are paired with.
+ *
+ * Non-color tokens (radius, font, shadow, motion) are only declared once on
+ * `:root` and intentionally inherited by every preset/mode combination.
+ */
+
+:root {
+  /* Surfaces & text */
+  --kairo-background: oklch(1 0 0);
+  --kairo-foreground: oklch(0.145 0 0);
+  --kairo-card: oklch(1 0 0);
+  --kairo-card-foreground: oklch(0.145 0 0);
+  --kairo-popover: oklch(1 0 0);
+  --kairo-popover-foreground: oklch(0.145 0 0);
+  --kairo-muted: oklch(0.97 0 0);
+  --kairo-muted-foreground: oklch(0.47 0 0);
+
+  /* Intents */
+  --kairo-primary: oklch(0.205 0 0);
+  --kairo-primary-foreground: oklch(0.985 0 0);
+  --kairo-secondary: oklch(0.97 0 0);
+  --kairo-secondary-foreground: oklch(0.205 0 0);
+  --kairo-accent: oklch(0.97 0 0);
+  --kairo-accent-foreground: oklch(0.205 0 0);
+  --kairo-success: oklch(0.52 0.15 145);
+  --kairo-success-foreground: oklch(1 0 0);
+  --kairo-warning: oklch(0.8 0.16 85);
+  --kairo-warning-foreground: oklch(0.145 0 0);
+  --kairo-danger: oklch(0.53 0.19 27);
+  --kairo-danger-foreground: oklch(1 0 0);
+
+  /* Structural */
+  --kairo-border: oklch(0.922 0 0);
+  --kairo-input: oklch(0.922 0 0);
+  --kairo-ring: oklch(0.708 0 0);
+
+  /* Radius */
+  --kairo-radius: 0.625rem;
+  --kairo-radius-sm: calc(var(--kairo-radius) - 4px);
+  --kairo-radius-md: calc(var(--kairo-radius) - 2px);
+  --kairo-radius-lg: var(--kairo-radius);
+
+  /* Typography */
+  --kairo-font-sans:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  --kairo-font-mono:
+    ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  /* Shadows */
+  --kairo-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --kairo-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --kairo-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Motion */
+  --kairo-duration-fast: 150ms;
+  --kairo-duration-normal: 250ms;
+  --kairo-duration-slow: 400ms;
+  --kairo-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --kairo-ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --kairo-ease-out: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.dark {
+  --kairo-background: oklch(0.145 0 0);
+  --kairo-foreground: oklch(0.985 0 0);
+  --kairo-card: oklch(0.205 0 0);
+  --kairo-card-foreground: oklch(0.985 0 0);
+  --kairo-popover: oklch(0.205 0 0);
+  --kairo-popover-foreground: oklch(0.985 0 0);
+  --kairo-muted: oklch(0.269 0 0);
+  --kairo-muted-foreground: oklch(0.708 0 0);
+
+  --kairo-primary: oklch(0.922 0 0);
+  --kairo-primary-foreground: oklch(0.205 0 0);
+  --kairo-secondary: oklch(0.269 0 0);
+  --kairo-secondary-foreground: oklch(0.985 0 0);
+  --kairo-accent: oklch(0.269 0 0);
+  --kairo-accent-foreground: oklch(0.985 0 0);
+  --kairo-success: oklch(0.52 0.15 145);
+  --kairo-success-foreground: oklch(1 0 0);
+  --kairo-warning: oklch(0.8 0.16 85);
+  --kairo-warning-foreground: oklch(0.145 0 0);
+  --kairo-danger: oklch(0.53 0.19 27);
+  --kairo-danger-foreground: oklch(1 0 0);
+
+  --kairo-border: oklch(1 0 0 / 10%);
+  --kairo-input: oklch(1 0 0 / 15%);
+  --kairo-ring: oklch(0.556 0 0);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Ocean — blue / teal family                                             */
+/* ---------------------------------------------------------------------- */
+
+[data-kairo-theme='ocean'] {
+  --kairo-background: oklch(0.98 0.01 230);
+  --kairo-foreground: oklch(0.24 0.04 235);
+  --kairo-card: oklch(0.995 0.006 225);
+  --kairo-card-foreground: oklch(0.24 0.04 235);
+  --kairo-popover: oklch(0.995 0.006 225);
+  --kairo-popover-foreground: oklch(0.24 0.04 235);
+  --kairo-muted: oklch(0.94 0.015 225);
+  --kairo-muted-foreground: oklch(0.45 0.03 230);
+
+  --kairo-primary: oklch(0.48 0.1 235);
+  --kairo-primary-foreground: oklch(1 0 0);
+  --kairo-secondary: oklch(0.93 0.02 200);
+  --kairo-secondary-foreground: oklch(0.3 0.05 220);
+  --kairo-accent: oklch(0.5 0.09 195);
+  --kairo-accent-foreground: oklch(1 0 0);
+
+  --kairo-border: oklch(0.89 0.02 225);
+  --kairo-input: oklch(0.89 0.02 225);
+  --kairo-ring: oklch(0.55 0.12 235);
+}
+
+.dark[data-kairo-theme='ocean'] {
+  --kairo-background: oklch(0.18 0.025 235);
+  --kairo-foreground: oklch(0.95 0.012 220);
+  --kairo-card: oklch(0.22 0.03 235);
+  --kairo-card-foreground: oklch(0.95 0.012 220);
+  --kairo-popover: oklch(0.22 0.03 235);
+  --kairo-popover-foreground: oklch(0.95 0.012 220);
+  --kairo-muted: oklch(0.28 0.03 235);
+  --kairo-muted-foreground: oklch(0.72 0.03 220);
+
+  --kairo-primary: oklch(0.52 0.1 235);
+  --kairo-primary-foreground: oklch(1 0 0);
+  --kairo-secondary: oklch(0.3 0.03 220);
+  --kairo-secondary-foreground: oklch(0.9 0.02 210);
+  --kairo-accent: oklch(0.54 0.09 195);
+  --kairo-accent-foreground: oklch(1 0 0);
+
+  --kairo-border: oklch(1 0 0 / 12%);
+  --kairo-input: oklch(1 0 0 / 16%);
+  --kairo-ring: oklch(0.6 0.11 235);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Sunset — orange / rose family                                          */
+/* ---------------------------------------------------------------------- */
+
+[data-kairo-theme='sunset'] {
+  --kairo-background: oklch(0.985 0.008 40);
+  --kairo-foreground: oklch(0.26 0.03 30);
+  --kairo-card: oklch(0.995 0.005 40);
+  --kairo-card-foreground: oklch(0.26 0.03 30);
+  --kairo-popover: oklch(0.995 0.005 40);
+  --kairo-popover-foreground: oklch(0.26 0.03 30);
+  --kairo-muted: oklch(0.95 0.015 40);
+  --kairo-muted-foreground: oklch(0.46 0.03 35);
+
+  --kairo-primary: oklch(0.52 0.15 40);
+  --kairo-primary-foreground: oklch(1 0 0);
+  --kairo-secondary: oklch(0.94 0.02 20);
+  --kairo-secondary-foreground: oklch(0.32 0.05 15);
+  --kairo-accent: oklch(0.5 0.16 10);
+  --kairo-accent-foreground: oklch(1 0 0);
+
+  --kairo-border: oklch(0.9 0.02 35);
+  --kairo-input: oklch(0.9 0.02 35);
+  --kairo-ring: oklch(0.58 0.13 40);
+}
+
+.dark[data-kairo-theme='sunset'] {
+  --kairo-background: oklch(0.19 0.02 30);
+  --kairo-foreground: oklch(0.96 0.01 40);
+  --kairo-card: oklch(0.23 0.025 30);
+  --kairo-card-foreground: oklch(0.96 0.01 40);
+  --kairo-popover: oklch(0.23 0.025 30);
+  --kairo-popover-foreground: oklch(0.96 0.01 40);
+  --kairo-muted: oklch(0.29 0.025 30);
+  --kairo-muted-foreground: oklch(0.73 0.025 35);
+
+  --kairo-primary: oklch(0.56 0.15 40);
+  --kairo-primary-foreground: oklch(1 0 0);
+  --kairo-secondary: oklch(0.3 0.025 20);
+  --kairo-secondary-foreground: oklch(0.9 0.02 20);
+  --kairo-accent: oklch(0.58 0.15 10);
+  --kairo-accent-foreground: oklch(1 0 0);
+
+  --kairo-border: oklch(1 0 0 / 12%);
+  --kairo-input: oklch(1 0 0 / 16%);
+  --kairo-ring: oklch(0.64 0.14 40);
+}

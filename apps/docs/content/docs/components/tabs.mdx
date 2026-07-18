@@ -1,0 +1,84 @@
+---
+title: Tabs
+description: Organizes content into switchable panels, with an animated active-tab indicator, built on Base UI.
+---
+
+import { TabsDemo } from '@/components/demos/tabs-demo';
+
+## Usage
+
+```tsx
+import { Tabs, TabsList, Tab, TabPanel } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Tabs defaultValue="account">
+      <TabsList>
+        <Tab value="account">Account</Tab>
+        <Tab value="password">Password</Tab>
+      </TabsList>
+      <TabPanel value="account">Account settings</TabPanel>
+      <TabPanel value="password">Password settings</TabPanel>
+    </Tabs>
+  );
+}
+```
+
+## Disabled tab & keyboard navigation
+
+Use <kbd>Arrow Left</kbd>/<kbd>Arrow Right</kbd> to move focus between tabs
+(the disabled "Team" tab is skipped), then <kbd>Enter</kbd> or <kbd>Space</kbd>
+to activate the focused tab.
+
+<ComponentPreview
+  code={`<Tabs defaultValue="account">
+  <TabsList>
+    <Tab value="account">Account</Tab>
+    <Tab value="password">Password</Tab>
+    <Tab value="team" disabled>Team</Tab>
+  </TabsList>
+  <TabPanel value="account">Update your account details here.</TabPanel>
+  <TabPanel value="password">Change your password here.</TabPanel>
+  <TabPanel value="team">Manage your team members here.</TabPanel>
+</Tabs>`}
+>
+  <TabsDemo />
+</ComponentPreview>
+
+## Props
+
+### `Tabs`
+
+| Prop            | Type                                        | Default | Description                                                    |
+| --------------- | -------------------------------------------- | ------- | ------------------------------------------------------------------ |
+| `value`         | `any`                                         | —       | The value of the currently active tab. Use when controlled.        |
+| `defaultValue`  | `any`                                         | `0`     | Initial active tab value for an uncontrolled `Tabs`.                |
+| `orientation`   | `'horizontal' \| 'vertical'`                  | `'horizontal'` | Layout flow direction.                                       |
+| `onValueChange` | `(value: any, eventDetails) => void`          | —       | Called when the active tab changes.                                |
+| `className`     | `string`                                      | —       | Merged with the base `kairo-tabs` class.                           |
+
+### `TabsList`
+
+| Prop              | Type      | Default | Description                                                                |
+| ----------------- | --------- | ------- | ------------------------------------------------------------------------------ |
+| `activateOnFocus` | `boolean` | `false` | Activate a tab as soon as it receives arrow-key focus, instead of requiring Enter/Space. |
+| `loopFocus`       | `boolean` | `true`  | Loop keyboard focus back to the first tab at the end of the list.              |
+| `className`       | `string`  | —       | Merged with the base `kairo-tabs-list` class.                                  |
+
+### `Tab`
+
+| Prop        | Type      | Default | Description                                |
+| ----------- | --------- | ------- | ----------------------------------------------- |
+| `value`     | `any`     | —       | The value of this tab (required).               |
+| `disabled`  | `boolean` | `false` | Prevents the tab from being selected.           |
+| `className` | `string`  | —       | Merged with the base `kairo-tab` class.         |
+
+### `TabPanel`
+
+| Prop          | Type      | Default | Description                                              |
+| ------------- | --------- | ------- | ------------------------------------------------------------ |
+| `value`       | `any`     | —       | Shown when the `Tab` with the matching value is active.       |
+| `keepMounted` | `boolean` | `false` | Keep the panel in the DOM (hidden) while inactive.            |
+| `className`   | `string`  | —       | Merged with the base `kairo-tab-panel` class.                 |
+
+All other props from `@base-ui/react/tabs`'s `Tabs.Root`/`Tabs.List`/`Tabs.Tab`/`Tabs.Panel` are passed through on the corresponding Kairo component.

@@ -1,0 +1,126 @@
+---
+title: Installation
+description: Install Kairo and wire it up in a Next.js App Router or Vite project.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+Kairo is a lightweight, themeable React component library. It ships as two
+packages: `@kairo-ui/react` for the components, and
+[`@kairo-ui/theme`](/docs/theming) for the CSS variables and base styles
+they read from. No Tailwind, no CSS-in-JS runtime — just a stylesheet.
+
+## Install
+
+```bash tab="pnpm"
+pnpm add @kairo-ui/react @kairo-ui/theme
+```
+
+```bash tab="npm"
+npm install @kairo-ui/react @kairo-ui/theme
+```
+
+```bash tab="yarn"
+yarn add @kairo-ui/react @kairo-ui/theme
+```
+
+```bash tab="bun"
+bun add @kairo-ui/react @kairo-ui/theme
+```
+
+Both packages are required: `@kairo-ui/theme` provides the `--kairo-*` design
+tokens and component CSS, and `@kairo-ui/react` provides the components that
+render markup styled by those classes.
+
+## Set up your framework
+
+Import `@kairo-ui/theme/styles.css` **once**, near the root of your app, then
+use components anywhere.
+
+<Tabs items={['Next.js', 'Vite']}>
+<Tab value="Next.js">
+
+```tsx title="app/layout.tsx"
+import '@kairo-ui/theme/styles.css';
+import type { ReactNode } from 'react';
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+```tsx title="app/page.tsx"
+import { Button } from '@kairo-ui/react';
+
+export default function Page() {
+  return <Button>Click me</Button>;
+}
+```
+
+Static components — Button, Badge, Card, Input, Spinner — carry no
+`'use client'` directive and render as zero-JS Server Components in the App
+Router. Interactive components — Avatar, Checkbox, Dialog, Switch, Tabs,
+Tooltip — ship their own `'use client'` boundary internally, so you use them
+exactly the same way with no extra setup.
+
+</Tab>
+<Tab value="Vite">
+
+```tsx title="src/main.tsx"
+import '@kairo-ui/theme/styles.css';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);
+```
+
+```tsx title="src/App.tsx"
+import { Button } from '@kairo-ui/react';
+
+export default function App() {
+  return <Button>Click me</Button>;
+}
+```
+
+</Tab>
+</Tabs>
+
+## Dark mode
+
+Every token responds to a `.dark` class on `<html>`. Toggle it however you
+like, or use `@kairo-ui/theme`'s SSR-safe helper:
+
+```ts
+import { setMode } from '@kairo-ui/theme';
+
+setMode('dark'); // adds `.dark` to <html>
+setMode('light'); // removes it
+```
+
+This docs site toggles the same class through
+[`next-themes`](https://github.com/pacocoursey/next-themes) (configured with
+`attribute="class"`) — any class-based dark mode setup works.
+
+## Next steps
+
+<Cards>
+  <Card
+    title="Theming"
+    href="/docs/theming"
+    description="Presets, the setPreset/setMode/setTheme API, and a live token showcase"
+  />
+  <Card
+    title="Components"
+    href="/docs/components/button"
+    description="Browse all 11 components and their props"
+  />
+</Cards>

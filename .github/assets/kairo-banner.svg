@@ -1,0 +1,42 @@
+<svg width="960" height="220" viewBox="0 0 960 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kairo — lightweight, accessible React components">
+  <defs>
+    <linearGradient id="iconGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#ea580c" />
+    </linearGradient>
+  </defs>
+
+  <rect width="960" height="220" rx="28" fill="#0a0a0a" />
+
+  <rect x="316" y="62" width="96" height="96" rx="24" fill="url(#iconGrad)" />
+  <text
+    x="364"
+    y="112"
+    text-anchor="middle"
+    dominant-baseline="central"
+    font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    font-size="52"
+    font-weight="700"
+    fill="#fafafa"
+  >K</text>
+
+  <text
+    x="540"
+    y="112"
+    text-anchor="middle"
+    dominant-baseline="central"
+    font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    font-size="72"
+    font-weight="700"
+    fill="#fafafa"
+  >Kairo</text>
+
+  <text
+    x="480"
+    y="178"
+    text-anchor="middle"
+    font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    font-size="21"
+    fill="#a3a3a3"
+  >Lightweight, accessible React components — no Tailwind required.</text>
+</svg>

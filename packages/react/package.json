@@ -1,0 +1,113 @@
+{
+  "name": "@kairo-ui/react",
+  "version": "0.0.0",
+  "description": "React components for Kairo.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Kairo Contributors",
+  "homepage": "https://github.com/qiukelab/Kairo-UI#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qiukelab/Kairo-UI.git",
+    "directory": "packages/react"
+  },
+  "bugs": {
+    "url": "https://github.com/qiukelab/Kairo-UI/issues"
+  },
+  "keywords": [
+    "react",
+    "components",
+    "ui",
+    "ui-library",
+    "design-system",
+    "accessible",
+    "a11y",
+    "base-ui",
+    "react-server-components",
+    "tree-shakeable",
+    "typescript"
+  ],
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./avatar": {
+      "types": "./dist/avatar/index.d.mts",
+      "import": "./dist/avatar/index.mjs"
+    },
+    "./badge": {
+      "types": "./dist/badge/index.d.mts",
+      "import": "./dist/badge/index.mjs"
+    },
+    "./button": {
+      "types": "./dist/button/index.d.mts",
+      "import": "./dist/button/index.mjs"
+    },
+    "./card": {
+      "types": "./dist/card/index.d.mts",
+      "import": "./dist/card/index.mjs"
+    },
+    "./checkbox": {
+      "types": "./dist/checkbox/index.d.mts",
+      "import": "./dist/checkbox/index.mjs"
+    },
+    "./dialog": {
+      "types": "./dist/dialog/index.d.mts",
+      "import": "./dist/dialog/index.mjs"
+    },
+    "./input": {
+      "types": "./dist/input/index.d.mts",
+      "import": "./dist/input/index.mjs"
+    },
+    "./spinner": {
+      "types": "./dist/spinner/index.d.mts",
+      "import": "./dist/spinner/index.mjs"
+    },
+    "./switch": {
+      "types": "./dist/switch/index.d.mts",
+      "import": "./dist/switch/index.mjs"
+    },
+    "./tabs": {
+      "types": "./dist/tabs/index.d.mts",
+      "import": "./dist/tabs/index.mjs"
+    },
+    "./tooltip": {
+      "types": "./dist/tooltip/index.d.mts",
+      "import": "./dist/tooltip/index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint ."
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@kairo-ui/tsconfig": "workspace:*",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "jsdom": "29.1.1",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "tsdown": "0.22.9",
+    "typescript": "5.9.3",
+    "unrun": "0.3.1",
+    "vitest": "4.1.10",
+    "vitest-axe": "0.1.0"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.6.0"
+  }
+}

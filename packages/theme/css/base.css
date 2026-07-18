@@ -1,0 +1,131 @@
+/**
+ * Kairo base styles.
+ *
+ * This file intentionally contains NO global resets and does not restyle
+ * any element selector — consumers' pages are left untouched. It only
+ * provides:
+ *
+ *   1. Shared `@keyframes` that components opt into via `animation-name`.
+ *   2. A reusable focus-ring convention components can opt into.
+ *   3. A `prefers-reduced-motion` override scoped to Kairo's own classes.
+ */
+
+@keyframes kairo-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes kairo-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes kairo-zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes kairo-zoom-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes kairo-slide-in-top {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kairo-slide-in-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kairo-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes kairo-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes kairo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/**
+ * Shared focus-ring convention.
+ *
+ * Components opt in by adding the `kairo-focus-ring` class to a focusable
+ * element instead of hand-rolling `:focus-visible` styles. This is scoped
+ * with `:where()` so it carries zero specificity and can always be
+ * overridden by a component's own styles.
+ */
+:where(.kairo-focus-ring) {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: outline-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+:where(.kairo-focus-ring):focus-visible {
+  outline-color: var(--kairo-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [class*='kairo-'] {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

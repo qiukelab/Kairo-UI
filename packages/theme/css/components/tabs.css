@@ -1,0 +1,90 @@
+/**
+ * Kairo Tabs.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-tabs`            — base class on the Root `<div>`.
+ *   - `.kairo-tabs-list`       — base class on the List `<div>` (`role="tablist"`);
+ *     positioned `relative` so the indicator can be placed absolutely inside it.
+ *   - `.kairo-tab`             — base class on each Tab `<button>` (`role="tab"`).
+ *   - `.kairo-tabs-indicator` — base class on the active-tab indicator `<span>`,
+ *     positioned via the `--active-tab-left`/`--active-tab-width` CSS custom
+ *     properties Base UI computes and writes inline (see
+ *     `Tabs.Indicator`/`TabsIndicatorCssVars`).
+ *   - `.kairo-tab-panel`       — base class on each Panel `<div>` (`role="tabpanel"`).
+ *   - `[data-active]`          — present on the selected Tab.
+ *   - `[data-disabled]`        — present on a disabled Tab.
+ *   - `:focus-visible`         — keyboard focus ring on the Tab/Panel.
+ *
+ * Note for future Vue port: Base UI emits `[data-active]` on the selected tab
+ * and exposes position via `--active-tab-*` CSS vars on `Tabs.Indicator`; Reka
+ * UI (Vue) uses `[data-state='active'|'inactive']` and has no built-in
+ * indicator part — a manual `getBoundingClientRect` measurement would be
+ * needed there instead.
+ */
+
+.kairo-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.kairo-tabs-list {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--kairo-border);
+}
+
+.kairo-tab {
+  position: relative;
+  z-index: 1;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: var(--kairo-radius-sm);
+  background: none;
+  color: var(--kairo-muted-foreground);
+  font-family: var(--kairo-font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  cursor: pointer;
+  transition: color var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-tab:focus-visible {
+  outline: 2px solid var(--kairo-ring);
+  outline-offset: -2px;
+}
+
+.kairo-tab[data-active] {
+  color: var(--kairo-foreground);
+}
+
+.kairo-tab[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kairo-tabs-indicator {
+  position: absolute;
+  bottom: -1px;
+  left: var(--active-tab-left, 0);
+  width: var(--active-tab-width, 0);
+  height: 2px;
+  border-radius: 9999px;
+  background-color: var(--kairo-primary);
+  transition:
+    left var(--kairo-duration-normal) var(--kairo-ease-emphasized),
+    width var(--kairo-duration-normal) var(--kairo-ease-emphasized);
+}
+
+.kairo-tab-panel {
+  padding-top: 0.75rem;
+  color: var(--kairo-foreground);
+}
+
+.kairo-tab-panel:focus-visible {
+  outline: 2px solid var(--kairo-ring);
+  outline-offset: 2px;
+}

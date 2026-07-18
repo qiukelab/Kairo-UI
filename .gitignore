@@ -1,0 +1,15 @@
+node_modules
+dist
+.turbo
+.next
+out
+coverage
+*.tsbuildinfo
+.DS_Store
+*.tgz
+
+# Fumadocs generated content source
+.source
+
+# thelist internal continuity docs — kept local, not published
+/docs/

@@ -1,0 +1,97 @@
+/**
+ * Kairo Dialog (modal).
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-dialog-backdrop`        — Base UI's `Dialog.Backdrop`.
+ *   - `.kairo-dialog-popup`           — Base UI's `Dialog.Popup`.
+ *   - `[data-starting-style]` / `[data-ending-style]` — present on both the
+ *     backdrop and the popup while they are mounting/unmounting for the
+ *     open/close transition; drives the enter/exit `animation`:
+ *       - the backdrop reuses the shared `kairo-fade-in`/`kairo-fade-out`
+ *         `@keyframes` from `base.css` (it has no positioning transform to
+ *         preserve, so the shared keyframes apply as-is);
+ *       - the popup uses local `kairo-dialog-zoom-in`/`kairo-dialog-zoom-out`
+ *         keyframes declared below (deliberately *not* the shared
+ *         `kairo-zoom-in`/`kairo-zoom-out` from `base.css`) because the popup
+ *         is centered with `transform: translate(-50%, -50%)`. The shared
+ *         keyframes only set `transform: scale(...)`, which would overwrite
+ *         (rather than compose with) that centering translate for the
+ *         animation's duration and make the popup jump to the viewport's
+ *         top-left corner mid-animation. The local keyframes compose
+ *         `translate(-50%, -50%)` with the scale on every step instead.
+ *   - `[data-open]` / `[data-closed]` — present for the *entire* time the
+ *     dialog is open/closed (not just the transition); not used for
+ *     animation here.
+ *
+ * `prefers-reduced-motion: reduce` is already handled globally in `base.css`
+ * for any `[class*='kairo-']` element, so no extra guard is needed here.
+ *
+ * Note for future Vue port: Base UI emits `data-starting-style`/
+ * `data-ending-style`/`data-open`/`data-closed`; Reka UI (Vue) exposes
+ * `data-state='open'|'closed'` on `DialogContent`/`DialogOverlay` with no
+ * starting/ending-style equivalent — add dual selectors and drive enter/exit
+ * off `data-state` transitions (plus Reka's own `<Transition>`-based
+ * enter/exit classes) when porting.
+ */
+
+.kairo-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: color-mix(in oklab, black 50%, transparent);
+}
+
+.kairo-dialog-backdrop[data-starting-style] {
+  animation: kairo-fade-in var(--kairo-duration-fast) var(--kairo-ease-out);
+}
+
+.kairo-dialog-backdrop[data-ending-style] {
+  animation: kairo-fade-out var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+@keyframes kairo-dialog-zoom-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes kairo-dialog-zoom-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+}
+
+.kairo-dialog-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 51;
+  width: calc(100% - 2rem);
+  max-width: 32rem;
+  max-height: calc(100vh - 4rem);
+  overflow: auto;
+  padding: 1.5rem;
+  border-radius: var(--kairo-radius-lg);
+  background-color: var(--kairo-popover);
+  color: var(--kairo-popover-foreground);
+  box-shadow: var(--kairo-shadow-lg);
+  transform: translate(-50%, -50%);
+}
+
+.kairo-dialog-popup[data-starting-style] {
+  animation: kairo-dialog-zoom-in var(--kairo-duration-fast) var(--kairo-ease-out);
+}
+
+.kairo-dialog-popup[data-ending-style] {
+  animation: kairo-dialog-zoom-out var(--kairo-duration-fast) var(--kairo-ease-standard);
+}

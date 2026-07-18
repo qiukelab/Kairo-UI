@@ -1,0 +1,58 @@
+---
+title: Button
+description: A clickable action element with solid, outline and ghost variants in three sizes.
+---
+
+import { Button } from '@kairo-ui/react';
+
+## Usage
+
+```tsx
+import { Button } from '@kairo-ui/react';
+
+export function Example() {
+  return <Button>Click me</Button>;
+}
+```
+
+## Variants
+
+<ComponentPreview code={`<Button variant="solid">Solid</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>`}>
+  <div className="flex flex-wrap items-center gap-3">
+    <Button variant="solid">Solid</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="ghost">Ghost</Button>
+  </div>
+</ComponentPreview>
+
+## Sizes
+
+<ComponentPreview code={`<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>`}>
+  <div className="flex flex-wrap items-center gap-3">
+    <Button size="sm">Small</Button>
+    <Button size="md">Medium</Button>
+    <Button size="lg">Large</Button>
+  </div>
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview code={`<Button disabled>Disabled</Button>`}>
+  <div className="flex flex-wrap items-center gap-3">
+    <Button disabled>Disabled</Button>
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop        | Type                             | Default   | Description                                  |
+| ----------- | --------------------------------- | --------- | --------------------------------------------- |
+| `variant`   | `'solid' \| 'outline' \| 'ghost'` | `'solid'` | Visual style of the button.                    |
+| `size`      | `'sm' \| 'md' \| 'lg'`            | `'md'`    | Size of the button.                            |
+| `type`      | `'button' \| 'submit' \| 'reset'` | `'button'`| Native `<button>` `type` attribute.            |
+| `className` | `string`                          | —         | Merged with the base `kairo-btn` class.        |
+| ...         | `ButtonHTMLAttributes<HTMLButtonElement>` | —  | All other native `<button>` props (e.g. `onClick`, `disabled`, `aria-*`) are passed through. |
