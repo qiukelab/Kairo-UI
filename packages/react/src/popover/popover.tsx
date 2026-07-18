@@ -12,6 +12,7 @@ import type {
   PopoverCloseProps,
   PopoverArrowProps,
 } from '@base-ui/react/popover';
+import { useKairoLocale } from '../i18n/use-kairo-messages';
 
 export interface PopoverProps extends PopoverRootProps {}
 
@@ -72,17 +73,24 @@ export interface PopoverContentProps extends PopoverPopupProps {
  * Base UI's `Popover.Popup` sets `role="dialog"` and wires
  * `aria-labelledby`/`aria-describedby` to any `PopoverTitle`/
  * `PopoverDescription` rendered inside automatically.
+ *
+ * When a `KairoLocaleProvider` with a `locale` is mounted above it, this also
+ * sets `lang` on the popup — Base UI portals it to `document.body`, outside
+ * any `lang` set further up the tree, so CSS `:lang()` rules can't otherwise
+ * reach it. Pass `lang` explicitly to override.
  */
 export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>(
   function PopoverContent(
     { className, children, side = 'bottom', align = 'center', sideOffset = 8, ...props },
     ref,
   ) {
+    const locale = useKairoLocale();
     return (
       <BasePopover.Portal>
         <BasePopover.Positioner side={side} align={align} sideOffset={sideOffset}>
           <BasePopover.Popup
             ref={ref}
+            lang={locale}
             className={className ? `kairo-popover-popup ${className}` : 'kairo-popover-popup'}
             {...props}
           >

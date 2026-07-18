@@ -81,9 +81,12 @@
   max-height: calc(100vh - 4rem);
   overflow: auto;
   padding: 1.5rem;
+  border: var(--kairo-border-width) solid var(--kairo-border);
   border-radius: var(--kairo-radius-lg);
   background-color: var(--kairo-popover);
   color: var(--kairo-popover-foreground);
+  font-family: var(--kairo-font-sans);
+  line-height: var(--kairo-leading-relaxed);
   box-shadow: var(--kairo-shadow-lg);
   transform: translate(-50%, -50%);
 }

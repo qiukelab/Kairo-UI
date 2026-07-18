@@ -47,10 +47,12 @@
   z-index: 50;
   max-width: 20rem;
   padding: 1rem;
-  border: 1px solid var(--kairo-border);
+  border: var(--kairo-border-width) solid var(--kairo-border);
   border-radius: var(--kairo-radius-lg);
   background-color: var(--kairo-popover);
   color: var(--kairo-popover-foreground);
+  font-family: var(--kairo-font-sans);
+  line-height: var(--kairo-leading-relaxed);
   box-shadow: var(--kairo-shadow-lg);
 }
 
@@ -77,7 +79,7 @@
   inset: 0;
   transform: rotate(45deg);
   background-color: var(--kairo-popover);
-  border: 1px solid var(--kairo-border);
+  border: var(--kairo-border-width) solid var(--kairo-border);
 }
 
 .kairo-popover-arrow[data-side='top']::before {

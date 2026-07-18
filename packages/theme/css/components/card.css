@@ -17,7 +17,7 @@
   padding-block: 1.5rem;
   background-color: var(--kairo-card);
   color: var(--kairo-card-foreground);
-  border: 1px solid var(--kairo-border);
+  border: var(--kairo-border-width) solid var(--kairo-border);
   border-radius: var(--kairo-radius-lg);
   box-shadow: var(--kairo-shadow-sm);
   font-family: var(--kairo-font-sans);
@@ -34,17 +34,23 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  line-height: 1.25;
+  line-height: var(--kairo-leading-tight);
 }
 
 .kairo-card-description {
   margin: 0;
   font-size: 0.875rem;
+  line-height: var(--kairo-leading-relaxed);
   color: var(--kairo-muted-foreground);
+  word-break: normal;
+  overflow-wrap: anywhere;
 }
 
 .kairo-card-content {
   padding-inline: 1.5rem;
+  line-height: var(--kairo-leading-relaxed);
+  word-break: normal;
+  overflow-wrap: anywhere;
 }
 
 .kairo-card-footer {

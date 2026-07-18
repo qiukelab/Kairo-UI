@@ -14,13 +14,14 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25em;
-  padding: 0.125rem 0.5rem;
-  border: 1px solid transparent;
+  min-height: 1.25rem;
+  padding: 0.1875rem 0.5rem;
+  border: var(--kairo-border-width) solid transparent;
   border-radius: var(--kairo-radius-sm);
   font-family: var(--kairo-font-sans);
   font-size: 0.75rem;
   font-weight: 500;
-  line-height: 1;
+  line-height: var(--kairo-leading-tight);
   white-space: nowrap;
 }
 

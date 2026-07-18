@@ -7,6 +7,8 @@ import { axe } from 'vitest-axe';
 // ../button/vitest-axe.d.ts for the vitest-axe matcher types).
 import '@testing-library/jest-dom/vitest';
 import { ToastProvider, useToast } from './toast';
+import type { ToastProviderProps } from './toast';
+import { KairoLocaleProvider } from '../i18n/locale-provider';
 
 function ToastButton() {
   const toast = useToast();
@@ -28,9 +30,9 @@ function ToastButton() {
   );
 }
 
-function Example() {
+function Example(providerProps: Partial<ToastProviderProps> = {}) {
   return (
-    <ToastProvider>
+    <ToastProvider {...providerProps}>
       <ToastButton />
     </ToastProvider>
   );
@@ -93,5 +95,59 @@ describe('Toast', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Show toast' }));
     await screen.findByText('Saved');
     expect(await axe(baseElement)).toHaveNoViolations();
+  });
+
+  it('localises the dismiss button via the dismissLabel prop', async () => {
+    render(<Example dismissLabel="Close notification" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Show toast' }));
+    await screen.findByText('Saved');
+    expect(screen.getByRole('button', { name: 'Close notification' })).toBeInTheDocument();
+  });
+
+  it('localises the dismiss button via KairoLocaleProvider messages', async () => {
+    render(
+      <KairoLocaleProvider messages={{ toastDismissLabel: 'ปิดการแจ้งเตือน' }}>
+        <Example />
+      </KairoLocaleProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Show toast' }));
+    await screen.findByText('Saved');
+    expect(screen.getByRole('button', { name: 'ปิดการแจ้งเตือน' })).toBeInTheDocument();
+  });
+
+  it('lets the dismissLabel prop beat KairoLocaleProvider messages', async () => {
+    render(
+      <KairoLocaleProvider messages={{ toastDismissLabel: 'ปิดการแจ้งเตือน' }}>
+        <Example dismissLabel="Close notification" />
+      </KairoLocaleProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Show toast' }));
+    await screen.findByText('Saved');
+    expect(screen.getByRole('button', { name: 'Close notification' })).toBeInTheDocument();
+  });
+
+  it('has no axe violations with a localised (Thai) dismiss label', async () => {
+    const { baseElement } = render(<Example dismissLabel="ปิดการแจ้งเตือน" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Show toast' }));
+    await screen.findByText('Saved');
+    expect(await axe(baseElement)).toHaveNoViolations();
+  });
+
+  it('sets lang on the viewport when wrapped in a KairoLocaleProvider with a locale', async () => {
+    render(
+      <KairoLocaleProvider locale="th">
+        <Example />
+      </KairoLocaleProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Show toast' }));
+    await screen.findByText('Saved');
+    expect(document.querySelector('.kairo-toast-viewport')).toHaveAttribute('lang', 'th');
+  });
+
+  it('renders no lang attribute on the viewport without a KairoLocaleProvider', async () => {
+    render(<Example />);
+    fireEvent.click(screen.getByRole('button', { name: 'Show toast' }));
+    await screen.findByText('Saved');
+    expect(document.querySelector('.kairo-toast-viewport')).not.toHaveAttribute('lang');
   });
 });

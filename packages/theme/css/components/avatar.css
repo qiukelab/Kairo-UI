@@ -24,7 +24,7 @@
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
-  border-radius: 9999px;
+  border-radius: var(--kairo-radius-full);
   background-color: var(--kairo-muted);
   color: var(--kairo-muted-foreground);
   font-family: var(--kairo-font-sans);
@@ -63,5 +63,5 @@
   width: 100%;
   height: 100%;
   font-weight: 500;
-  line-height: 1;
+  line-height: var(--kairo-leading-tight);
 }

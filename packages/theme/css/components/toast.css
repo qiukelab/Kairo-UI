@@ -96,10 +96,11 @@
   row-gap: 0.25rem;
   align-items: start;
   padding: 1rem;
-  border: 1px solid var(--kairo-border);
+  border: var(--kairo-border-width) solid var(--kairo-border);
   border-radius: var(--kairo-radius-lg);
   background-color: var(--kairo-popover);
   color: var(--kairo-popover-foreground);
+  font-family: var(--kairo-font-sans);
   box-shadow: var(--kairo-shadow-lg);
   pointer-events: auto;
   transform: translate(var(--toast-swipe-movement-x, 0px), var(--toast-swipe-movement-y, 0px));
@@ -156,7 +157,7 @@
   margin: 0;
   font-size: 0.875rem;
   font-weight: 600;
-  line-height: 1.25rem;
+  line-height: var(--kairo-leading-tight);
 }
 
 .kairo-toast-description {
@@ -164,7 +165,9 @@
   margin: 0;
   color: var(--kairo-muted-foreground);
   font-size: 0.875rem;
-  line-height: 1.25rem;
+  line-height: var(--kairo-leading-normal);
+  word-break: normal;
+  overflow-wrap: anywhere;
 }
 
 .kairo-toast-action {
@@ -174,13 +177,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 2rem;
-  padding: 0 0.75rem;
-  border: 1px solid var(--kairo-border);
+  min-height: 2rem;
+  padding-block: 0.25rem;
+  padding-inline: 0.75rem;
+  border: var(--kairo-border-width) solid var(--kairo-border);
   border-radius: var(--kairo-radius-md);
   background-color: transparent;
   color: var(--kairo-popover-foreground);
-  font-family: var(--kairo-font-sans);
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
@@ -192,8 +195,8 @@
 }
 
 .kairo-toast-action:focus-visible {
-  outline: 2px solid var(--kairo-ring);
-  outline-offset: 2px;
+  outline: var(--kairo-ring-width) solid var(--kairo-ring);
+  outline-offset: var(--kairo-ring-offset);
 }
 
 .kairo-toast-close {
@@ -222,6 +225,6 @@
 }
 
 .kairo-toast-close:focus-visible {
-  outline: 2px solid var(--kairo-ring);
-  outline-offset: 2px;
+  outline: var(--kairo-ring-width) solid var(--kairo-ring);
+  outline-offset: var(--kairo-ring-offset);
 }

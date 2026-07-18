@@ -10,6 +10,7 @@ import type {
   DialogDescriptionProps,
   DialogCloseProps,
 } from '@base-ui/react/dialog';
+import { useKairoLocale } from '../i18n/use-kairo-messages';
 
 export interface DialogProps extends DialogRootProps {}
 
@@ -61,15 +62,22 @@ export interface DialogContentProps extends DialogPopupProps {}
  * `FloatingFocusManager`, not the DOM attribute) — Kairo adds
  * `aria-modal="true"` here for the common modal case; pass `aria-modal={false}`
  * explicitly if you set the root's `modal` prop to `false`/`'trap-focus'`.
+ *
+ * When a `KairoLocaleProvider` with a `locale` is mounted above it, this also
+ * sets `lang` on the popup — Base UI portals it to `document.body`, outside
+ * any `lang` set further up the tree, so CSS `:lang()` rules can't otherwise
+ * reach it. Pass `lang` explicitly to override.
  */
 export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
   function DialogContent({ className, children, ...props }, ref) {
+    const locale = useKairoLocale();
     return (
       <BaseDialog.Portal>
         <BaseDialog.Backdrop className="kairo-dialog-backdrop" />
         <BaseDialog.Popup
           ref={ref}
           aria-modal="true"
+          lang={locale}
           className={className ? `kairo-dialog-popup ${className}` : 'kairo-dialog-popup'}
           {...props}
         >

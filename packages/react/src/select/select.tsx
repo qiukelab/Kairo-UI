@@ -14,6 +14,7 @@ import type {
   SelectGroupLabelProps,
 } from '@base-ui/react/select';
 import type { SeparatorProps } from '@base-ui/react/separator';
+import { useKairoLocale } from '../i18n/use-kairo-messages';
 
 /**
  * Kairo's Select (dropdown listbox). Thin wrappers over Base UI's
@@ -98,11 +99,17 @@ export interface SelectContentProps extends SelectPopupProps {
  * Base UI's `Select.Popup` assumes `role="listbox"` automatically as long as
  * no `Select.List` is rendered inside it — Kairo's items are direct children
  * of the popup (no `Select.List` wrapper), so this applies here.
+ *
+ * When a `KairoLocaleProvider` with a `locale` is mounted above it, this also
+ * sets `lang` on the popup — Base UI portals it to `document.body`, outside
+ * any `lang` set further up the tree, so CSS `:lang()` rules can't otherwise
+ * reach it. Pass `lang` explicitly to override.
  */
 export const SelectContent = forwardRef<HTMLDivElement, SelectContentProps>(function SelectContent(
   { className, children, side, align, sideOffset = 4, alignItemWithTrigger, ...props },
   ref,
 ) {
+  const locale = useKairoLocale();
   return (
     <BaseSelect.Portal>
       <BaseSelect.Positioner
@@ -113,6 +120,7 @@ export const SelectContent = forwardRef<HTMLDivElement, SelectContentProps>(func
       >
         <BaseSelect.Popup
           ref={ref}
+          lang={locale}
           className={className ? `kairo-select-popup ${className}` : 'kairo-select-popup'}
           {...props}
         >

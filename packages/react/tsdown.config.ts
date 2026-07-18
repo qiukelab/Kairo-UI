@@ -9,6 +9,7 @@ export default defineConfig({
     'src/card/index.ts',
     'src/checkbox/index.ts',
     'src/dialog/index.ts',
+    'src/i18n/index.ts',
     'src/input/index.ts',
     'src/popover/index.ts',
     'src/select/index.ts',

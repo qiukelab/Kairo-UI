@@ -4,6 +4,7 @@ import { forwardRef } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip';
 import type { TooltipRootProps, TooltipPositionerProps } from '@base-ui/react/tooltip';
+import { useKairoLocale } from '../i18n/use-kairo-messages';
 
 export interface TooltipProps extends Omit<TooltipRootProps, 'children'> {
   /**
@@ -42,6 +43,11 @@ export interface TooltipProps extends Omit<TooltipRootProps, 'children'> {
  * single tooltip; wrap a subtree once in the exported `TooltipProvider` if
  * you render many tooltips and want adjacent ones to share open/close delay
  * timing (so hovering from one trigger to the next opens instantly).
+ *
+ * When a `KairoLocaleProvider` with a `locale` is mounted above it, this also
+ * sets `lang` on the popup — Base UI portals it to `document.body`, outside
+ * any `lang` set further up the tree, so CSS `:lang()` rules can't otherwise
+ * reach it.
  */
 export const Tooltip = forwardRef<HTMLButtonElement, TooltipProps>(function Tooltip(
   {
@@ -57,12 +63,14 @@ export const Tooltip = forwardRef<HTMLButtonElement, TooltipProps>(function Tool
   },
   ref,
 ) {
+  const locale = useKairoLocale();
   return (
     <BaseTooltip.Root {...rootProps}>
       <BaseTooltip.Trigger ref={ref} render={children} delay={delay} closeDelay={closeDelay} />
       <BaseTooltip.Portal>
         <BaseTooltip.Positioner side={side} align={align} sideOffset={sideOffset}>
           <BaseTooltip.Popup
+            lang={locale}
             className={className ? `kairo-tooltip-popup ${className}` : 'kairo-tooltip-popup'}
           >
             {content}

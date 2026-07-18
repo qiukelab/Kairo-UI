@@ -12,15 +12,15 @@
 .kairo-input {
   display: flex;
   width: 100%;
-  height: 2.5rem;
-  padding: 0 0.75rem;
-  border: 1px solid var(--kairo-input);
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: var(--kairo-border-width) solid var(--kairo-input);
   border-radius: var(--kairo-radius-md);
   background-color: var(--kairo-background);
   color: var(--kairo-foreground);
   font-family: var(--kairo-font-sans);
   font-size: 0.875rem;
-  line-height: 1.25rem;
+  line-height: var(--kairo-leading-normal);
   outline: none;
   transition-property: border-color, box-shadow;
   transition-duration: var(--kairo-duration-fast);
@@ -33,8 +33,8 @@
 
 .kairo-input:focus-visible {
   border-color: var(--kairo-ring);
-  outline: 2px solid var(--kairo-ring);
-  outline-offset: 1px;
+  outline: var(--kairo-ring-width) solid var(--kairo-ring);
+  outline-offset: var(--kairo-ring-offset);
 }
 
 .kairo-input:disabled {

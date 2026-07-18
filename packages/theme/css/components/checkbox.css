@@ -34,7 +34,7 @@
   flex-shrink: 0;
   width: 1.15rem;
   height: 1.15rem;
-  border: 1px solid var(--kairo-border);
+  border: var(--kairo-border-width) solid var(--kairo-border);
   border-radius: var(--kairo-radius-sm);
   cursor: pointer;
   background-color: var(--kairo-background);
@@ -44,8 +44,8 @@
 }
 
 .kairo-checkbox:focus-visible {
-  outline: 2px solid var(--kairo-ring);
-  outline-offset: 2px;
+  outline: var(--kairo-ring-width) solid var(--kairo-ring);
+  outline-offset: var(--kairo-ring-offset);
 }
 
 .kairo-checkbox[data-checked],

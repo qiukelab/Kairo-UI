@@ -17,6 +17,7 @@ import {
   SelectSeparator,
 } from './select';
 import type { SelectRootProps } from '@base-ui/react/select';
+import { KairoLocaleProvider } from '../i18n/locale-provider';
 
 const fruits = [
   { value: 'apple', label: 'Apple' },
@@ -167,5 +168,23 @@ describe('Select', () => {
     // irrelevant here since this test renders an isolated combobox/listbox
     // fragment, not a full page with header/main/nav landmarks.
     expect(await axe(baseElement, { rules: { region: { enabled: false } } })).toHaveNoViolations();
+  });
+
+  it('sets lang on the popup when wrapped in a KairoLocaleProvider with a locale', async () => {
+    render(
+      <KairoLocaleProvider locale="th">
+        <Example />
+      </KairoLocaleProvider>,
+    );
+    fireEvent.click(screen.getByRole('combobox', { name: 'Fruit' }));
+    const listbox = await screen.findByRole('listbox');
+    expect(listbox).toHaveAttribute('lang', 'th');
+  });
+
+  it('renders no lang attribute on the popup without a KairoLocaleProvider', async () => {
+    render(<Example />);
+    fireEvent.click(screen.getByRole('combobox', { name: 'Fruit' }));
+    const listbox = await screen.findByRole('listbox');
+    expect(listbox).not.toHaveAttribute('lang');
   });
 });

@@ -7,6 +7,7 @@ import { axe } from 'vitest-axe';
 // ../button/vitest-axe.d.ts for the vitest-axe matcher types).
 import '@testing-library/jest-dom/vitest';
 import { Tooltip, TooltipProvider } from './tooltip';
+import { KairoLocaleProvider } from '../i18n/locale-provider';
 
 describe('Tooltip', () => {
   it('renders the trigger with its accessible name', () => {
@@ -74,5 +75,25 @@ describe('Tooltip', () => {
       </Tooltip>,
     );
     expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('sets lang on the popup when wrapped in a KairoLocaleProvider with a locale', () => {
+    render(
+      <KairoLocaleProvider locale="th">
+        <Tooltip content="Helpful info" open>
+          <button type="button">Hover me</button>
+        </Tooltip>
+      </KairoLocaleProvider>,
+    );
+    expect(screen.getByText('Helpful info')).toHaveAttribute('lang', 'th');
+  });
+
+  it('renders no lang attribute on the popup without a KairoLocaleProvider', () => {
+    render(
+      <Tooltip content="Helpful info" open>
+        <button type="button">Hover me</button>
+      </Tooltip>,
+    );
+    expect(screen.getByText('Helpful info')).not.toHaveAttribute('lang');
   });
 });

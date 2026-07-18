@@ -2,6 +2,7 @@
 
 import { Toast as BaseToast } from '@base-ui/react/toast';
 import type { ToastProviderProps as BaseToastProviderProps, ToastObject } from '@base-ui/react/toast';
+import { useKairoLocale, useKairoMessages } from '../i18n/use-kairo-messages';
 
 export interface ToastProviderProps extends BaseToastProviderProps {
   /**
@@ -9,6 +10,13 @@ export interface ToastProviderProps extends BaseToastProviderProps {
    * element Kairo renders internally (see below).
    */
   viewportClassName?: string;
+  /**
+   * The internal dismiss button's `aria-label`. Overrides both the nearest
+   * `KairoLocaleProvider`'s `toastDismissLabel` message and the built-in
+   * `'Dismiss notification'` default. A zero-setup escape hatch for
+   * localising the close button without mounting a provider.
+   */
+  dismissLabel?: string;
 }
 
 /**
@@ -46,17 +54,24 @@ export interface ToastProviderProps extends BaseToastProviderProps {
  * multiple independent viewports, which need more than one `Toast.Provider`
  * and are out of scope for this convenience wrapper).
  */
-export function ToastProvider({ viewportClassName, children, ...providerProps }: ToastProviderProps) {
+export function ToastProvider({
+  viewportClassName,
+  dismissLabel,
+  children,
+  ...providerProps
+}: ToastProviderProps) {
+  const locale = useKairoLocale();
   return (
     <BaseToast.Provider {...providerProps}>
       {children}
       <BaseToast.Portal>
         <BaseToast.Viewport
+          lang={locale}
           className={
             viewportClassName ? `kairo-toast-viewport ${viewportClassName}` : 'kairo-toast-viewport'
           }
         >
-          <ToastList />
+          <ToastList dismissLabel={dismissLabel} />
         </BaseToast.Viewport>
       </BaseToast.Portal>
     </BaseToast.Provider>
@@ -64,12 +79,12 @@ export function ToastProvider({ viewportClassName, children, ...providerProps }:
 }
 
 /** Reads the live toast queue from context and renders one row per toast. */
-function ToastList() {
+function ToastList({ dismissLabel }: { dismissLabel: string | undefined }) {
   const { toasts, close } = BaseToast.useToastManager();
   return (
     <>
       {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onDismiss={close} />
+        <ToastItem key={toast.id} toast={toast} dismissLabel={dismissLabel} onDismiss={close} />
       ))}
     </>
   );
@@ -87,9 +102,11 @@ function ToastList() {
  */
 function ToastItem({
   toast,
+  dismissLabel,
   onDismiss,
 }: {
   toast: ToastObject<Record<string, unknown>>;
+  dismissLabel: string | undefined;
   onDismiss: (id?: string) => void;
 }) {
   return (
@@ -110,7 +127,11 @@ function ToastItem({
           }
         />
       ) : null}
-      <CloseButton toastType={toast.type} onClick={() => onDismiss(toast.id)} />
+      <CloseButton
+        toastType={toast.type}
+        dismissLabel={dismissLabel}
+        onClick={() => onDismiss(toast.id)}
+      />
     </BaseToast.Root>
   );
 }
@@ -142,13 +163,27 @@ function ToastItem({
  * handling via Base UI's internal `useButton` (irrelevant here — this
  * always renders a real native `<button>`), and the `data-type` state
  * attribute (replicated manually below via `toastType`).
+ *
+ * Its `aria-label` resolves, in order: the `dismissLabel` prop passed down
+ * from `ToastProvider` → the nearest `KairoLocaleProvider`'s
+ * `toastDismissLabel` message → the built-in `'Dismiss notification'`
+ * default.
  */
-function CloseButton({ toastType, onClick }: { toastType: string | undefined; onClick: () => void }) {
+function CloseButton({
+  toastType,
+  dismissLabel,
+  onClick,
+}: {
+  toastType: string | undefined;
+  dismissLabel: string | undefined;
+  onClick: () => void;
+}) {
+  const messages = useKairoMessages();
   return (
     <button
       type="button"
       className="kairo-toast-close"
-      aria-label="Dismiss notification"
+      aria-label={dismissLabel ?? messages.toastDismissLabel}
       data-type={toastType}
       onClick={onClick}
     >

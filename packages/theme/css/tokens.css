@@ -52,23 +52,50 @@
   --kairo-input: oklch(0.922 0 0);
   --kairo-ring: oklch(0.708 0 0);
 
-  /* Radius */
-  --kairo-radius: 0.625rem;
-  --kairo-radius-sm: calc(var(--kairo-radius) - 4px);
-  --kairo-radius-md: calc(var(--kairo-radius) - 2px);
-  --kairo-radius-lg: var(--kairo-radius);
+  /* Radius — explicit scale (px on purpose: corner radius should not scale
+     with the root font size). Overriding --kairo-radius moves the `md` tier. */
+  --kairo-radius: 6px;
+  --kairo-radius-sm: 4px;
+  --kairo-radius-md: var(--kairo-radius);
+  --kairo-radius-lg: 8px;
+  --kairo-radius-full: 9999px;
 
-  /* Typography */
+  /* Structural line weights */
+  --kairo-border-width: 1px;
+  --kairo-ring-width: 2px;
+  --kairo-ring-offset: 2px;
+
+  /* Typography.
+     The Thai families sit after the Latin system stack: font fallback is
+     per-character, so Latin still resolves to ui-sans-serif/system-ui while
+     Thai codepoints fall through to the first Thai-capable family.
+     Leelawadee UI ships with Windows and Thonburi with macOS/iOS, so Thai
+     renders correctly with no webfont download. The generic `sans-serif`
+     must stay LAST or the emoji families become unreachable. */
   --kairo-font-sans:
-    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Noto Sans Thai', 'IBM Plex Sans Thai', 'Sarabun', 'Leelawadee UI', 'Thonburi',
+    'Helvetica Neue', Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Noto Color Emoji', sans-serif;
   --kairo-font-mono:
     ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
 
-  /* Shadows */
-  --kairo-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --kairo-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --kairo-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  /* Leading. Thai stacks diacritics above AND below the base character, so
+     1.4 is the practical floor — anything tighter clips tone marks and
+     below-vowels. Components must use these tokens, never a raw number. */
+  --kairo-leading-tight: 1.4;
+  --kairo-leading-normal: 1.5;
+  --kairo-leading-relaxed: 1.65;
+
+  /* Shadows. Split into a color channel + a strength multiplier so dark mode
+     can re-tune opacity — a black shadow is invisible on a dark surface, so
+     dark elevation leans on border contrast with shadow as faint ambient
+     occlusion. Kept tight/low-opacity: elevation here is border-led. */
+  --kairo-shadow-color: 0 0 0;
+  --kairo-shadow-strength: 1;
+  --kairo-shadow-sm: 0 1px 2px 0 rgb(var(--kairo-shadow-color) / calc(0.05 * var(--kairo-shadow-strength)));
+  --kairo-shadow-md: 0 2px 6px -1px rgb(var(--kairo-shadow-color) / calc(0.08 * var(--kairo-shadow-strength)));
+  --kairo-shadow-lg: 0 8px 24px -6px rgb(var(--kairo-shadow-color) / calc(0.12 * var(--kairo-shadow-strength)));
 
   /* Motion */
   --kairo-duration-fast: 150ms;
@@ -102,9 +129,13 @@
   --kairo-danger: oklch(0.53 0.19 27);
   --kairo-danger-foreground: oklch(1 0 0);
 
-  --kairo-border: oklch(1 0 0 / 10%);
-  --kairo-input: oklch(1 0 0 / 15%);
+  /* Elevation in dark mode is carried by border contrast, not shadow — the
+     borders are brighter here than the light-mode equivalents, and the
+     shadow strength is raised so it still reads as ambient occlusion. */
+  --kairo-border: oklch(1 0 0 / 16%);
+  --kairo-input: oklch(1 0 0 / 20%);
   --kairo-ring: oklch(0.556 0 0);
+  --kairo-shadow-strength: 3;
 }
 
 /* ---------------------------------------------------------------------- */

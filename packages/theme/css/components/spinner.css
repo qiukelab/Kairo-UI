@@ -15,7 +15,7 @@
   box-sizing: border-box;
   border: 2px solid currentColor;
   border-top-color: transparent;
-  border-radius: 9999px;
+  border-radius: var(--kairo-radius-full);
   color: currentColor;
   animation: kairo-spin var(--kairo-duration-slow) linear infinite;
 }

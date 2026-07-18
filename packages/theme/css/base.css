@@ -6,8 +6,10 @@
  * provides:
  *
  *   1. Shared `@keyframes` that components opt into via `animation-name`.
- *   2. A reusable focus-ring convention components can opt into.
- *   3. A `prefers-reduced-motion` override scoped to Kairo's own classes.
+ *   2. `box-sizing` scoped to Kairo's own elements (never the consumer's).
+ *   3. A reusable focus-ring convention components can opt into.
+ *   4. Thai-language typography overrides, applied only under `:lang(th)`.
+ *   5. A `prefers-reduced-motion` override scoped to Kairo's own classes.
  */
 
 @keyframes kairo-fade-in {
@@ -104,6 +106,20 @@
 }
 
 /**
+ * Box sizing, scoped to Kairo's own elements.
+ *
+ * Kairo controls size themselves with `min-height` + padding + a 1px border,
+ * which only adds up predictably under `border-box`. Since this package ships
+ * no reset, box-sizing would otherwise be whatever the host page happens to
+ * set. `:where()` keeps specificity at zero, and the selector matches only
+ * elements carrying a `kairo-*` class — the consumer's own markup, including
+ * children placed inside a Card or Dialog, is left alone.
+ */
+:where([class*='kairo-']) {
+  box-sizing: border-box;
+}
+
+/**
  * Shared focus-ring convention.
  *
  * Components opt in by adding the `kairo-focus-ring` class to a focusable
@@ -119,6 +135,37 @@
 
 :where(.kairo-focus-ring):focus-visible {
   outline-color: var(--kairo-ring);
+}
+
+/**
+ * Thai typography.
+ *
+ * Thai stacks diacritics above and below the base character, so it needs more
+ * leading than Latin at the same font size. These overrides apply only when a
+ * `lang="th"` ancestor is present — set it on `<html>` (that is also what makes
+ * the browser's Thai line-breaking work at all).
+ *
+ * Note: Base UI portals Dialog/Tooltip/Popover/Select/Toast popups to
+ * `document.body`, so a `lang` on a nested element does NOT reach them.
+ * `<KairoLocaleProvider locale="th">` forwards `lang` onto those popup roots;
+ * setting `lang` on `<html>` covers it for single-language apps.
+ */
+:where(:lang(th)) {
+  --kairo-leading-tight: 1.5;
+  --kairo-leading-normal: 1.6;
+  --kairo-leading-relaxed: 1.75;
+}
+
+/* Thai has no inter-word spaces, so a label is one unbreakable token and
+   `nowrap` would guarantee overflow rather than wrapping. Relaxed for Thai
+   only — English consumers keep the single-line default. */
+:where(:lang(th)) :is(.kairo-btn, .kairo-badge) {
+  white-space: normal;
+}
+
+/* Negative tracking collides Thai consonant clusters with their marks. */
+:where(:lang(th)) :where([class*='kairo-']) {
+  letter-spacing: normal;
 }
 
 @media (prefers-reduced-motion: reduce) {

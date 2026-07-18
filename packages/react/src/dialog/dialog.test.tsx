@@ -7,6 +7,7 @@ import { axe } from 'vitest-axe';
 // ../button/vitest-axe.d.ts for the vitest-axe matcher types).
 import '@testing-library/jest-dom/vitest';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from './dialog';
+import { KairoLocaleProvider } from '../i18n/locale-provider';
 
 function Example() {
   return (
@@ -72,5 +73,23 @@ describe('Dialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Open dialog' }));
     await screen.findByRole('dialog');
     expect(await axe(baseElement)).toHaveNoViolations();
+  });
+
+  it('sets lang on the popup when wrapped in a KairoLocaleProvider with a locale', async () => {
+    render(
+      <KairoLocaleProvider locale="th">
+        <Example />
+      </KairoLocaleProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Open dialog' }));
+    const dialog = await screen.findByRole('dialog');
+    expect(dialog).toHaveAttribute('lang', 'th');
+  });
+
+  it('renders no lang attribute on the popup without a KairoLocaleProvider', async () => {
+    render(<Example />);
+    fireEvent.click(screen.getByRole('button', { name: 'Open dialog' }));
+    const dialog = await screen.findByRole('dialog');
+    expect(dialog).not.toHaveAttribute('lang');
   });
 });
