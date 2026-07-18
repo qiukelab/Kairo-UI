@@ -9,9 +9,9 @@
  * `.dark` class on `<html>` — see `@kairo-ui/theme`'s `setPreset`/`setMode`.
  *
  * Presets:
- *   - default (no attribute)        — neutral, shadcn-style base palette.
- *   - [data-kairo-theme="ocean"]    — blue / teal family.
- *   - [data-kairo-theme="sunset"]   — orange / rose family.
+ *   - default (no attribute)        — black / white neutral base.
+ *   - [data-kairo-theme="blue"]     — vivid azure.
+ *   - [data-kairo-theme="pink"]     — vivid pink.
  *
  * Every preset defines a light (`:root` / `[data-kairo-theme="…"]`) and dark
  * (`.dark` / `.dark[data-kairo-theme="…"]`) variant. All `*-foreground`
@@ -144,97 +144,112 @@
 }
 
 /* ---------------------------------------------------------------------- */
-/* Ocean — blue / teal family                                             */
+/* Blue — vivid azure                                                     */
 /* ---------------------------------------------------------------------- */
 
-[data-kairo-theme='ocean'] {
-  --kairo-background: oklch(0.98 0.01 230);
-  --kairo-foreground: oklch(0.24 0.04 235);
-  --kairo-card: oklch(0.995 0.006 225);
-  --kairo-card-foreground: oklch(0.24 0.04 235);
-  --kairo-popover: oklch(0.995 0.006 225);
-  --kairo-popover-foreground: oklch(0.24 0.04 235);
-  --kairo-muted: oklch(0.94 0.015 225);
-  --kairo-muted-foreground: oklch(0.45 0.03 230);
+/* The primary sits at L 0.58 rather than the 0.615 of the source swatch:
+   at 0.615 white text on it reaches only ~3.6:1, under the AA floor this
+   file promises. The darkening is small enough that it still reads as the
+   same bright azure.
 
-  --kairo-primary: oklch(0.48 0.1 235);
+   `accent` is deliberately a FAINT tint of that hue, never the brand colour
+   at full strength. It backs hovered/highlighted rows — select items, menu
+   entries, the docs sidebar — which are transient and can cover a lot of the
+   screen at once; a saturated fill there reads as a permanent selection bar
+   and fights the primary for attention. The `default` preset shows the
+   intent: its accent is plain `oklch(0.97 0 0)`. Keep any new preset's accent
+   within a few points of its background. */
+[data-kairo-theme='blue'] {
+  --kairo-background: oklch(0.99 0.005 250);
+  --kairo-foreground: oklch(0.2 0.03 260);
+  --kairo-card: oklch(1 0 0);
+  --kairo-card-foreground: oklch(0.2 0.03 260);
+  --kairo-popover: oklch(1 0 0);
+  --kairo-popover-foreground: oklch(0.2 0.03 260);
+  --kairo-muted: oklch(0.96 0.012 250);
+  --kairo-muted-foreground: oklch(0.47 0.03 255);
+
+  --kairo-primary: oklch(0.58 0.196 259);
   --kairo-primary-foreground: oklch(1 0 0);
-  --kairo-secondary: oklch(0.93 0.02 200);
-  --kairo-secondary-foreground: oklch(0.3 0.05 220);
-  --kairo-accent: oklch(0.5 0.09 195);
-  --kairo-accent-foreground: oklch(1 0 0);
+  --kairo-secondary: oklch(0.95 0.02 250);
+  --kairo-secondary-foreground: oklch(0.28 0.05 258);
+  --kairo-accent: oklch(0.93 0.05 250);
+  --kairo-accent-foreground: oklch(0.35 0.12 259);
 
-  --kairo-border: oklch(0.89 0.02 225);
-  --kairo-input: oklch(0.89 0.02 225);
-  --kairo-ring: oklch(0.55 0.12 235);
+  --kairo-border: oklch(0.9 0.015 250);
+  --kairo-input: oklch(0.9 0.015 250);
+  --kairo-ring: oklch(0.615 0.2 259);
 }
 
-.dark[data-kairo-theme='ocean'] {
-  --kairo-background: oklch(0.18 0.025 235);
-  --kairo-foreground: oklch(0.95 0.012 220);
-  --kairo-card: oklch(0.22 0.03 235);
-  --kairo-card-foreground: oklch(0.95 0.012 220);
-  --kairo-popover: oklch(0.22 0.03 235);
-  --kairo-popover-foreground: oklch(0.95 0.012 220);
-  --kairo-muted: oklch(0.28 0.03 235);
-  --kairo-muted-foreground: oklch(0.72 0.03 220);
+.dark[data-kairo-theme='blue'] {
+  --kairo-background: oklch(0.16 0.02 260);
+  --kairo-foreground: oklch(0.96 0.01 250);
+  --kairo-card: oklch(0.21 0.025 260);
+  --kairo-card-foreground: oklch(0.96 0.01 250);
+  --kairo-popover: oklch(0.21 0.025 260);
+  --kairo-popover-foreground: oklch(0.96 0.01 250);
+  --kairo-muted: oklch(0.27 0.025 258);
+  --kairo-muted-foreground: oklch(0.72 0.025 250);
 
-  --kairo-primary: oklch(0.52 0.1 235);
+  --kairo-primary: oklch(0.635 0.196 259);
   --kairo-primary-foreground: oklch(1 0 0);
-  --kairo-secondary: oklch(0.3 0.03 220);
-  --kairo-secondary-foreground: oklch(0.9 0.02 210);
-  --kairo-accent: oklch(0.54 0.09 195);
-  --kairo-accent-foreground: oklch(1 0 0);
+  --kairo-secondary: oklch(0.29 0.03 255);
+  --kairo-secondary-foreground: oklch(0.92 0.015 250);
+  --kairo-accent: oklch(0.32 0.06 255);
+  --kairo-accent-foreground: oklch(0.88 0.06 250);
 
   --kairo-border: oklch(1 0 0 / 12%);
   --kairo-input: oklch(1 0 0 / 16%);
-  --kairo-ring: oklch(0.6 0.11 235);
+  --kairo-ring: oklch(0.66 0.19 259);
 }
 
 /* ---------------------------------------------------------------------- */
-/* Sunset — orange / rose family                                          */
+/* Pink — vivid pink                                                      */
 /* ---------------------------------------------------------------------- */
 
-[data-kairo-theme='sunset'] {
-  --kairo-background: oklch(0.985 0.008 40);
-  --kairo-foreground: oklch(0.26 0.03 30);
-  --kairo-card: oklch(0.995 0.005 40);
-  --kairo-card-foreground: oklch(0.26 0.03 30);
-  --kairo-popover: oklch(0.995 0.005 40);
-  --kairo-popover-foreground: oklch(0.26 0.03 30);
-  --kairo-muted: oklch(0.95 0.015 40);
-  --kairo-muted-foreground: oklch(0.46 0.03 35);
+/* `accent` is a faint tint, not the brand pink — see the note on the blue
+   preset. The brand weight lives in `primary`, deep enough that white button
+   text still clears AA. */
+[data-kairo-theme='pink'] {
+  --kairo-background: oklch(0.99 0.006 350);
+  --kairo-foreground: oklch(0.22 0.03 350);
+  --kairo-card: oklch(1 0 0);
+  --kairo-card-foreground: oklch(0.22 0.03 350);
+  --kairo-popover: oklch(1 0 0);
+  --kairo-popover-foreground: oklch(0.22 0.03 350);
+  --kairo-muted: oklch(0.96 0.014 350);
+  --kairo-muted-foreground: oklch(0.47 0.03 350);
 
-  --kairo-primary: oklch(0.52 0.15 40);
+  --kairo-primary: oklch(0.58 0.2 355);
   --kairo-primary-foreground: oklch(1 0 0);
-  --kairo-secondary: oklch(0.94 0.02 20);
-  --kairo-secondary-foreground: oklch(0.32 0.05 15);
-  --kairo-accent: oklch(0.5 0.16 10);
-  --kairo-accent-foreground: oklch(1 0 0);
+  --kairo-secondary: oklch(0.95 0.02 350);
+  --kairo-secondary-foreground: oklch(0.3 0.05 352);
+  --kairo-accent: oklch(0.93 0.055 355);
+  --kairo-accent-foreground: oklch(0.38 0.14 355);
 
-  --kairo-border: oklch(0.9 0.02 35);
-  --kairo-input: oklch(0.9 0.02 35);
-  --kairo-ring: oklch(0.58 0.13 40);
+  --kairo-border: oklch(0.9 0.018 350);
+  --kairo-input: oklch(0.9 0.018 350);
+  --kairo-ring: oklch(0.62 0.2 355);
 }
 
-.dark[data-kairo-theme='sunset'] {
-  --kairo-background: oklch(0.19 0.02 30);
-  --kairo-foreground: oklch(0.96 0.01 40);
-  --kairo-card: oklch(0.23 0.025 30);
-  --kairo-card-foreground: oklch(0.96 0.01 40);
-  --kairo-popover: oklch(0.23 0.025 30);
-  --kairo-popover-foreground: oklch(0.96 0.01 40);
-  --kairo-muted: oklch(0.29 0.025 30);
-  --kairo-muted-foreground: oklch(0.73 0.025 35);
+.dark[data-kairo-theme='pink'] {
+  --kairo-background: oklch(0.17 0.02 350);
+  --kairo-foreground: oklch(0.96 0.012 350);
+  --kairo-card: oklch(0.22 0.025 350);
+  --kairo-card-foreground: oklch(0.96 0.012 350);
+  --kairo-popover: oklch(0.22 0.025 350);
+  --kairo-popover-foreground: oklch(0.96 0.012 350);
+  --kairo-muted: oklch(0.28 0.025 350);
+  --kairo-muted-foreground: oklch(0.73 0.025 350);
 
-  --kairo-primary: oklch(0.56 0.15 40);
+  --kairo-primary: oklch(0.6 0.2 355);
   --kairo-primary-foreground: oklch(1 0 0);
-  --kairo-secondary: oklch(0.3 0.025 20);
-  --kairo-secondary-foreground: oklch(0.9 0.02 20);
-  --kairo-accent: oklch(0.58 0.15 10);
-  --kairo-accent-foreground: oklch(1 0 0);
+  --kairo-secondary: oklch(0.3 0.03 350);
+  --kairo-secondary-foreground: oklch(0.92 0.02 350);
+  --kairo-accent: oklch(0.33 0.065 352);
+  --kairo-accent-foreground: oklch(0.9 0.07 350);
 
   --kairo-border: oklch(1 0 0 / 12%);
   --kairo-input: oklch(1 0 0 / 16%);
-  --kairo-ring: oklch(0.64 0.14 40);
+  --kairo-ring: oklch(0.64 0.2 355);
 }

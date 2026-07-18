@@ -18,7 +18,7 @@ mechanisms:
   by [`next-themes`](https://github.com/pacocoursey/next-themes), configured
   with `attribute="class"` in `RootProvider`, so it toggles the exact class
   Kairo's tokens expect.
-- **Preset** — a `data-kairo-theme="ocean" | "sunset"` attribute on `<html>`
+- **Preset** — a `data-kairo-theme="blue" | "pink"` attribute on `<html>`
   swaps the color palette. The `default` preset is simply the absence of the
   attribute.
 
@@ -29,8 +29,8 @@ Both are controlled through a tiny, framework-agnostic API exported by
 import { setMode, setPreset, setTheme } from '@kairo-ui/theme';
 
 setMode('dark'); // toggles `.dark` on <html>
-setPreset('ocean'); // sets `data-kairo-theme="ocean"` on <html>
-setTheme({ preset: 'sunset', mode: 'light' }); // both at once
+setPreset('blue'); // sets `data-kairo-theme="blue"` on <html>
+setTheme({ preset: 'pink', mode: 'light' }); // both at once
 ```
 
 Try it below: switch presets with the picker, and toggle light/dark from the

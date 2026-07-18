@@ -27,7 +27,7 @@ Server Components.
 
 - **No Tailwind required** — ships plain CSS + design tokens, drop it into any React app.
 - **Next.js & Vite ready** — static components render as zero-JS Server Components in the App Router; interactive ones ship their own `'use client'` boundary. Works just as well in Vite.
-- **Full theming** — light/dark mode plus swappable presets (Default, Ocean, Sunset), all driven by CSS variables and a tiny `setTheme` API — à la shadcn/HeroUI.
+- **Full theming** — light/dark mode plus swappable presets (Black, Blue, Pink), all driven by CSS variables and a tiny `setTheme` API — à la shadcn/HeroUI.
 - **CSS-first animations** — transitions and keyframes live in CSS, not a JS animation runtime, and respect `prefers-reduced-motion` out of the box.
 - **Accessible by default** — interactive components are built on [Base UI](https://base-ui.com) for correct ARIA semantics, keyboard support and focus management.
 - **Tree-shakeable** — import from the root or per-component subpaths (`@kairo-ui/react/button`) so bundlers only ship what you use.
@@ -75,14 +75,14 @@ boundary, so you never need to add `'use client'` yourself just to use it.
 ## Theming
 
 Every color, radius, shadow and motion curve is a `--kairo-*` CSS variable,
-grouped into swappable **presets** (Default, Ocean, Sunset) with light/dark
+grouped into swappable **presets** (Black, Blue, Pink) with light/dark
 variants for each. Switch either at runtime with the zero-dependency,
 SSR-safe theme API from `@kairo-ui/theme`:
 
 ```ts
 import { setPreset, setMode } from '@kairo-ui/theme';
 
-setPreset('ocean'); // sets data-kairo-theme="ocean" on <html>
+setPreset('blue'); // sets data-kairo-theme="blue" on <html>
 setMode('dark'); // toggles the .dark class on <html>
 ```
 

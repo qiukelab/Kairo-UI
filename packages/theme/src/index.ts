@@ -25,9 +25,9 @@ export interface KairoThemePreset {
 }
 
 export const themes: readonly KairoThemePreset[] = [
-  { id: 'default', label: 'Default', swatch: 'oklch(0.205 0 0)' },
-  { id: 'ocean', label: 'Ocean', swatch: 'oklch(0.48 0.10 235)' },
-  { id: 'sunset', label: 'Sunset', swatch: 'oklch(0.52 0.15 40)' },
+  { id: 'default', label: 'Black', swatch: 'oklch(0.205 0 0)' },
+  { id: 'blue', label: 'Blue', swatch: 'oklch(0.58 0.196 259)' },
+  { id: 'pink', label: 'Pink', swatch: 'oklch(0.58 0.2 355)' },
 ];
 
 export type ThemeMode = 'light' | 'dark';

@@ -41,7 +41,7 @@ every preset and mode.
 
 ## Theming
 
-Kairo ships three presets — **Default**, **Ocean** and **Sunset** — each with
+Kairo ships three presets — **Black**, **Blue** and **Pink** — each with
 a light and dark variant, plus a tiny, SSR-safe JS API to switch between
 them at runtime:
 
@@ -49,8 +49,8 @@ them at runtime:
 import { setMode, setPreset, setTheme, themes } from '@kairo-ui/theme';
 
 setMode('dark'); // toggles the `.dark` class on <html>
-setPreset('ocean'); // sets `data-kairo-theme="ocean"` on <html>
-setTheme({ preset: 'sunset', mode: 'light' }); // both at once
+setPreset('blue'); // sets `data-kairo-theme="blue"` on <html>
+setTheme({ preset: 'pink', mode: 'light' }); // both at once
 
 themes; // => readonly manifest: [{ id, label, swatch }, ...] for building UI pickers
 ```
@@ -59,7 +59,7 @@ Under the hood:
 
 - **Mode** (`setMode`) toggles a `.dark` class on `document.documentElement`.
   Every token declares a light (`:root`) and dark (`.dark`) value.
-- **Preset** (`setPreset`) sets a `data-kairo-theme="ocean" | "sunset"`
+- **Preset** (`setPreset`) sets a `data-kairo-theme="blue" | "pink"`
   attribute on `document.documentElement`. The `"default"` preset is simply
   the absence of the attribute, since it's expressed as the bare `:root` /
   `.dark` selectors.

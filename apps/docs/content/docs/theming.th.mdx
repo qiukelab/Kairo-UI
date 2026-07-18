@@ -16,7 +16,7 @@ Token ของ Kairo เป็น CSS custom property ธรรมดา คว
   [`next-themes`](https://github.com/pacocoursey/next-themes) ซึ่งตั้งค่า
   `attribute="class"` ไว้ใน `RootProvider` จึงสลับคลาสเดียวกับที่ token ของ
   Kairo ต้องการพอดี
-- **Preset** — attribute `data-kairo-theme="ocean" | "sunset"` บน `<html>`
+- **Preset** — attribute `data-kairo-theme="blue" | "pink"` บน `<html>`
   จะเปลี่ยนชุดสี ส่วนพรีเซ็ต `default` คือสถานะที่ไม่มี attribute นี้เลย
 
 ทั้งสองอย่างควบคุมผ่าน API เล็ก ๆ ที่ไม่ผูกกับเฟรมเวิร์กใดโดยเฉพาะ
@@ -26,8 +26,8 @@ Token ของ Kairo เป็น CSS custom property ธรรมดา คว
 import { setMode, setPreset, setTheme } from '@kairo-ui/theme';
 
 setMode('dark'); // สลับคลาส `.dark` บน <html>
-setPreset('ocean'); // ตั้ง data-kairo-theme="ocean" บน <html>
-setTheme({ preset: 'sunset', mode: 'light' }); // ตั้งทั้งสองอย่างพร้อมกัน
+setPreset('blue'); // ตั้ง data-kairo-theme="blue" บน <html>
+setTheme({ preset: 'pink', mode: 'light' }); // ตั้งทั้งสองอย่างพร้อมกัน
 ```
 
 ลองเลยด้านล่าง: สลับพรีเซ็ตด้วยตัวเลือก แล้วสลับโหมดสว่าง/มืดจากปุ่มใน
