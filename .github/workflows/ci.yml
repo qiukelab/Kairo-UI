@@ -29,6 +29,19 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # The docs site is fully prerendered and deployed as static assets, so a
+      # route that silently fails to prerender would 404 only in production.
+      - name: Verify docs static output
+        run: |
+          set -euo pipefail
+          out=apps/docs/dist/client
+          for f in index.html 404.html docs/components/button/index.html static-search-en.json; do
+            test -f "$out/$f" || { echo "::error::missing prerendered file: $out/$f"; exit 1; }
+          done
+          count=$(find "$out" -name '*.html' | wc -l)
+          test "$count" -ge 19 || { echo "::error::expected >=19 prerendered pages, got $count"; exit 1; }
+          echo "docs static output OK ($count pages)"
+
       - name: Typecheck
         run: pnpm typecheck
 

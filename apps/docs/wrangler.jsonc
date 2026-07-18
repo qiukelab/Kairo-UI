@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kairo-docs",
+  "compatibility_date": "2026-07-18",
+  // Fully static, prerendered site — no Worker script runs at request time.
+  // `dist/client` is the `vite build` output produced by
+  // `@tanstack/react-start`'s prerender step (see vite.config.ts).
+  "assets": {
+    "directory": "./dist/client",
+    "not_found_handling": "404-page"
+  }
+}

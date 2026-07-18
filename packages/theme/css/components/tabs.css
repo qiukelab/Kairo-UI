@@ -26,6 +26,10 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  /* Declared on the root so the panel inherits it too. Without this the panel
+     falls back to the host page's font, which for Thai means relying on the
+     OS substituting a Thai face — inconsistent, and tofu where it can't. */
+  font-family: var(--kairo-font-sans);
 }
 
 .kairo-tabs-list {

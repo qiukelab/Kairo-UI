@@ -1,0 +1,13 @@
+# Hashed, content-addressed build assets — safe to cache forever.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Prerendered HTML — revalidate often so deploys show up quickly.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Static search index — small, but should pick up new content on redeploy.
+/static-search-en.json
+  Cache-Control: public, max-age=300, must-revalidate

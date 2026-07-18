@@ -1,0 +1,19 @@
+/*
+ * Import order matters: @kairo-ui/theme's tokens/resets must load before
+ * Tailwind + Fumadocs' presets so `--kairo-*` variables are already defined
+ * when Fumadocs' `fd-*` utility classes and our own component styles
+ * reference them.
+ */
+@import '@kairo-ui/theme/styles.css';
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+
+html {
+  scrollbar-gutter: stable;
+}
+
+html > body[data-scroll-locked] {
+  margin-right: 0px !important;
+  --removed-body-scroll-bar-size: 0px !important;
+}

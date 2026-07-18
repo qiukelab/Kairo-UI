@@ -150,7 +150,19 @@
  * `<KairoLocaleProvider locale="th">` forwards `lang` onto those popup roots;
  * setting `lang` on `<html>` covers it for single-language apps.
  */
-:where(:lang(th)) {
+/* SPECIFICITY IS DELIBERATE HERE — do not wrap these in `:where()`.
+   These rules must OUT-RANK the base tokens and the component defaults:
+     - `:root` (0,1,0) declares the base leading, so a zero-specificity
+       `:where(:lang(th))` loses on `<html lang="th">` — which is exactly the
+       setup we tell consumers to use. `:root:lang(th)` (0,2,0) wins.
+     - `.kairo-btn` (0,1,0) sets `white-space: nowrap`, and `base.css` is
+       imported BEFORE the component stylesheets, so an equal-specificity
+       override would lose on source order. `.kairo-btn:lang(th)` (0,2,0) wins
+       regardless of import order.
+   `:lang()` matches on the *computed* language, so these apply to descendants
+   of a `lang="th"` element too, not just the element carrying the attribute. */
+:lang(th),
+:root:lang(th) {
   --kairo-leading-tight: 1.5;
   --kairo-leading-normal: 1.6;
   --kairo-leading-relaxed: 1.75;
@@ -159,12 +171,13 @@
 /* Thai has no inter-word spaces, so a label is one unbreakable token and
    `nowrap` would guarantee overflow rather than wrapping. Relaxed for Thai
    only — English consumers keep the single-line default. */
-:where(:lang(th)) :is(.kairo-btn, .kairo-badge) {
+.kairo-btn:lang(th),
+.kairo-badge:lang(th) {
   white-space: normal;
 }
 
 /* Negative tracking collides Thai consonant clusters with their marks. */
-:where(:lang(th)) :where([class*='kairo-']) {
+:lang(th) [class*='kairo-'] {
   letter-spacing: normal;
 }
 

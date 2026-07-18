@@ -1,2 +1,10 @@
 .source
-next-env.d.ts
+
+# TanStack Router codegen — regenerated on every dev/build run, not hand-maintained.
+src/routeTree.gen.ts
+
+# Wrangler local state.
+.wrangler
+
+# TanStack Router generator scratch dir.
+.tanstack
