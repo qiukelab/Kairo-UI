@@ -35,7 +35,7 @@
 
 /*
  * Bridge just the accent-level colors to Kairo's tokens, so switching the
- * Kairo preset (default / ocean / sunset) also re-tints the docs chrome —
+ * Kairo preset (default / blue / pink) also re-tints the docs chrome —
  * links, the active sidebar item and focus rings shift with it, which makes
  * the site a live demo of the library's theming.
  *
@@ -48,16 +48,100 @@
 @theme inline {
   --color-fd-primary: var(--kairo-primary);
   --color-fd-ring: var(--kairo-ring);
+
+  /* Accent drives the hovered/active sidebar row and menu items. Bridging it
+     makes a preset switch visible across the chrome rather than only in link
+     colour — picking Pink tints the hover states, and Black leaves them on
+     the neutral they already were. Verified safe: unlike muted/secondary,
+     `neutral.css` declares no accent of its own, so nothing shadows this. */
+  --color-fd-accent: var(--kairo-accent);
+  --color-fd-accent-foreground: var(--kairo-accent-foreground);
 }
 
 html {
   scrollbar-gutter: stable;
 }
 
-/* The one corner Fumadocs hardcodes (5px on the scrollbar thumb in its
-   base.css), which the scale override above cannot reach. */
+/*
+ * Faint ruled grid behind the landing page's pinned pane — hairlines, not
+ * filled squares, so the pane still reads as one flat surface with a drafting
+ * grid over it rather than as a tiled pattern.
+ *
+ * Two linear gradients: one column of verticals, one of horizontals, each a
+ * single-pixel stop repeated by `background-size`.
+ *
+ * The line colour is mixed from `--kairo-foreground`, so it inverts with the
+ * mode on its own: a hair of black on the light background, a hair of white on
+ * the dark one. 7% reads a touch stronger than the 3.5% the filled version
+ * used, because a 1px line covers far less area than a 36px square and
+ * disappears at the same alpha.
+ */
+.kairo-hero-grid {
+  --kairo-hero-grid-line: color-mix(in oklab, var(--kairo-foreground) 7%, transparent);
+
+  background-image:
+    linear-gradient(to right, var(--kairo-hero-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--kairo-hero-grid-line) 1px, transparent 1px);
+  background-position: center;
+  background-size: 72px 72px;
+}
+
+/*
+ * Scrollbars: squared off and tinted with the active preset.
+ *
+ * Fumadocs hardcodes a 5px radius on the thumb in its own base.css, which the
+ * radius scale override above cannot reach — hence the explicit `0` rather
+ * than relying on the token.
+ *
+ * The thumb is a tonal gradient: both stops are `--kairo-primary`, the second
+ * mixed toward the page background. Mixing toward the background keeps the
+ * ramp inside one hue and flips direction per mode on its own.
+ *
+ * Note this deliberately rides shadcn's inversion of `primary` — near-black in
+ * light mode, near-WHITE in dark — so the bar reads as a light rail on dark
+ * pages. That contrast is the intent here, not an oversight; `--kairo-ring`
+ * was tried instead and read as a washed-out grey.
+ */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--color-fd-muted);
+}
+
 ::-webkit-scrollbar-thumb {
   border-radius: 0;
+  background-image: linear-gradient(
+    180deg,
+    var(--kairo-primary) 0%,
+    color-mix(in oklab, var(--kairo-primary) 60%, var(--kairo-background)) 100%
+  );
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-image: linear-gradient(
+    180deg,
+    var(--kairo-primary) 0%,
+    color-mix(in oklab, var(--kairo-primary) 85%, var(--kairo-background)) 100%
+  );
+}
+
+::-webkit-scrollbar-corner {
+  background-color: var(--color-fd-muted);
+}
+
+/*
+ * Firefox has no thumb pseudo-element and `scrollbar-color` only accepts flat
+ * colours, so it gets the primary as a solid — the gradient is a progressive
+ * enhancement, not a load-bearing part of the design.
+ */
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-color: var(--kairo-primary) var(--color-fd-muted);
+    scrollbar-width: thin;
+  }
 }
 
 html > body[data-scroll-locked] {
@@ -66,17 +150,108 @@ html > body[data-scroll-locked] {
 }
 
 /*
- * Layout geometry: the notebook shell reserves two flexible gutter columns
- * outside the sidebar/main/toc grid tracks, sized from whatever's left after
- * `--fd-layout-width` (default 97rem/1552px) is subtracted. Past that
- * viewport width they stop being 0 and grow into large dead margins on both
- * sides — sidebar, header and TOC all float away from the viewport edges.
- * Better-auth's docs don't reserve that margin, so raise the cap past any
- * realistic viewport width to keep the gutters collapsed and the chrome
- * flush to the edges.
+ * Widen the measure past Fumadocs' stock cap.
+ *
+ * `#nd-page` ships `*:max-w-[900px]` on its children (1285px on `data-full`
+ * pages). 900px is tuned for a narrower shell than this one — with the layout
+ * width raised above, the column had room to spare and long code samples were
+ * wrapping earlier than they needed to.
+ *
+ * The `data-full` rule has to be restated: overriding the base cap alone would
+ * *shrink* full-width pages from 1285px down to this value, since both rules
+ * target the same children and the later one wins.
+ */
+@media (min-width: 80rem) {
+  #nd-page > * {
+    max-width: 1000px;
+  }
+
+  #nd-page[data-full='true'] > * {
+    max-width: 1285px;
+  }
+
+  /*
+   * Centre the article within the `main` track, without moving the sidebar or
+   * the nav bar the way balanced grid gutters would.
+   *
+   * Capping and auto-margining `#nd-page` itself — rather than its children —
+   * is deliberate. `#nd-page` is `flex flex-col`, and auto inline margins on a
+   * flex item make it abandon `stretch` and shrink to its content width: the
+   * previous/next footer cards collapsed to the width of their labels and the
+   * text spilled out of them. Centring the container leaves every child
+   * stretched inside it.
+   *
+   * The cap is the measure above plus this element's own `padding-inline`, so
+   * the two stay in step — change one and the other follows.
+   */
+  #nd-page {
+    max-width: calc(1000px + 12rem);
+    margin-inline: auto;
+  }
+
+  #nd-page[data-full='true'] {
+    max-width: calc(1285px + 12rem);
+  }
+}
+
+/*
+ * Keycaps written back-to-back in prose — `<kbd>A</kbd>/<kbd>B</kbd>` — leave
+ * the separator wedged tight between two borders with nothing to breathe
+ * against. A small inline margin separates them wherever they appear, rather
+ * than relying on every author remembering to pad the separator.
+ *
+ * Scoped to the article: the sidebar's own search shortcut hint is a `kbd`
+ * too, and it is already spaced by its container's layout.
+ */
+#nd-page kbd {
+  margin-inline: 0.125rem;
+}
+
+/*
+ * Layout geometry.
+ *
+ * The notebook grid is
+ *   [gutter] [sidebar] [main] [toc] [gutter]
+ * (see `fumadocs-ui/dist/layouts/notebook/slots/container.js`). The chrome is
+ * pinned to the viewport here — sidebar flush to the left edge, nav bar
+ * spanning the full width — and only the article inside `main` is centred (see
+ * the `#nd-page` rule further down). Balancing the two gutters instead would
+ * centre the *whole* shell, which drags the sidebar inward and leaves a dead
+ * strip down the left of the window.
+ *
+ * Leading gutter is therefore `0`; the trailing one absorbs the remainder.
+ *
+ * That trailing gutter is `minmax(0, 1fr)`, NOT the stock
+ * `minmax(min-content, 1fr)`. The header now spans it, and a `min-content`
+ * lower bound lets a spanning item force its track wider — the bar's
+ * `whitespace-nowrap` tabs and fixed-width end cap would size the gutter to
+ * roughly 790px and shove `main` off-centre. Note `min-width: 0` on the header
+ * does not fix that: it lowers an item's automatic minimum size, while a
+ * `min-content` track function reads the item's min-content contribution,
+ * which that property does not touch. The track function itself has to change.
+ *
+ * Areas: the stock map stops `header` at the TOC column, so the nav bar would
+ * end short of the viewport edge with a bare strip beside it.
+ *
+ * `!important` on both because the grid template is an inline style.
  */
 #nd-notebook-layout {
-  --fd-layout-width: 100vw;
+  --fd-layout-width: min(112rem, 92vw);
+
+  grid-template-columns:
+    0
+    var(--fd-sidebar-col)
+    minmax(
+      0,
+      calc(var(--fd-layout-width, 97rem) - var(--fd-sidebar-col) - var(--fd-toc-width))
+    )
+    var(--fd-toc-width)
+    minmax(0, 1fr) !important;
+
+  grid-template-areas:
+    'sidebar sidebar header header header'
+    'sidebar sidebar toc-popover toc-popover .'
+    'sidebar sidebar main toc .' !important;
 }
 
 /*
@@ -88,5 +263,14 @@ html > body[data-scroll-locked] {
 @media (min-width: 80rem) {
   #nd-page {
     padding-top: 2rem;
+
+    /* Breathing room between the sidebar and the text — `xl:px-8` (32px) left
+       them almost touching. This is the main lever for how far the column sits
+       off the sidebar; the centring margin below only ever adds a few more
+       pixels on top.
+
+       Raising it requires raising `--fd-layout-width` in step, or the wider
+       padding eats into the measure instead of into the track. */
+    padding-inline: 6rem;
   }
 }
