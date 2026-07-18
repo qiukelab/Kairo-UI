@@ -13,10 +13,33 @@ import {
   DocsDescription,
   DocsPage,
   DocsTitle,
+  MarkdownCopyButton,
+  ViewOptionsPopover,
 } from 'fumadocs-ui/layouts/notebook/page';
 import browserCollections from 'collections/browser';
 import { getMDXComponents } from '@/components/mdx';
-import { baseOptions } from '@/lib/layout.shared';
+import { VersionBadge } from '@/components/version-badge';
+import { baseOptions, GITHUB_REPO_URL } from '@/lib/layout.shared';
+import type { Locale } from '@/lib/i18n';
+
+/**
+ * URL of a page's raw markdown, backing the copy/AI buttons.
+ *
+ * `path` is the content-relative file path (`components/button.mdx`, or
+ * `components/button.th.mdx` for a Thai page). The `/raw/...` shape is defined
+ * by the route files `routes/raw.docs.$.ts` / `routes/raw.th.docs.$.ts`, and
+ * every resulting URL is seeded into the prerender list in `vite.config.ts` —
+ * keep those three in sync when adding pages.
+ */
+function rawMarkdownUrl(path: string, locale: Locale): string {
+  const slug = path.replace(/\.(th\.)?mdx?$/, '');
+  const base = locale === 'th' ? '/raw/th/docs' : '/raw/docs';
+  return slug === 'index' ? `${base}.md` : `${base}/${slug}.md`;
+}
+
+function githubSourceUrl(path: string): string {
+  return `${GITHUB_REPO_URL}/blob/main/apps/docs/content/docs/${path}`;
+}
 
 // MDX bodies are lazily code-split per page via `collections/browser` — this
 // is kept out of each route's server-loader closure the same way the
@@ -30,12 +53,26 @@ import { baseOptions } from '@/lib/layout.shared';
 // it in a cross-file factory function silently breaks that (the loader
 // resolves to `undefined` at runtime instead of the handler's return value).
 // See `routes/docs.$.tsx` / `routes/th.docs.$.tsx`.
-export const docsClientLoader = browserCollections.docs.createClientLoader({
-  component({ toc, frontmatter, default: MDX }) {
+/** Per-render props threaded through `useContent(path, props)`. */
+interface DocsContentProps {
+  markdownUrl: string;
+  githubUrl: string;
+}
+
+export const docsClientLoader = browserCollections.docs.createClientLoader<DocsContentProps>({
+  component({ toc, frontmatter, default: MDX }, { markdownUrl, githubUrl }) {
     return (
       <DocsPage toc={toc}>
         <DocsTitle>{frontmatter.title}</DocsTitle>
         <DocsDescription>{frontmatter.description}</DocsDescription>
+        {/* Copy-as-markdown / open-in-AI, the way better-auth's docs expose
+            them. Both URLs are site-relative: the copy button fetches
+            same-origin so it works today, while the AI deep-links only become
+            useful once the site is deployed under a public origin. */}
+        <div className="flex flex-row items-center gap-2 border-b pb-4">
+          <MarkdownCopyButton markdownUrl={markdownUrl} />
+          <ViewOptionsPopover markdownUrl={markdownUrl} githubUrl={githubUrl} />
+        </div>
         <DocsBody>
           <MDX components={getMDXComponents()} />
         </DocsBody>
@@ -51,15 +88,30 @@ export const docsClientLoader = browserCollections.docs.createClientLoader({
  * return type is resolved against each route's own concrete loader data,
  * rather than a loosely-typed generic here.
  */
-export function DocsPageBody({ path, pageTree }: { path: string; pageTree: Root }) {
+export function DocsPageBody({
+  path,
+  pageTree,
+  locale,
+}: {
+  path: string;
+  pageTree: Root;
+  locale: Locale;
+}) {
   return (
     // Notebook (rather than the plain docs layout): its full-width header
-    // carrying brand + tabs + search, with the sidebar starting beneath it and
+    // carrying brand + nav + search, with the sidebar starting beneath it and
     // flush to the viewport edge, is the shell this site's design targets.
-    // `tabMode="navbar"` puts the section tabs in that header instead of
-    // collapsing them into a dropdown at the top of the sidebar.
-    <NotebookLayout {...baseOptions()} tree={pageTree} tabMode="navbar" sidebar={{ collapsible: true }}>
-      <Suspense>{docsClientLoader.useContent(path)}</Suspense>
+    <NotebookLayout
+      {...baseOptions(locale)}
+      tree={pageTree}
+      sidebar={{ collapsible: true, banner: <VersionBadge locale={locale} /> }}
+    >
+      <Suspense>
+        {docsClientLoader.useContent(path, {
+          markdownUrl: rawMarkdownUrl(path, locale),
+          githubUrl: githubSourceUrl(path),
+        })}
+      </Suspense>
     </NotebookLayout>
   );
 }

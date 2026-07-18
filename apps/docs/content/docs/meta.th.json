@@ -1,4 +1,5 @@
 {
-  "title": "เอกสาร Kairo",
+  "title": "เอกสาร",
+  "icon": "Download",
   "pages": ["index", "theming", "motion", "components"]
 }

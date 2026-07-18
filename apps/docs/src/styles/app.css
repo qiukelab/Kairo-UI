@@ -33,6 +33,23 @@
   --radius-4xl: 0px;
 }
 
+/*
+ * Bridge just the accent-level colors to Kairo's tokens, so switching the
+ * Kairo preset (default / ocean / sunset) also re-tints the docs chrome —
+ * links, the active sidebar item and focus rings shift with it, which makes
+ * the site a live demo of the library's theming.
+ *
+ * Deliberately NARROW: background/foreground/card/muted are left on
+ * Fumadocs' own neutral palette. Kairo's colors are tuned for component
+ * surfaces, not for long-form body text, and `neutral.css` additionally
+ * re-declares muted/secondary scoped to `.dark #nd-sidebar` — a wider bridge
+ * would be silently shadowed there and read inconsistently.
+ */
+@theme inline {
+  --color-fd-primary: var(--kairo-primary);
+  --color-fd-ring: var(--kairo-ring);
+}
+
 html {
   scrollbar-gutter: stable;
 }

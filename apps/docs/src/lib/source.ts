@@ -1,11 +1,65 @@
+import { createElement } from 'react';
 import { docs } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
+import {
+  AppWindow,
+  Bell,
+  ChevronsUpDown,
+  CircleUser,
+  Download,
+  Info,
+  LayoutPanelTop,
+  LoaderCircle,
+  MessageSquare,
+  MousePointerClick,
+  Palette,
+  Rows3,
+  Sparkles,
+  SquareCheck,
+  Tag,
+  TextCursorInput,
+  ToggleLeft,
+} from 'lucide-react';
 import { i18n, type Locale } from '@/lib/i18n';
+
+/**
+ * Sidebar icons, resolved from the `icon:` name in each page's frontmatter.
+ *
+ * Imported one-by-one into an explicit map rather than looked up off the
+ * `lucide-react` barrel (`icons[name]`) — the dynamic form defeats
+ * tree-shaking and pulls the entire icon set into the bundle.
+ */
+const icons = {
+  AppWindow,
+  Bell,
+  ChevronsUpDown,
+  CircleUser,
+  Download,
+  Info,
+  LayoutPanelTop,
+  LoaderCircle,
+  MessageSquare,
+  MousePointerClick,
+  Palette,
+  Rows3,
+  Sparkles,
+  SquareCheck,
+  Tag,
+  TextCursorInput,
+  ToggleLeft,
+} as const;
 
 export const source = loader({
   baseUrl: '/docs',
   source: docs.toFumadocsSource(),
   i18n,
+  icon(name) {
+    if (!name) return;
+    const Icon = icons[name as keyof typeof icons];
+    // An unknown name renders nothing rather than throwing — a typo in
+    // frontmatter should not take down the page tree.
+    return Icon ? createElement(Icon) : undefined;
+  },
 });
 
 /**

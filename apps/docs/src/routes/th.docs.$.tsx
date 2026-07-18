@@ -41,5 +41,5 @@ export const Route = createFileRoute('/th/docs/$')({
 
 function Page() {
   const { path, pageTree } = useFumadocsLoader(Route.useLoaderData());
-  return <DocsPageBody path={path} pageTree={pageTree} />;
+  return <DocsPageBody path={path} pageTree={pageTree} locale="th" />;
 }

@@ -61,7 +61,7 @@ export function HomePage({ locale }: { locale: Locale }) {
   const copy = HOME_COPY[locale];
 
   return (
-    <HomeLayout {...baseOptions()}>
+    <HomeLayout {...baseOptions(locale)}>
       <main className="flex flex-1 flex-col">
         {/* Hero */}
         <section className="border-b border-fd-border">

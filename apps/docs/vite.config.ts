@@ -1,9 +1,49 @@
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react';
 import mdx from 'fumadocs-mdx/vite';
 import { defineConfig } from 'vite';
+
+// Read at build time so the version chip in the sidebar can never go stale
+// against what changesets actually released. Read off disk rather than
+// resolved through the package: `@kairo-ui/react` deliberately does not export
+// `./package.json`, and widening its public exports map for a docs-build
+// detail would be the wrong trade.
+const kairoVersion: string = JSON.parse(
+  readFileSync(new URL('../../packages/react/package.json', import.meta.url), 'utf8'),
+).version;
+
+/**
+ * Raw-markdown endpoints backing the "Copy Markdown" / "Open in AI" buttons.
+ *
+ * Nothing links to these, so `crawlLinks` can never discover them — each one
+ * has to be seeded explicitly. Generated from the slug list rather than typed
+ * out so adding a page is a one-line change here.
+ */
+const COMPONENT_SLUGS = [
+  'avatar',
+  'badge',
+  'button',
+  'card',
+  'checkbox',
+  'dialog',
+  'input',
+  'popover',
+  'select',
+  'spinner',
+  'switch',
+  'tabs',
+  'toast',
+  'tooltip',
+] as const;
+
+const DOC_SLUGS = ['', 'theming', 'motion', ...COMPONENT_SLUGS.map((s) => `components/${s}`)];
+
+const RAW_MARKDOWN_PAGES = (['docs', 'th/docs'] as const).flatMap((base) =>
+  DOC_SLUGS.map((slug) => ({ path: slug ? `/raw/${base}/${slug}.md` : `/raw/${base}.md` })),
+);
 
 export default defineConfig({
   plugins: [
@@ -37,10 +77,17 @@ export default defineConfig({
         // Prerendered as `404.html` (not `404/index.html`) so Cloudflare's
         // `not_found_handling: "404-page"` can serve it for any unmatched path.
         { path: '/404', prerender: { autoSubfolderIndex: false } },
+        // LLM-facing plain-text indexes. Server-route-only, so never crawled.
+        { path: '/llms.txt' },
+        { path: '/llms-full.txt' },
+        ...RAW_MARKDOWN_PAGES,
       ],
     }),
     viteReact(),
   ],
+  define: {
+    __KAIRO_VERSION__: JSON.stringify(kairoVersion),
+  },
   resolve: {
     tsconfigPaths: true,
     // MDX content (compiled outside the normal .ts/.tsx resolution context

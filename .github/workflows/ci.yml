@@ -31,16 +31,40 @@ jobs:
 
       # The docs site is fully prerendered and deployed as static assets, so a
       # route that silently fails to prerender would 404 only in production.
+      # This is not paranoia: `vite build` logs per-page render errors, still
+      # prints "Prerendered N pages", and exits 0 — a completely broken site
+      # passes the build. The raw-markdown routes are especially prone to it
+      # (the prerender crawler can drop a brand-new route on the first pass),
+      # so they are asserted explicitly.
       - name: Verify docs static output
         run: |
           set -euo pipefail
           out=apps/docs/dist/client
-          for f in index.html 404.html docs/components/button/index.html static-search-en.json; do
+          for f in \
+            index.html \
+            404.html \
+            docs/components/button/index.html \
+            th/docs/components/button/index.html \
+            static-search-en.json \
+            static-search-th.json \
+            llms.txt \
+            llms-full.txt \
+            raw/docs.md \
+            raw/docs/theming.md \
+            raw/docs/components/button.md \
+            raw/th/docs/components/button.md
+          do
             test -f "$out/$f" || { echo "::error::missing prerendered file: $out/$f"; exit 1; }
           done
-          count=$(find "$out" -name '*.html' | wc -l)
-          test "$count" -ge 19 || { echo "::error::expected >=19 prerendered pages, got $count"; exit 1; }
-          echo "docs static output OK ($count pages)"
+          html=$(find "$out" -name '*.html' | wc -l)
+          raw=$(find "$out/raw" -name '*.md' | wc -l)
+          test "$html" -ge 19 || { echo "::error::expected >=19 prerendered pages, got $html"; exit 1; }
+          test "$raw" -ge 34 || { echo "::error::expected >=34 raw markdown files, got $raw"; exit 1; }
+          # Frontmatter must be stripped — a raw file starting with `---` means
+          # the strip step regressed.
+          head -c 3 "$out/raw/docs/components/button.md" | grep -qv -- '---' \
+            || { echo "::error::raw markdown still contains frontmatter"; exit 1; }
+          echo "docs static output OK ($html pages, $raw raw markdown files)"
 
       - name: Typecheck
         run: pnpm typecheck
