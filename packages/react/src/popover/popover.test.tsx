@@ -124,4 +124,21 @@ describe('Popover', () => {
     const popover = await screen.findByRole('dialog');
     expect(popover).not.toHaveAttribute('lang');
   });
+
+  it('portals the popup into a custom container element', async () => {
+    const portalTarget = document.createElement('div');
+    document.body.appendChild(portalTarget);
+    render(
+      <Popover>
+        <PopoverTrigger>Open popover</PopoverTrigger>
+        <PopoverContent container={portalTarget}>
+          <PopoverTitle>Popover title</PopoverTitle>
+        </PopoverContent>
+      </Popover>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Open popover' }));
+    const popover = await screen.findByRole('dialog');
+    expect(portalTarget.contains(popover)).toBe(true);
+    document.body.removeChild(portalTarget);
+  });
 });

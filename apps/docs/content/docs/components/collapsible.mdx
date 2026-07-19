@@ -1,0 +1,104 @@
+---
+title: Collapsible
+description: A single trigger that shows and hides one panel, with an animated height transition, built on Base UI.
+icon: UnfoldVertical
+---
+
+import { CollapsibleDemo } from '@/components/demos/collapsible-demo';
+
+## Usage
+
+```tsx
+import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Collapsible>
+      <CollapsibleTrigger>What's included in the free plan?</CollapsibleTrigger>
+      <CollapsiblePanel>
+        Unlimited projects, up to 3 collaborators, and community support.
+      </CollapsiblePanel>
+    </Collapsible>
+  );
+}
+```
+
+`Collapsible` groups the parts, rendering a `<div>`. `CollapsibleTrigger`
+renders a native `<button>` with `aria-expanded`/`aria-controls` wired to the
+panel automatically. `CollapsiblePanel` is unmounted from the DOM while
+closed by default, and animates its `height` open/closed using a CSS custom
+property (`--collapsible-panel-height`) that Base UI measures and writes
+inline — all of this comes from `@base-ui/react`.
+
+## Default, initially open & disabled
+
+<ComponentPreview
+  code={`<Collapsible>
+  <CollapsibleTrigger>What's included in the free plan?</CollapsibleTrigger>
+  <CollapsiblePanel>
+    Unlimited projects, up to 3 collaborators, and community support.
+  </CollapsiblePanel>
+</Collapsible>
+
+<Collapsible defaultOpen>
+  <CollapsibleTrigger>Can I cancel at any time?</CollapsibleTrigger>
+  <CollapsiblePanel>
+    Yes — cancel from your account settings and keep access until the
+    current billing period ends.
+  </CollapsiblePanel>
+</Collapsible>
+
+<Collapsible disabled>
+  <CollapsibleTrigger>Enterprise plan (coming soon)</CollapsibleTrigger>
+  <CollapsiblePanel>Not yet available.</CollapsiblePanel>
+</Collapsible>`}
+>
+  <CollapsibleDemo />
+</ComponentPreview>
+
+<Callout title="Collapsible vs Accordion" type="info">
+  Both sit on the same Base UI anatomy, but answer different questions.
+  **Collapsible** is the unopinionated primitive for a *single* trigger/panel
+  pair — reach for it when you're building custom disclosure UI (a "show
+  more" toggle, a filter panel, a single FAQ entry) and want to supply your
+  own layout and chrome. **Accordion** is the opinionated, bordered
+  component for a *set* of collapsible sections sharing one visual
+  container, where typically only one section is open at a time. If you find
+  yourself rendering several `Collapsible`s stacked together with matching
+  borders, reach for `Accordion` instead.
+</Callout>
+
+## Props
+
+### `Collapsible`
+
+| Prop           | Type                                     | Default | Description                                                     |
+| -------------- | ------------------------------------------ | ------- | ----------------------------------------------------------------- |
+| `open`         | `boolean`                                  | —       | Controlled open state. Use with `onOpenChange`.                    |
+| `defaultOpen`  | `boolean`                                  | `false` | Initial open state for an uncontrolled collapsible.                 |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`    | —       | Called when the panel opens or closes.                             |
+| `disabled`     | `boolean`                                  | `false` | Prevents user interaction (the trigger included, unless overridden). |
+| `className`    | `string`                                   | —       | Merged with the base `kairo-collapsible` class.                    |
+| ...            | Additional props | — | All other props are forwarded to the underlying element. |
+
+### `CollapsibleTrigger`
+
+Renders a native `<button>` with `aria-expanded` always set, and
+`aria-controls` set to the panel's id once open. `data-panel-open` is
+present on it while the panel is open.
+
+| Prop        | Type      | Default | Description                                                        |
+| ----------- | --------- | ------- | ------------------------------------------------------------------ |
+| `disabled`  | `boolean` | —       | Overrides the `disabled` inherited from `Collapsible`.              |
+| `className` | `string`  | —       | Merged with the base `kairo-collapsible-trigger` class.             |
+
+### `CollapsiblePanel`
+
+| Prop                | Type      | Default | Description                                                                          |
+| ------------------- | --------- | ------- | ------------------------------------------------------------------------------------- |
+| `keepMounted`       | `boolean` | `false` | Keep the panel in the DOM (hidden) while closed, instead of unmounting it.             |
+| `hiddenUntilFound`  | `boolean` | `false` | Use `hidden="until-found"` so the browser's page search can reveal the panel.          |
+| `className`         | `string`  | —       | Merged with the base `kairo-collapsible-panel` class.                                 |
+
+All other props are forwarded to the underlying element on each corresponding
+Kairo component.

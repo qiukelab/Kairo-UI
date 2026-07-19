@@ -36,4 +36,4 @@ export function Example() {
 | `fallback`  | `ReactNode`                | —       | Rendered when there's no `src`, or the image fails/hasn't finished loading (e.g. initials). |
 | `size`      | `'sm' \| 'md' \| 'lg'`     | `'md'`  | Size of the avatar.                                                                         |
 | `className` | `string`                   | —       | Merged with the base `kairo-avatar` class.                                                  |
-| ...         | `React.ComponentPropsWithoutRef<typeof Avatar.Root>` from `@base-ui/react/avatar` | — | All other Base UI `Avatar.Root` props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying element. |

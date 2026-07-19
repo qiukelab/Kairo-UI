@@ -1,0 +1,349 @@
+/**
+ * Kairo Combobox (a text input paired with a filtered listbox).
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-combobox-control`       — Base UI's `Combobox.InputGroup`; the
+ *     bordered box that visually *is* the control (border + focus ring live
+ *     here, not on the input, so the whole box lights up on focus). Also the
+ *     element the popup anchors to (`--anchor-width` below matches its
+ *     width).
+ *   - `.kairo-combobox-input`         — Base UI's `Combobox.Input`
+ *     (`role="combobox"`); a plain, borderless, transparent `<input>` — the
+ *     border/background live on `.kairo-combobox-control` instead.
+ *   - `.kairo-combobox-trigger`       — Base UI's `Combobox.Trigger`; a
+ *     borderless icon button that opens the popup without typing. Hidden
+ *     from the accessibility tree by default (see the `ComboboxTrigger` doc
+ *     comment in `@kairo-ui/react`), so it is a pointer-only affordance.
+ *   - `.kairo-combobox-icon`          — Base UI's `Combobox.Icon`; the
+ *     default chevron inside `.kairo-combobox-trigger`. Carries no state
+ *     attributes of its own — the flip on open is driven off
+ *     `[data-popup-open]` on the *trigger*, its parent.
+ *   - `.kairo-combobox-clear`         — Base UI's `Combobox.Clear`; a
+ *     borderless icon button that resets the value and the typed query.
+ *     Base UI only mounts it while there is something to clear (unless
+ *     `keepMounted`), so no `display: none` rule is needed here.
+ *   - `.kairo-combobox-popup`         — Base UI's `Combobox.Popup`; the
+ *     floating panel. `role="presentation"` (not `listbox` — that role lives
+ *     on `.kairo-combobox-list`, a sibling inside this popup, alongside
+ *     `.kairo-combobox-empty`).
+ *   - `.kairo-combobox-list`          — Base UI's `Combobox.List`
+ *     (`role="listbox"`); the scrollable container the filtered items render
+ *     into.
+ *   - `.kairo-combobox-item`          — Base UI's `Combobox.Item`
+ *     (`role="option"`). Uses a 2-column grid (indicator column + text
+ *     column) so unselected items — whose `ItemIndicator` isn't mounted at
+ *     all — still line up with the selected item's text.
+ *   - `.kairo-combobox-item-indicator` — Base UI's `Combobox.ItemIndicator`;
+ *     the check mark, only present in the DOM for the selected item.
+ *   - `.kairo-combobox-item-text`     — a plain `<span>` Kairo wraps the
+ *     item's children in (Combobox has no `ItemText` part of its own —
+ *     unlike Select, the item's children *are* the label) purely so it owns
+ *     the second grid column.
+ *   - `.kairo-combobox-empty`         — Base UI's `Combobox.Empty`
+ *     (`role="status"`, `aria-live="polite"`); the no-results message,
+ *     rendered as a sibling of `.kairo-combobox-list`. Base UI keeps this
+ *     element mounted at all times and only empties its *children*, so it
+ *     must never be hidden with `display: none` directly — the rule here
+ *     collapses it with `:empty` instead so it costs no space while there
+ *     are results.
+ *   - `.kairo-combobox-group`         — Base UI's `Combobox.Group`
+ *     (`role="group"`).
+ *   - `.kairo-combobox-group-label`   — Base UI's `Combobox.GroupLabel`.
+ *   - `.kairo-combobox-separator`     — Base UI's generic `Separator`, reused
+ *     here between items/groups (Combobox has no separator part of its own).
+ *   - `.kairo-combobox-arrow`         — Base UI's `Combobox.Arrow`; the
+ *     pointer from the popup back to the control. Base UI positions it along
+ *     the anchor edge itself; the rules here only push it outside the popup
+ *     and rotate it per `[data-side]`.
+ *   - `.kairo-combobox-arrow-fill` / `.kairo-combobox-arrow-edge` — the two
+ *     paths inside that arrow's SVG. Their paint lives here rather than on
+ *     presentation attributes because `var()` does not resolve in those.
+ *   - `[data-popup-open]`             — present on `.kairo-combobox-control`/
+ *     `.kairo-combobox-trigger`/`.kairo-combobox-input`/`.kairo-combobox-clear`
+ *     while the popup is open.
+ *   - `[data-disabled]`               — disabled state, present on the
+ *     control, the input, the trigger, the clear button and on items.
+ *   - `[data-highlighted]`            — present on `.kairo-combobox-item`
+ *     when keyboard/pointer-highlighted; drives the accent background.
+ *   - `[data-selected]`               — present on `.kairo-combobox-item`
+ *     when it matches the current value.
+ *   - `[data-side]`                   — `'top' | 'bottom' | 'left' | 'right'
+ *     | 'inline-end' | 'inline-start'` on the popup and the arrow. Unlike
+ *     Select, Combobox has no `alignItemWithTrigger` mode, so `'none'` never
+ *     occurs here and no corresponding guard is needed.
+ *   - `[data-starting-style]` / `[data-ending-style]` — present on the popup
+ *     while it is mounting/unmounting; drives the enter/exit `animation`
+ *     here, reusing the shared `kairo-zoom-in`/`kairo-zoom-out` `@keyframes`
+ *     from `base.css` (like Select, the popup has no centering transform to
+ *     preserve).
+ *   - `[data-open]` / `[data-closed]` — present for the *entire* time the
+ *     popup is open/closed (not just the transition); not used for animation
+ *     here.
+ *   - `--anchor-width` / `--available-height` / `--transform-origin` — CSS
+ *     custom properties Base UI sets on the positioner (and which inherit
+ *     down to the popup); used here so the popup matches the control's
+ *     width, is capped to the viewport's available height, and scales from
+ *     the right point during the enter/exit animation.
+ *
+ * `prefers-reduced-motion: reduce` is already handled globally in `base.css`
+ * for any `[class*='kairo-']` element, so no extra guard is needed here.
+ *
+ * Note for future Vue port: Base UI emits `data-starting-style`/
+ * `data-ending-style`/`data-open`/`data-closed`/`data-highlighted`/
+ * `data-selected`/`data-popup-open`/`data-disabled`; Reka UI (Vue) has no
+ * verified Combobox primitive at the time of writing — confirm its exact
+ * anatomy and data-attributes before porting rather than assuming parity
+ * with Reka's `Select`.
+ */
+
+.kairo-combobox-control {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 2.5rem;
+  border: var(--kairo-border-width) solid var(--kairo-input);
+  border-radius: var(--kairo-radius-md);
+  background-color: var(--kairo-background);
+  cursor: text;
+  transition-property: border-color, box-shadow;
+  transition-duration: var(--kairo-duration-fast);
+  transition-timing-function: var(--kairo-ease-standard);
+}
+
+.kairo-combobox-control:focus-within {
+  border-color: var(--kairo-ring);
+  outline: var(--kairo-ring-width) solid var(--kairo-ring);
+  outline-offset: var(--kairo-ring-offset);
+}
+
+.kairo-combobox-control[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kairo-combobox-input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background-color: transparent;
+  color: var(--kairo-foreground);
+  font-family: var(--kairo-font-sans);
+  font-size: 0.875rem;
+  line-height: var(--kairo-leading-normal);
+  outline: none;
+}
+
+.kairo-combobox-input::placeholder {
+  color: var(--kairo-muted-foreground);
+}
+
+.kairo-combobox-trigger,
+.kairo-combobox-clear {
+  box-sizing: border-box;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-inline-end: 0.25rem;
+  border: none;
+  border-radius: var(--kairo-radius-sm);
+  background-color: transparent;
+  color: var(--kairo-muted-foreground);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-combobox-trigger svg,
+.kairo-combobox-clear svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.kairo-combobox-trigger:hover:not([data-disabled]),
+.kairo-combobox-clear:hover:not([data-disabled]) {
+  background-color: color-mix(in oklab, var(--kairo-foreground) 8%, transparent);
+}
+
+.kairo-combobox-trigger:active:not([data-disabled]),
+.kairo-combobox-clear:active:not([data-disabled]) {
+  background-color: color-mix(in oklab, var(--kairo-foreground) 14%, transparent);
+}
+
+.kairo-combobox-trigger[data-disabled],
+.kairo-combobox-clear[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kairo-combobox-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transition: transform var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-combobox-trigger[data-popup-open] .kairo-combobox-icon {
+  transform: rotate(180deg);
+}
+
+.kairo-combobox-popup {
+  box-sizing: border-box;
+  z-index: 50;
+  min-width: var(--anchor-width, 8rem);
+  max-height: var(--available-height, 24rem);
+  overflow-y: auto;
+  padding: 0.5rem;
+  border: var(--kairo-border-width) solid var(--kairo-border);
+  border-radius: var(--kairo-radius-md);
+  background-color: var(--kairo-popover);
+  color: var(--kairo-popover-foreground);
+  font-family: var(--kairo-font-sans);
+  box-shadow: var(--kairo-shadow-lg);
+  transform-origin: var(--transform-origin, center);
+}
+
+.kairo-combobox-popup[data-starting-style] {
+  animation: kairo-zoom-in var(--kairo-duration-fast) var(--kairo-ease-out);
+}
+
+.kairo-combobox-popup[data-ending-style] {
+  animation: kairo-zoom-out var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+/*
+ * Arrow tying the popup back to its control.
+ *
+ * Base UI positions it along the anchor's edge itself (inline `left`/`top`);
+ * what CSS supplies is the cross-axis nudge that lifts it *outside* the
+ * popup, plus the rotation for each side. The icon is drawn pointing up, so
+ * `bottom` (popup under the control) needs no rotation.
+ *
+ * The offsets pull it out by its own size — 6px on the vertical sides, 13px
+ * on the horizontal ones, where the 12px width plus the 1px border seam is
+ * what has to be cleared. `ComboboxContent`'s default `sideOffset` of 8
+ * leaves room for it; drop that back toward 0 and the arrow will overlap the
+ * control.
+ */
+.kairo-combobox-arrow {
+  display: flex;
+  z-index: 51;
+}
+
+.kairo-combobox-arrow-fill {
+  fill: var(--kairo-popover);
+}
+
+.kairo-combobox-arrow-edge {
+  fill: none;
+  stroke: var(--kairo-border);
+  stroke-width: var(--kairo-border-width);
+}
+
+.kairo-combobox-arrow[data-side='bottom'] {
+  top: -6px;
+}
+
+.kairo-combobox-arrow[data-side='top'] {
+  bottom: -6px;
+  rotate: 180deg;
+}
+
+.kairo-combobox-arrow[data-side='left'] {
+  right: -13px;
+  rotate: 90deg;
+}
+
+.kairo-combobox-arrow[data-side='right'] {
+  left: -13px;
+  rotate: -90deg;
+}
+
+.kairo-combobox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.kairo-combobox-item {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1rem 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: var(--kairo-radius-sm);
+  font-size: 0.875rem;
+  line-height: var(--kairo-leading-normal);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+
+.kairo-combobox-item[data-highlighted] {
+  background-color: var(--kairo-accent);
+  color: var(--kairo-accent-foreground);
+}
+
+.kairo-combobox-item[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kairo-combobox-item-indicator {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.kairo-combobox-item-indicator svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.kairo-combobox-item-text {
+  grid-column: 2;
+  overflow: hidden;
+  line-height: var(--kairo-leading-normal);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.kairo-combobox-empty {
+  padding: 0.5rem;
+  color: var(--kairo-muted-foreground);
+  font-size: 0.875rem;
+  line-height: var(--kairo-leading-normal);
+  text-align: center;
+}
+
+.kairo-combobox-empty:empty {
+  display: none;
+  padding: 0;
+}
+
+.kairo-combobox-group-label {
+  padding: 0.375rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: var(--kairo-leading-tight);
+  color: var(--kairo-muted-foreground);
+}
+
+.kairo-combobox-separator {
+  height: var(--kairo-border-width);
+  margin: 0.25rem 0;
+  background-color: var(--kairo-border);
+}

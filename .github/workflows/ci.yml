@@ -52,14 +52,22 @@ jobs:
             raw/docs.md \
             raw/docs/theming.md \
             raw/docs/components/button.md \
-            raw/th/docs/components/button.md
+            raw/th/docs/components/button.md \
+            docs/components/drawer/index.html \
+            th/docs/components/drawer/index.html \
+            raw/docs/components/drawer.md
           do
             test -f "$out/$f" || { echo "::error::missing prerendered file: $out/$f"; exit 1; }
           done
           html=$(find "$out" -name '*.html' | wc -l)
           raw=$(find "$out/raw" -name '*.md' | wc -l)
-          test "$html" -ge 19 || { echo "::error::expected >=19 prerendered pages, got $html"; exit 1; }
-          test "$raw" -ge 34 || { echo "::error::expected >=34 raw markdown files, got $raw"; exit 1; }
+          # Floors are the real counts at the last component addition (28
+          # components => 65 HTML, 62 raw), not a token low number. A floor far
+          # below reality passes even when half the site fails to render, which
+          # is exactly the failure this step exists to catch — so raise these
+          # whenever pages are added.
+          test "$html" -ge 65 || { echo "::error::expected >=65 prerendered pages, got $html"; exit 1; }
+          test "$raw" -ge 62 || { echo "::error::expected >=62 raw markdown files, got $raw"; exit 1; }
           # Frontmatter must be stripped — a raw file starting with `---` means
           # the strip step regressed.
           head -c 3 "$out/raw/docs/components/button.md" | grep -qv -- '---' \

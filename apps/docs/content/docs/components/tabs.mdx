@@ -82,4 +82,4 @@ to activate the focused tab.
 | `keepMounted` | `boolean` | `false` | Keep the panel in the DOM (hidden) while inactive.            |
 | `className`   | `string`  | —       | Merged with the base `kairo-tab-panel` class.                 |
 
-All other props from `@base-ui/react/tabs`'s `Tabs.Root`/`Tabs.List`/`Tabs.Tab`/`Tabs.Panel` are passed through on the corresponding Kairo component.
+All other props are forwarded to the underlying element on the corresponding Kairo component (`Tabs`, `TabsList`, `Tab`, `TabPanel`).

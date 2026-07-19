@@ -47,12 +47,12 @@ export interface ToastProviderProps extends BaseToastProviderProps {
  * }
  * ```
  *
- * This bundled-viewport shape is deliberately the *only* one Kairo exposes
- * (Base UI's own primitives — `Toast.Root`/`Title`/`Description`/`Action`/
- * `Close`/`Positioner`/`Arrow` — are still available directly from
- * `@base-ui/react/toast` for advanced cases, e.g. anchored toasts or
- * multiple independent viewports, which need more than one `Toast.Provider`
- * and are out of scope for this convenience wrapper).
+ * This bundled-viewport shape is deliberately the *only* one Kairo exposes:
+ * one shared `Toast.Viewport`, portalled once, rendering every queued toast
+ * as a row in a single stack. Anchored toasts and multiple independent
+ * viewports would each need their own `Toast.Provider`/`Toast.Viewport` pair
+ * wired up separately, which is out of scope for this convenience wrapper
+ * today — open an issue if you need it.
  */
 export function ToastProvider({
   viewportClassName,

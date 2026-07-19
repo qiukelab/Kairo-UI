@@ -1,0 +1,129 @@
+---
+title: Drawer
+description: An edge-pinned side sheet that slides in from the top, right, bottom or left, with swipe-to-dismiss, built on Base UI.
+icon: PanelBottom
+---
+
+import { DrawerDemo } from '@/components/demos/drawer-demo';
+
+## Usage
+
+```tsx
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerClose,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Drawer side="right">
+      <DrawerTrigger>Open settings</DrawerTrigger>
+      <DrawerContent>
+        <DrawerTitle>Settings</DrawerTitle>
+        <DrawerDescription>Make changes to your preferences here.</DrawerDescription>
+        <DrawerClose>Close</DrawerClose>
+      </DrawerContent>
+    </Drawer>
+  );
+}
+```
+
+`Drawer` groups the parts and renders Base UI's `Drawer.Root` underneath (which
+itself renders a `Dialog.Root`, so focus trapping, scroll locking,
+Escape/outside-press dismissal and `role="dialog"` all come from the same place
+Dialog's do). `DrawerContent` composes Base UI's `Drawer.Portal` > `Drawer.Backdrop` +
+`Drawer.Viewport` > `Drawer.Popup` in one call, so you don't need to reach for those
+parts yourself.
+
+Base UI's Drawer has no built-in "side"/placement concept of its own — only
+`swipeDirection` (the axis of the *dismiss gesture*, not a resting position). `side`
+is Kairo's own addition: it stamps a `data-side` attribute on the popup (read by
+`@kairo-ui/theme` to position, size and animate it) and sets Base UI's
+`swipeDirection` to match, so swiping the panel back toward the edge it rests against
+is what dismisses it.
+
+## One trigger per side
+
+<ComponentPreview
+  code={`<Drawer side="top">
+  <DrawerTrigger>Top</DrawerTrigger>
+  <DrawerContent>
+    <DrawerTitle>Top drawer</DrawerTitle>
+    <DrawerDescription>This panel is pinned to the top edge and slides in from there.</DrawerDescription>
+    <DrawerClose>Close</DrawerClose>
+  </DrawerContent>
+</Drawer>
+
+<Drawer side="right">
+  <DrawerTrigger>Right</DrawerTrigger>
+  <DrawerContent>
+    <DrawerTitle>Right drawer</DrawerTitle>
+    <DrawerDescription>This panel is pinned to the right edge and slides in from there.</DrawerDescription>
+    <DrawerClose>Close</DrawerClose>
+  </DrawerContent>
+</Drawer>
+
+<Drawer side="bottom">
+  <DrawerTrigger>Bottom</DrawerTrigger>
+  <DrawerContent>
+    <DrawerTitle>Bottom drawer</DrawerTitle>
+    <DrawerDescription>This panel is pinned to the bottom edge and slides in from there.</DrawerDescription>
+    <DrawerClose>Close</DrawerClose>
+  </DrawerContent>
+</Drawer>
+
+<Drawer side="left">
+  <DrawerTrigger>Left</DrawerTrigger>
+  <DrawerContent>
+    <DrawerTitle>Left drawer</DrawerTitle>
+    <DrawerDescription>This panel is pinned to the left edge and slides in from there.</DrawerDescription>
+    <DrawerClose>Close</DrawerClose>
+  </DrawerContent>
+</Drawer>`}
+>
+  <DrawerDemo />
+</ComponentPreview>
+
+## Props
+
+### `Drawer`
+
+| Prop                      | Type                                     | Default | Description                                                                                                     |
+| -------------------------- | ------------------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `side`                     | `'top' \| 'right' \| 'bottom' \| 'left'`   | `'right'` | Which edge the drawer is pinned to and slides in from. Also sets Base UI's `swipeDirection` to match.                 |
+| `open`                     | `boolean`                                  | —       | Controlled open state. Use with `onOpenChange`.                                                                        |
+| `defaultOpen`              | `boolean`                                  | `false` | Initial open state for an uncontrolled drawer.                                                                         |
+| `modal`                    | `boolean \| 'trap-focus'`                  | `true`  | Whether the drawer traps focus/locks scroll (`true`), only traps focus (`'trap-focus'`), or neither (`false`).         |
+| `onOpenChange`             | `(open: boolean, eventDetails) => void`    | —       | Called when the drawer opens or closes.                                                                                |
+| `disablePointerDismissal`  | `boolean`                                  | `false` | Prevents the drawer from closing on outside presses (and, for non-modal drawers, on focus moving outside it).          |
+| ...                        | Additional props | — | All other props (e.g. `snapPoints`, `handle`) are forwarded through — `swipeDirection` itself isn't exposed, since `side` drives it. |
+
+### `DrawerTrigger` / `DrawerClose`
+
+Render a native `<button>` by default, or compose with another element via `render`
+(e.g. `<DrawerTrigger render={<Button>Open</Button>} />`).
+
+### `DrawerContent`
+
+| Prop           | Type                                              | Default | Description                                                                       |
+| --------------- | ---------------------------------------------------- | ------- | --------------------------------------------------------------------------------------- |
+| `className`     | `string`                                             | —       | Merged with the base `kairo-drawer-popup` class on the popup element.                   |
+| `initialFocus`  | `boolean \| RefObject \| function`                   | —       | Element to focus when the drawer opens. Defaults to the first tabbable element inside the popup, or the popup itself when opened via touch (to avoid triggering the on-screen keyboard). Accepts `false` (leave focus untouched), `true` (use the default), a `RefObject` (focus that element), or a function — called with the interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — that returns an element, `true`/`null` for the default, or `false`/`undefined` to do nothing. |
+| `finalFocus`    | `boolean \| RefObject \| function`                   | —       | Element to focus when the drawer closes. Defaults to the trigger, or whichever element was focused before it opened. Accepts `false` (leave focus untouched), `true` (use the default), a `RefObject` (focus that element), or a function — called with the interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — that returns an element, `true`/`null` for the default, or `false`/`undefined` to do nothing. |
+| ...             | Additional props | — | All other props are forwarded to the underlying popup element. |
+
+Composes Base UI's `Drawer.Portal` > `Drawer.Backdrop` + `Drawer.Viewport` >
+`Drawer.Popup`. Sets `aria-modal="true"` on the popup by default (Base UI's Drawer
+doesn't add it itself) — pass `aria-modal={false}` explicitly if the root's `modal`
+prop is `false`/`'trap-focus'`. Also sets `lang` on the popup from the nearest
+`KairoLocaleProvider`, since Base UI portals it to `document.body`, outside any `lang`
+set further up the tree.
+
+### `DrawerTitle` / `DrawerDescription`
+
+Render an `<h2>`/`<p>` respectively, linked to the popup via
+`aria-labelledby`/`aria-describedby` automatically.

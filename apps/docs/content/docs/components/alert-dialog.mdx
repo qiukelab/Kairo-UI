@@ -1,0 +1,113 @@
+---
+title: AlertDialog
+description: An interrupting dialog that demands an explicit decision — clicking the backdrop never dismisses it, built on Base UI.
+icon: TriangleAlert
+---
+
+import { AlertDialogDemo } from '@/components/demos/alert-dialog-demo';
+
+## Usage
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogClose,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger>Delete account</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogTitle>Delete account?</AlertDialogTitle>
+        <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+        <AlertDialogClose>Cancel</AlertDialogClose>
+        <AlertDialogClose>Delete</AlertDialogClose>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+```
+
+`AlertDialog` groups the parts (it renders no DOM element of its own — the
+same as Base UI's `AlertDialog.Root`). `AlertDialogContent` composes Base
+UI's `AlertDialog.Portal` > `AlertDialog.Backdrop` + `AlertDialog.Popup` in
+one call, so you don't need to reach for those parts yourself. Focus
+trapping, scroll locking and `role="alertdialog"` all come from
+`@base-ui/react` — as does the defining behaviour: clicking the backdrop (or
+anywhere else outside the popup) **never** dismisses an alert dialog, unlike
+`Dialog`. Escape still closes it, since Base UI treats it as a deliberate
+keyboard action equivalent to Cancel, not an accidental dismissal.
+
+## Trigger, title, description & close
+
+<ComponentPreview
+  code={`<AlertDialog>
+  <AlertDialogTrigger render={<Button variant="outline">Delete account</Button>} />
+  <AlertDialogContent>
+    <AlertDialogTitle>Delete account?</AlertDialogTitle>
+    <AlertDialogDescription>
+      This will permanently delete your account and all of its data. This
+      action cannot be undone.
+    </AlertDialogDescription>
+    <div className="mt-6 flex justify-end gap-3">
+      <AlertDialogClose render={<Button variant="ghost">Cancel</Button>} />
+      <AlertDialogClose render={<Button>Delete</Button>} />
+    </div>
+  </AlertDialogContent>
+</AlertDialog>`}
+>
+  <AlertDialogDemo />
+</ComponentPreview>
+
+<Callout title="AlertDialog vs Dialog" type="info">
+  Both sit on the same Base UI anatomy — in fact `AlertDialog.Backdrop`,
+  `Portal`, `Popup`, `Title`, `Description` and `Close` are `Dialog`'s exact
+  same components, just running in a different mode — but they answer
+  different questions. **Dialog** is an ordinary modal: it's fine for the
+  user to bounce out of it by clicking elsewhere, since nothing irreversible
+  is at stake. **AlertDialog** interrupts the user to demand one of a small
+  set of explicit decisions (confirm, cancel, acknowledge) before they can
+  continue — reach for it for destructive or otherwise consequential actions
+  ("Delete this project?", "Discard unsaved changes?"), where silently
+  dismissing the choice by clicking outside it would be a mistake, not a
+  valid answer. If you're just showing content or a form with no
+  point-of-no-return decision attached, use `Dialog` instead.
+</Callout>
+
+## Props
+
+### `AlertDialog`
+
+| Prop           | Type                                                        | Default | Description                                                                                                                                            |
+| -------------- | -------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `open`         | `boolean`                                                       | —       | Controlled open state. Use with `onOpenChange`.                                                                                                              |
+| `defaultOpen`  | `boolean`                                                       | `false` | Initial open state for an uncontrolled alert dialog.                                                                                                         |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`                         | —       | Called when the alert dialog opens or closes. `eventDetails.reason` is `'escapeKey'`, `'closePress'`, `'triggerPress'`, `'focusOut'`, or `'imperativeAction'` — never `'outsidePress'`, since that dismissal path is disabled entirely. |
+| ...            | Additional props | — | All other props are forwarded through. Unlike `Dialog`, `modal` and `disablePointerDismissal` aren't exposed — they're fixed to `true` internally.  |
+
+### `AlertDialogTrigger` / `AlertDialogClose`
+
+Render a native `<button>` by default, or compose with another element via
+`render` (e.g. `<AlertDialogClose render={<Button>Delete</Button>} />`).
+There's no separate "action" part — use two `AlertDialogClose`s (one for
+Cancel, one for the confirming action) and attach your own `onClick` to the
+confirming one for any side effect that should run before it closes.
+
+### `AlertDialogContent`
+
+| Prop           | Type                                                    | Default | Description                                                                             |
+| -------------- | ---------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------- |
+| `className`    | `string`                                                    | —       | Merged with the base `kairo-alert-dialog-popup` class on the popup element.                    |
+| `initialFocus` | `boolean \| RefObject \| function`                          | —       | Element to focus when the alert dialog opens. Defaults to the first tabbable element inside the popup, or the popup itself when opened via touch (to avoid triggering the on-screen keyboard). Accepts `false` (leave focus untouched), `true` (use the default), a `RefObject` (focus that element), or a function — called with the interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — that returns an element, `true`/`null` for the default, or `false`/`undefined` to do nothing. |
+| `finalFocus`   | `boolean \| RefObject \| function`                          | —       | Element to focus when the alert dialog closes. Defaults to the trigger, or whichever element was focused before it opened. Accepts `false` (leave focus untouched), `true` (use the default), a `RefObject` (focus that element), or a function — called with the interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — that returns an element, `true`/`null` for the default, or `false`/`undefined` to do nothing. |
+| ...            | Additional props | — | All other props are forwarded to the underlying popup element. |
+
+### `AlertDialogTitle` / `AlertDialogDescription`
+
+Render an `<h2>`/`<p>` respectively, linked to the popup via
+`aria-labelledby`/`aria-describedby` automatically.

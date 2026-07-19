@@ -1,0 +1,60 @@
+/**
+ * Kairo Meter.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-meter`               — root container, always present. Also
+ *     carries `role="meter"` and the `aria-value*` attributes.
+ *   - `.kairo-meter-track`         — the static background bar.
+ *   - `.kairo-meter-indicator`     — the fill; its width is driven by the
+ *     `--kairo-meter-value` custom property (a percentage) set inline from
+ *     the `value`/`min`/`max` props, never a directly-set `width`.
+ *   - `[data-state="optimum|suboptimum|critical"]` — present on
+ *     `.kairo-meter`, derived from where `value` falls relative to the
+ *     `low`/`high`/`optimum` boundaries. Tints `.kairo-meter-indicator`
+ *     without the consumer passing a color.
+ *
+ * Visually similar to `.kairo-progress` but semantically distinct — a meter
+ * has no indeterminate state, and its fill color communicates a fixed
+ * value's standing (good/borderline/bad) rather than motion toward
+ * completion, so a duplicated track/indicator shape between the two
+ * stylesheets is intentional, not an oversight.
+ */
+
+.kairo-meter {
+  display: block;
+  width: 100%;
+  font-family: var(--kairo-font-sans);
+}
+
+.kairo-meter-track {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 0.5rem;
+  background-color: var(--kairo-muted);
+  border-radius: var(--kairo-radius);
+}
+
+.kairo-meter-indicator {
+  height: 100%;
+  width: var(--kairo-meter-value, 0%);
+  background-color: var(--kairo-success);
+  border-radius: var(--kairo-radius);
+  transition: width var(--kairo-duration-normal) var(--kairo-ease-standard);
+}
+
+/* ---------------------------------------------------------------------- */
+/* State — tints the indicator from low/high/optimum, no color prop needed */
+/* ---------------------------------------------------------------------- */
+
+.kairo-meter[data-state='optimum'] .kairo-meter-indicator {
+  background-color: var(--kairo-success);
+}
+
+.kairo-meter[data-state='suboptimum'] .kairo-meter-indicator {
+  background-color: var(--kairo-warning);
+}
+
+.kairo-meter[data-state='critical'] .kairo-meter-indicator {
+  background-color: var(--kairo-danger);
+}

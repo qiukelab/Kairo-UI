@@ -1,0 +1,120 @@
+/**
+ * Kairo AlertDialog (an interrupting, non-dismissible-by-backdrop dialog).
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-alert-dialog-backdrop`  — Base UI's `AlertDialog.Backdrop`
+ *     (which is `Dialog.Backdrop` re-exported — Base UI's `AlertDialog` is
+ *     `Dialog` running in a different mode, sharing every part except
+ *     `Root`/`Trigger`). Always present while the dialog is mounted: unlike
+ *     `dialog.css`'s backdrop, which `dialog.tsx` renders only for a fully
+ *     modal root, an alert dialog is modal by construction — Base UI hardcodes
+ *     `modal: true` for it and omits the prop from `AlertDialogRootProps` — so
+ *     there is no non-modal case in which this full-screen layer would be
+ *     wrong.
+ *   - `.kairo-alert-dialog-popup`     — Base UI's `AlertDialog.Popup` (same
+ *     note: this is `Dialog.Popup`, reading `role="alertdialog"` off the
+ *     `AlertDialog.Root`'s store instead of `role="dialog"`).
+ *   - `[data-starting-style]` / `[data-ending-style]` — present on both the
+ *     backdrop and the popup while they are mounting/unmounting for the
+ *     open/close transition; drives the enter/exit `animation`:
+ *       - the backdrop reuses the shared `kairo-fade-in`/`kairo-fade-out`
+ *         `@keyframes` from `base.css` (it has no positioning transform to
+ *         preserve, so the shared keyframes apply as-is);
+ *       - the popup uses local `kairo-alert-dialog-zoom-in`/
+ *         `kairo-alert-dialog-zoom-out` keyframes declared below (not the
+ *         shared `kairo-zoom-in`/`kairo-zoom-out` from `base.css`, and
+ *         deliberately named apart from `dialog.css`'s own
+ *         `kairo-dialog-zoom-in`/`-out` even though the two are identical —
+ *         both files are bundled into one stylesheet by `css/index.css`, so
+ *         reusing a name would silently redefine the other's `@keyframes`)
+ *         because the popup is centered with `transform: translate(-50%,
+ *         -50%)`. The shared keyframes only set `transform: scale(...)`,
+ *         which would overwrite (rather than compose with) that centering
+ *         translate for the animation's duration and make the popup jump to
+ *         the viewport's top-left corner mid-animation. The local keyframes
+ *         compose `translate(-50%, -50%)` with the scale on every step
+ *         instead.
+ *   - `[data-open]` / `[data-closed]` — present for the *entire* time the
+ *     dialog is open/closed (not just the transition); not used for
+ *     animation here.
+ *
+ * This file intentionally duplicates `dialog.css`'s backdrop/popup treatment
+ * rather than sharing a base class with it, so the two stay visually
+ * identical without coupling their independent class names together.
+ *
+ * `prefers-reduced-motion: reduce` is already handled globally in `base.css`
+ * for any `[class*='kairo-']` element, so no extra guard is needed here.
+ *
+ * Note for future Vue port: Base UI emits `data-starting-style`/
+ * `data-ending-style`/`data-open`/`data-closed`; Reka UI (Vue) has no
+ * dedicated AlertDialog primitive as of writing (its `Dialog` accepts a
+ * `role` override instead) and exposes `data-state='open'|'closed'` on
+ * `DialogContent`/`DialogOverlay` with no starting/ending-style equivalent —
+ * add dual selectors and drive enter/exit off `data-state` transitions (plus
+ * Reka's own `<Transition>`-based enter/exit classes) when porting.
+ */
+
+.kairo-alert-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: color-mix(in oklab, black 50%, transparent);
+}
+
+.kairo-alert-dialog-backdrop[data-starting-style] {
+  animation: kairo-fade-in var(--kairo-duration-fast) var(--kairo-ease-out);
+}
+
+.kairo-alert-dialog-backdrop[data-ending-style] {
+  animation: kairo-fade-out var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+@keyframes kairo-alert-dialog-zoom-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes kairo-alert-dialog-zoom-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+}
+
+.kairo-alert-dialog-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 51;
+  width: calc(100% - 2rem);
+  max-width: 32rem;
+  max-height: calc(100vh - 4rem);
+  overflow: auto;
+  padding: 1.5rem;
+  border: var(--kairo-border-width) solid var(--kairo-border);
+  border-radius: var(--kairo-radius-lg);
+  background-color: var(--kairo-popover);
+  color: var(--kairo-popover-foreground);
+  font-family: var(--kairo-font-sans);
+  line-height: var(--kairo-leading-relaxed);
+  box-shadow: var(--kairo-shadow-lg);
+  transform: translate(-50%, -50%);
+}
+
+.kairo-alert-dialog-popup[data-starting-style] {
+  animation: kairo-alert-dialog-zoom-in var(--kairo-duration-fast) var(--kairo-ease-out);
+}
+
+.kairo-alert-dialog-popup[data-ending-style] {
+  animation: kairo-alert-dialog-zoom-out var(--kairo-duration-fast) var(--kairo-ease-standard);
+}

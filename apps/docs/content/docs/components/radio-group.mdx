@@ -1,0 +1,122 @@
+---
+title: RadioGroup
+description: A set of mutually exclusive options, exactly one of which can be selected, built on Base UI.
+icon: CircleDot
+---
+
+import { RadioGroupDemo } from '@/components/demos/radio-group-demo';
+
+## Usage
+
+```tsx
+import { RadioGroup, Radio } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <RadioGroup aria-label="Plan" defaultValue="pro">
+      <label>
+        <Radio value="free" /> Free
+      </label>
+      <label>
+        <Radio value="pro" /> Pro
+      </label>
+      <label>
+        <Radio value="team" /> Team
+      </label>
+    </RadioGroup>
+  );
+}
+```
+
+`RadioGroup` renders Base UI's `role="radiogroup"` container and stacks its
+`Radio` children vertically. Each `Radio` renders `role="radio"` plus a hidden
+`<input type="radio">` for form submission. Arrow keys move focus *and*
+selection between the radios in a group (a roving-tabindex composite) — this
+is what distinguishes a radio group from a set of independently-toggled
+checkboxes.
+
+## Default, controlled & disabled
+
+<ComponentPreview
+  code={`<RadioGroup aria-label="Plan (uncontrolled)" defaultValue="free">
+  <label>
+    <Radio value="free" /> Free
+  </label>
+  <label>
+    <Radio value="pro" /> Pro
+  </label>
+  <label>
+    <Radio value="team" /> Team
+  </label>
+</RadioGroup>
+
+<RadioGroup aria-label="Plan (controlled)" value={plan} onValueChange={setPlan}>
+  <label>
+    <Radio value="free" /> Free
+  </label>
+  <label>
+    <Radio value="pro" /> Pro
+  </label>
+  <label>
+    <Radio value="team" /> Team
+  </label>
+</RadioGroup>
+
+<RadioGroup aria-label="Plan (one option disabled)" defaultValue="free">
+  <label>
+    <Radio value="free" /> Free
+  </label>
+  <label>
+    <Radio value="pro" disabled /> Pro (unavailable)
+  </label>
+  <label>
+    <Radio value="team" /> Team
+  </label>
+</RadioGroup>
+
+<RadioGroup aria-label="Plan (disabled group)" defaultValue="pro" disabled>
+  <label>
+    <Radio value="free" /> Free
+  </label>
+  <label>
+    <Radio value="pro" /> Pro
+  </label>
+  <label>
+    <Radio value="team" /> Team
+  </label>
+</RadioGroup>`}
+>
+  <RadioGroupDemo />
+</ComponentPreview>
+
+## Props
+
+### `RadioGroup`
+
+| Prop            | Type                                | Default | Description                                                          |
+| ---------------- | -------------------------------------- | ------- | ---------------------------------------------------------------------- |
+| `value`          | `any`                                   | —       | Controlled value of the selected radio. Use with `onValueChange`.       |
+| `defaultValue`   | `any`                                   | —       | Initial value for an uncontrolled radio group.                         |
+| `onValueChange`  | `(value: any, eventDetails) => void`    | —       | Called when the selected value changes.                                |
+| `disabled`       | `boolean`                               | `false` | Prevents interaction with every radio in the group.                    |
+| `readOnly`       | `boolean`                               | `false` | Prevents the user from selecting a different radio.                    |
+| `required`       | `boolean`                               | `false` | Whether a value must be chosen before submitting a form.               |
+| `name`           | `string`                                | —       | Identifies the field when a form is submitted.                         |
+| `form`           | `string`                                | —       | Identifies the form that owns the group's hidden inputs.                |
+| `className`      | `string`                                | —       | Merged with the base `kairo-radio-group` class.                        |
+| ...              | Additional props | — | All other props are forwarded to the underlying element.                |
+
+### `Radio`
+
+| Prop        | Type      | Default | Description                                                    |
+| ----------- | --------- | ------- | -------------------------------------------------------------------- |
+| `value`     | `any`     | —       | The unique value of this radio within its group (required).           |
+| `disabled`  | `boolean` | `false` | Prevents this radio from being selected.                               |
+| `readOnly`  | `boolean` | `false` | Prevents this radio from being selected by the user.                   |
+| `required`  | `boolean` | `false` | Whether a value must be chosen before submitting a form.                |
+| `className` | `string`  | —       | Merged with the base `kairo-radio` class.                               |
+| ...         | Additional props | — | All other props are forwarded to the underlying element. |
+
+Renders Base UI's `Radio.Root`/`Radio.Indicator` anatomy — the indicator is a
+plain `<span>` styled into a dot purely with CSS (no icon markup), shown only
+when the radio is checked.

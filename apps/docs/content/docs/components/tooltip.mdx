@@ -63,10 +63,18 @@ the next then opens instantly); a single `<Tooltip>` works fine without one.
 | `defaultOpen`| `boolean`                                                       | `false`    | Initial open state for an uncontrolled tooltip.                                     |
 | `onOpenChange` | `(open: boolean, eventDetails) => void`                       | —          | Called when the tooltip opens or closes.                                            |
 | `className`  | `string`                                                        | —          | Merged with the base `kairo-tooltip-popup` class on the popup element.              |
-| ...          | `Tooltip.Root` props from `@base-ui/react/tooltip`              | —          | All other Base UI `Tooltip.Root` props (e.g. `trackCursorAxis`, `disabled`) are passed through. |
+| ...          | Additional props | —          | All other props (e.g. `trackCursorAxis`, `disabled`) are forwarded through. |
 
 ### `TooltipProvider`
 
-Groups multiple `Tooltip`s so they share open/close delay timing. Accepts
-`delay`, `closeDelay`, and `timeout` props — see Base UI's
-[`Tooltip.Provider`](https://base-ui.com/react/components/tooltip) docs.
+Groups multiple `Tooltip`s so they share open/close delay timing: once one
+tooltip in the group has opened, an adjacent one opens instantly (skipping its
+own `delay`) if it's triggered within `timeout` ms of the previous one
+closing.
+
+| Prop         | Type              | Default | Description                                                                                                                                   |
+| ------------ | ----------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `delay`      | `number`          | —       | How long to wait before opening a tooltip in the group, in ms. Falls back to each `Tooltip`'s own `delay` (`600` by default) when unset.               |
+| `closeDelay` | `number`          | —       | How long to wait before closing a tooltip in the group, in ms. Falls back to each `Tooltip`'s own `closeDelay` (`0` by default) when unset.            |
+| `timeout`    | `number`          | `400`   | If another tooltip in the group opens within this many ms of the previous one closing, it opens instantly instead of waiting out `delay`.              |
+| `children`   | `React.ReactNode` | —       | The tooltips (and any other content) in the group.                                                                                                      |

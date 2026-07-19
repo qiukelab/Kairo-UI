@@ -3,7 +3,11 @@
 import { forwardRef } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip';
-import type { TooltipRootProps, TooltipPositionerProps } from '@base-ui/react/tooltip';
+import type {
+  TooltipRootProps,
+  TooltipPositionerProps,
+  TooltipPortalProps,
+} from '@base-ui/react/tooltip';
 import { useKairoLocale } from '../i18n/use-kairo-messages';
 
 export interface TooltipProps extends Omit<TooltipRootProps, 'children'> {
@@ -27,6 +31,13 @@ export interface TooltipProps extends Omit<TooltipRootProps, 'children'> {
   closeDelay?: number;
   /** Merged with the base `kairo-tooltip-popup` class on the popup element. */
   className?: string;
+  /**
+   * A parent element to render the popup's portal into, instead of the
+   * default `document.body`. Needed to portal into a shadow DOM, an iframe,
+   * or the currently active fullscreen element, where `document.body` isn't
+   * reachable or isn't the right paint target.
+   */
+  container?: TooltipPortalProps['container'];
 }
 
 /**
@@ -59,6 +70,7 @@ export const Tooltip = forwardRef<HTMLButtonElement, TooltipProps>(function Tool
     delay,
     closeDelay,
     className,
+    container,
     ...rootProps
   },
   ref,
@@ -67,7 +79,7 @@ export const Tooltip = forwardRef<HTMLButtonElement, TooltipProps>(function Tool
   return (
     <BaseTooltip.Root {...rootProps}>
       <BaseTooltip.Trigger ref={ref} render={children} delay={delay} closeDelay={closeDelay} />
-      <BaseTooltip.Portal>
+      <BaseTooltip.Portal container={container}>
         <BaseTooltip.Positioner side={side} align={align} sideOffset={sideOffset}>
           <BaseTooltip.Popup
             lang={locale}

@@ -9,6 +9,7 @@ import type {
   SelectValueProps,
   SelectPositionerProps,
   SelectPopupProps,
+  SelectPortalProps,
   SelectItemProps,
   SelectGroupProps,
   SelectGroupLabelProps,
@@ -99,6 +100,13 @@ export interface SelectContentProps extends SelectPopupProps {
    * @default false
    */
   alignItemWithTrigger?: SelectPositionerProps['alignItemWithTrigger'];
+  /**
+   * A parent element to render the popup's portal into, instead of the
+   * default `document.body`. Needed to portal into a shadow DOM, an iframe,
+   * or the currently active fullscreen element, where `document.body` isn't
+   * reachable or isn't the right paint target.
+   */
+  container?: SelectPortalProps['container'];
 }
 
 /**
@@ -122,13 +130,14 @@ export const SelectContent = forwardRef<HTMLDivElement, SelectContentProps>(func
     align = 'start',
     sideOffset = 8,
     alignItemWithTrigger = false,
+    container,
     ...props
   },
   ref,
 ) {
   const locale = useKairoLocale();
   return (
-    <BaseSelect.Portal>
+    <BaseSelect.Portal container={container}>
       <BaseSelect.Positioner
         side={side}
         align={align}

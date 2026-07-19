@@ -2,7 +2,15 @@
  * Kairo Dialog (modal).
  *
  * Selectors this component keys on (for future ports, e.g. Vue):
- *   - `.kairo-dialog-backdrop`        — Base UI's `Dialog.Backdrop`.
+ *   - `.kairo-dialog-backdrop`        — Base UI's `Dialog.Backdrop`. Purely
+ *     decorative, and rendered by `dialog.tsx` **only when the root is fully
+ *     modal** (`modal={true}`, the default); the pointer blocking a modal
+ *     dialog needs comes from a separate internal backdrop Base UI renders
+ *     itself. A `modal={false}`/`'trap-focus'` dialog is supposed to leave the
+ *     rest of the page interactive, so it gets no element matching this
+ *     selector at all rather than a full-screen layer that would dim and
+ *     swallow clicks on it — which also means no `pointer-events` rule is
+ *     needed anywhere in this file.
  *   - `.kairo-dialog-popup`           — Base UI's `Dialog.Popup`.
  *   - `[data-starting-style]` / `[data-ending-style]` — present on both the
  *     backdrop and the popup while they are mounting/unmounting for the

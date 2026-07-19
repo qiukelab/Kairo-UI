@@ -1,0 +1,139 @@
+---
+title: Toggle
+description: A two-state button that stays pressed, standalone or grouped into a single- or multi-select ToggleGroup, built on Base UI.
+icon: ToggleRight
+---
+
+import {
+  ToggleDemo,
+  ToggleGroupSingleDemo,
+  ToggleGroupMultipleDemo,
+  ToggleIconDemo,
+} from '@/components/demos/toggle-group-demo';
+
+## Usage
+
+```tsx
+import { Toggle } from '@kairo-ui/react';
+
+export function Example() {
+  return <Toggle aria-label="Bold">Bold</Toggle>;
+}
+```
+
+`Toggle` renders Base UI's `Toggle` — a native `<button>` with `aria-pressed`
+and `data-pressed` reflecting its state — all interaction and accessibility
+logic (controlled/uncontrolled `pressed`, keyboard activation) comes from
+`@base-ui/react`.
+
+## Default, controlled & disabled
+
+<ComponentPreview
+  code={`<Toggle defaultPressed aria-label="Default (uncontrolled)">Bold</Toggle>
+<Toggle pressed={pressed} onPressedChange={setPressed} aria-label="Controlled">
+  {pressed ? 'On' : 'Off'}
+</Toggle>
+<Toggle disabled defaultPressed aria-label="Disabled">Disabled</Toggle>`}
+>
+  <ToggleDemo />
+</ComponentPreview>
+
+## Single-select group
+
+Wrap `Toggle`s in a `ToggleGroup` to make them mutually exclusive — pressing
+one unpresses the others, the same way a segmented control works. Base UI
+still exposes this as a plain `role="group"` of buttons with `aria-pressed`,
+not a `radiogroup`/`radio` pair — see the note under **Props** below.
+
+<ComponentPreview
+  code={`<ToggleGroup defaultValue={['center']} aria-label="Text alignment">
+  <Toggle value="left" aria-label="Align left"><AlignLeft /></Toggle>
+  <Toggle value="center" aria-label="Align center"><AlignCenter /></Toggle>
+  <Toggle value="right" aria-label="Align right"><AlignRight /></Toggle>
+</ToggleGroup>`}
+>
+  <ToggleGroupSingleDemo />
+</ComponentPreview>
+
+Use <kbd>Arrow Left</kbd>/<kbd>Arrow Right</kbd> (or <kbd>Arrow Up</kbd>/
+<kbd>Arrow Down</kbd> when `orientation="vertical"`) to move focus between
+items, and <kbd>Home</kbd>/<kbd>End</kbd> to jump to the first/last one.
+
+## Multi-select group
+
+Pass `multiple` to allow any number of items to stay pressed at once.
+
+<ComponentPreview
+  code={`<ToggleGroup multiple defaultValue={['bold']} aria-label="Text formatting">
+  <Toggle value="bold" aria-label="Bold"><Bold /></Toggle>
+  <Toggle value="italic" aria-label="Italic"><Italic /></Toggle>
+  <Toggle value="underline" aria-label="Underline"><Underline /></Toggle>
+</ToggleGroup>`}
+>
+  <ToggleGroupMultipleDemo />
+</ComponentPreview>
+
+## Icon-only toggle
+
+A `Toggle` renders no visible label of its own, so an icon-only instance —
+standalone or inside a group — always needs an `aria-label`.
+
+<ComponentPreview
+  code={`<Toggle aria-label="Save to favorites">
+  <Star />
+</Toggle>`}
+>
+  <ToggleIconDemo />
+</ComponentPreview>
+
+<Callout title="Toggle vs Switch vs Checkbox" type="info">
+  All three represent a binary state, which is exactly why they're easy to
+  reach for at the wrong moment. **Checkbox** is for a form field the user
+  fills in — one of possibly several independent choices, or a single
+  "I agree to the terms" — and it's the one that can also go
+  `indeterminate`. **Switch** is for a setting that takes effect
+  immediately, no form submission required (dark mode, Wi-Fi, notifications)
+  — it reads as "on/off" rather than "checked/unchecked". **Toggle** is a
+  *button* that happens to remember whether it was last pressed — reach for
+  it for a UI action that has a persistent pressed look (a "Bold" button in a
+  toolbar, a "Mute" button, a filter chip), especially once several of them
+  need to live together in a `ToggleGroup`. If what you're building could be
+  submitted in a `<form>`, it's a `Checkbox` or `Switch`, not a `Toggle`.
+</Callout>
+
+## Props
+
+### `Toggle`
+
+| Prop              | Type                                        | Default     | Description                                                                 |
+| ----------------- | -------------------------------------------- | ----------- | ---------------------------------------------------------------------------------- |
+| `pressed`         | `boolean`                                     | —           | Controlled pressed state. Use with `onPressedChange`.                               |
+| `defaultPressed`  | `boolean`                                     | `false`     | Initial pressed state for an uncontrolled toggle.                                   |
+| `onPressedChange` | `(pressed: boolean, eventDetails) => void`    | —           | Called when the toggle is pressed or unpressed.                                     |
+| `value`           | `string`                                      | —           | Identifies this toggle inside a `ToggleGroup`. Required there, unused standalone.    |
+| `disabled`        | `boolean`                                     | `false`     | Prevents user interaction.                                                          |
+| `variant`         | `'solid' \| 'outline' \| 'ghost'`             | `'outline'` | Unpressed chrome, on the same scale as `Button`'s `variant`.                        |
+| `size`            | `'sm' \| 'md' \| 'lg'`                        | `'md'`      | Sizing, on the same scale as `Button`'s `size`.                                     |
+| `className`       | `string`                                      | —           | Merged with the base `kairo-toggle` class.                                          |
+| ...               | Additional props | —           | All other props are forwarded to the underlying element.                               |
+
+### `ToggleGroup`
+
+| Prop            | Type                              | Default        | Description                                                                 |
+| --------------- | ------------------------------------ | -------------- | ------------------------------------------------------------------------------ |
+| `value`         | `readonly string[]`                  | —              | Controlled array of the pressed items' values. Use with `onValueChange`.        |
+| `defaultValue`  | `readonly string[]`                  | `[]`           | Initial pressed values for an uncontrolled group.                              |
+| `onValueChange` | `(value: string[], eventDetails) => void` | —         | Called when the set of pressed items changes.                                  |
+| `multiple`      | `boolean`                             | `false`        | Allow several items pressed at once, instead of only one.                      |
+| `disabled`      | `boolean`                             | `false`        | Prevents interaction with every item in the group.                             |
+| `orientation`   | `'horizontal' \| 'vertical'`         | `'horizontal'` | Layout flow direction and the axis arrow keys navigate along.                   |
+| `loopFocus`     | `boolean`                             | `true`         | Loop keyboard focus back to the first item at the end of the list.             |
+| `className`     | `string`                              | —              | Merged with the base `kairo-toggle-group` class.                               |
+| ...             | Additional props | — | All other props are forwarded to the underlying element.                       |
+
+Renders Base UI's `ToggleGroup` — a `<div role="group">`, not `radiogroup`,
+even when `multiple` is `false` — and gives its `Toggle` children roving
+`Arrow`/`Home`/`End` keyboard focus and shared pressed-state tracking through
+context (Base UI has no separate "Item" part here: the same `Toggle` you'd
+render standalone just behaves differently once it detects a `ToggleGroup`
+ancestor).

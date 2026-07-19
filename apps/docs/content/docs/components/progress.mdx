@@ -1,0 +1,65 @@
+---
+title: Progress
+description: A static task-completion bar with determinate and indeterminate states, built on the WAI-ARIA progressbar pattern.
+icon: SquarePercent
+---
+
+import { Progress } from '@kairo-ui/react';
+
+## Usage
+
+```tsx
+import { Progress } from '@kairo-ui/react';
+
+export function Example() {
+  return <Progress value={40} label="Uploading files" showValueLabel />;
+}
+```
+
+## Determinate
+
+<ComponentPreview code={`<Progress value={20} aria-label="Loading" />
+<Progress value={60} aria-label="Loading" />
+<Progress value={100} aria-label="Loading" />`}>
+  <div className="flex w-full max-w-sm flex-col gap-3">
+    <Progress value={20} aria-label="Loading" />
+    <Progress value={60} aria-label="Loading" />
+    <Progress value={100} aria-label="Loading" />
+  </div>
+</ComponentPreview>
+
+## Indeterminate
+
+Pass `value={null}` (or omit `value` entirely) when the completion percentage
+isn't knowable yet — the bar loops instead of filling, and `aria-valuenow` is
+left off the element entirely rather than set to `0`.
+
+<ComponentPreview code={`<Progress aria-label="Loading" />`}>
+  <div className="flex w-full max-w-sm flex-col gap-3">
+    <Progress aria-label="Loading" />
+  </div>
+</ComponentPreview>
+
+## Labelled, with a value readout
+
+A string `label` doubles as the bar's accessible name unless `aria-label`/
+`aria-labelledby` is passed explicitly. `showValueLabel` adds a numeric
+readout next to it (hidden from assistive tech via `aria-hidden`, since the
+value is already exposed through `aria-valuenow`).
+
+<ComponentPreview code={`<Progress value={72} label="Uploading files" showValueLabel />`}>
+  <div className="flex w-full max-w-sm flex-col gap-3">
+    <Progress value={72} label="Uploading files" showValueLabel />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop             | Type                              | Default | Description                                                                                       |
+| ---------------- | ----------------------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| `value`          | `number \| null`                    | `null`  | Current progress value. `null` renders an indeterminate bar.                                          |
+| `max`            | `number`                            | `100`   | The value that represents 100% completion.                                                            |
+| `label`          | `ReactNode`                         | —       | Optional visible caption. If it's a string and no `aria-label`/`aria-labelledby` is set, it also becomes the accessible name. |
+| `showValueLabel` | `boolean`                           | `false` | Renders a numeric value readout (e.g. `"40%"`) next to the label. Ignored while indeterminate.         |
+| `className`      | `string`                            | —       | Merged with the base `kairo-progress` class.                                                          |
+| ...              | `HTMLAttributes<HTMLDivElement>`    | —       | All other native `<div>` props, including `aria-label`/`aria-labelledby`, are passed through.          |

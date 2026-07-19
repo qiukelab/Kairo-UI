@@ -1,6 +1,7 @@
 {
   "name": "@kairo-ui/motion-react",
   "version": "0.0.0",
+  "private": true,
   "description": "Optional Motion-powered animation addon for Kairo.",
   "type": "module",
   "license": "MIT",

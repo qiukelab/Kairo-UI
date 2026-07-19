@@ -1,0 +1,143 @@
+---
+title: Accordion
+description: A set of headed sections that expand and collapse, one at a time or several together, built on Base UI.
+icon: ListCollapse
+---
+
+import { AccordionDemo } from '@/components/demos/accordion-demo';
+
+## Usage
+
+```tsx
+import {
+  Accordion,
+  AccordionItem,
+  AccordionHeader,
+  AccordionTrigger,
+  AccordionPanel,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Accordion defaultValue={['item-1']}>
+      <AccordionItem value="item-1">
+        <AccordionHeader>
+          <AccordionTrigger>Is it accessible?</AccordionTrigger>
+        </AccordionHeader>
+        <AccordionPanel>Yes. It adheres to the WAI-ARIA accordion pattern.</AccordionPanel>
+      </AccordionItem>
+      <AccordionItem value="item-2">
+        <AccordionHeader>
+          <AccordionTrigger>Is it styled?</AccordionTrigger>
+        </AccordionHeader>
+        <AccordionPanel>Yes, it comes with default styles from `@kairo-ui/theme`.</AccordionPanel>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+```
+
+`Accordion` groups the parts and renders Base UI's `Accordion.Root`. `AccordionItem`
+renders `Accordion.Item`, wrapping an `AccordionHeader` (an `<h3>`) that contains the
+`AccordionTrigger` button, plus the `AccordionPanel` it controls.
+`aria-expanded`/`aria-controls` wiring, `role="region"` on the panel, and the panel's
+open/close height animation all come from `@base-ui/react`.
+
+Only one item is open at a time by default — pass `multiple` to `Accordion` to allow
+several items open at once.
+
+## Disabled item, one open at a time
+
+<kbd>Tab</kbd> to a trigger, then <kbd>Enter</kbd> or <kbd>Space</kbd> to expand or
+collapse it. The disabled "Priority support" trigger stays visible but does not
+respond to activation.
+
+<ComponentPreview
+  code={`<Accordion defaultValue={['shipping']}>
+  <AccordionItem value="shipping">
+    <AccordionHeader>
+      <AccordionTrigger>What are the shipping options?</AccordionTrigger>
+    </AccordionHeader>
+    <AccordionPanel>
+      Standard shipping arrives in 3-5 business days. Express shipping arrives
+      the next business day.
+    </AccordionPanel>
+  </AccordionItem>
+  <AccordionItem value="returns">
+    <AccordionHeader>
+      <AccordionTrigger>What is the return policy?</AccordionTrigger>
+    </AccordionHeader>
+    <AccordionPanel>
+      Unused items can be returned within 30 days of delivery for a full refund.
+    </AccordionPanel>
+  </AccordionItem>
+  <AccordionItem value="support" disabled>
+    <AccordionHeader>
+      <AccordionTrigger>Priority support (unavailable on this plan)</AccordionTrigger>
+    </AccordionHeader>
+    <AccordionPanel>Upgrade to a paid plan to unlock priority support.</AccordionPanel>
+  </AccordionItem>
+</Accordion>`}
+>
+  <AccordionDemo />
+</ComponentPreview>
+
+## Props
+
+### `Accordion`
+
+| Prop            | Type                                    | Default | Description                                                            |
+| --------------- | ---------------------------------------- | ------- | ------------------------------------------------------------------------------ |
+| `value`         | `any[]`                                   | —       | Controlled value(s) of the expanded item(s). Use with `onValueChange`.         |
+| `defaultValue`  | `any[]`                                   | `[]`    | Initial expanded item value(s) for an uncontrolled `Accordion`.                |
+| `multiple`      | `boolean`                                 | `false` | Whether more than one item can be open at the same time.                       |
+| `disabled`      | `boolean`                                 | `false` | Prevents interaction with every item.                                          |
+| `onValueChange` | `(value: any[], eventDetails) => void`    | —       | Called when an item is expanded or collapsed.                                  |
+| `className`     | `string`                                  | —       | Merged with the base `kairo-accordion` class.                                  |
+| ...             | Additional props | — | All other props are forwarded to the underlying element.      |
+
+### `AccordionItem`
+
+| Prop           | Type                                     | Default | Description                                                       |
+| -------------- | ------------------------------------------ | ------- | --------------------------------------------------------------------- |
+| `value`        | `any`                                       | —       | A unique value identifying this item. Auto-generated if omitted.      |
+| `disabled`     | `boolean`                                   | `false` | Prevents this item's trigger from expanding/collapsing it.            |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`     | —       | Called when this item's panel opens or closes.                        |
+| `className`    | `string`                                    | —       | Merged with the base `kairo-accordion-item` class.                    |
+| ...            | Additional props | — | All other props are forwarded to the underlying item element. |
+
+### `AccordionHeader`
+
+Renders Base UI's `Accordion.Header`, an `<h3>` wrapping an `AccordionTrigger`.
+
+| Prop        | Type     | Default | Description                                                       |
+| ----------- | -------- | ------- | ----------------------------------------------------------------------- |
+| `className` | `string` | —       | Merged with the base `kairo-accordion-header` class.                    |
+| ...         | Additional props | — | All other props are forwarded to the underlying header element. |
+
+### `AccordionTrigger`
+
+Renders a native `<button>` with `children` followed by a default chevron icon that
+rotates when its panel is open.
+
+| Prop        | Type      | Default | Description                                                            |
+| ----------- | --------- | ------- | -------------------------------------------------------------------------- |
+| `disabled`  | `boolean` | `false` | Prevents this trigger from expanding/collapsing its panel.                 |
+| `className` | `string`  | —       | Merged with the base `kairo-accordion-trigger` class.                      |
+| ...         | Additional props | — | All other props are forwarded to the underlying trigger element. |
+
+### `AccordionPanel`
+
+| Prop               | Type      | Default | Description                                                            |
+| ------------------ | --------- | ------- | --------------------------------------------------------------------------- |
+| `keepMounted`      | `boolean` | `false` | Keep the panel in the DOM (hidden) while its item is collapsed.             |
+| `hiddenUntilFound` | `boolean` | `false` | Hide with `hidden="until-found"` so the browser's find-in-page can reveal it. |
+| `className`        | `string`  | —       | Merged with the base `kairo-accordion-panel` class.                         |
+| ...                | Additional props | — | All other props are forwarded to the underlying panel element. |
+
+`children` passed to `AccordionPanel` are wrapped in an internal
+`kairo-accordion-panel-content` `<div>` that carries the panel's padding — see
+`accordion.css` for why the padding can't live on the panel itself.
+
+All other props are forwarded to the underlying element on each corresponding
+Kairo component.

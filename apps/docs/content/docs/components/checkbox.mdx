@@ -39,4 +39,4 @@ export function Example() {
 | `name`            | `string`                                                                                | —       | Identifies the field when a form is submitted.                        |
 | `value`           | `string`                                                                                | —       | The value submitted with the form when the checkbox is checked.       |
 | `className`       | `string`                                                                                | —       | Merged with the base `kairo-checkbox` class.                          |
-| ...               | `React.ComponentPropsWithoutRef<typeof Checkbox.Root>` from `@base-ui/react/checkbox` | —       | All other Base UI `Checkbox.Root` props (e.g. `required`, `readOnly`) are passed through. |
+| ...               | Additional props | —       | All other props (e.g. `required`, `readOnly`) are forwarded to the underlying element. |

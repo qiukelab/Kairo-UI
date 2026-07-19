@@ -1,0 +1,109 @@
+---
+title: Meter
+description: A static gauge for a known, bounded quantity — disk usage, password strength, storage quota — with low/high/optimum thresholds that tint the fill automatically.
+icon: Gauge
+---
+
+import { Meter } from '@kairo-ui/react';
+
+## Usage
+
+```tsx
+import { Meter } from '@kairo-ui/react';
+
+export function Example() {
+  return <Meter value={72} aria-label="Disk usage" />;
+}
+```
+
+<Callout title="Meter vs Progress" type="info">
+  These look alike, but they answer different questions. **Progress**
+  (`role="progressbar"`) measures a *task advancing toward completion* — it
+  can be indeterminate, and 100% means "done". **Meter** (`role="meter"`)
+  measures a *static value inside a known range* — there's no notion of
+  "in progress" or "done", only where the value currently sits, and whether
+  that's good, borderline, or bad. Reach for Progress for uploads, installs,
+  and multi-step wizards; reach for Meter for disk usage, password strength,
+  battery level, or a storage quota.
+</Callout>
+
+## Without thresholds
+
+With no `low`/`high`/`optimum`, the whole range counts as "good" — matching
+the native HTML `<meter>` element's default — so the fill renders in the
+optimum (success) tint.
+
+<ComponentPreview code={`<Meter value={42} aria-label="Storage used" />`}>
+  <div className="w-full max-w-xs">
+    <Meter value={42} aria-label="Storage used" />
+  </div>
+</ComponentPreview>
+
+## Lower is better — disk usage
+
+Set `optimum` below `low` when smaller values are the goal: the `[min, low]`
+band reads as optimum (green), `(low, high]` as suboptimum (yellow), and
+anything past `high` as critical (red).
+
+<ComponentPreview
+  code={`<Meter value={35} low={60} high={90} optimum={0} aria-label="Disk usage" />
+<Meter value={75} low={60} high={90} optimum={0} aria-label="Disk usage" />
+<Meter value={95} low={60} high={90} optimum={0} aria-label="Disk usage" />`}
+>
+  <div className="flex w-full max-w-xs flex-col gap-3">
+    <Meter value={35} low={60} high={90} optimum={0} aria-label="Disk usage, 35%" />
+    <Meter value={75} low={60} high={90} optimum={0} aria-label="Disk usage, 75%" />
+    <Meter value={95} low={60} high={90} optimum={0} aria-label="Disk usage, 95%" />
+  </div>
+</ComponentPreview>
+
+## Higher is better — password strength
+
+Set `optimum` above `high` when larger values are the goal — the bands
+mirror the disk-usage case, with the "good" zone at the top of the range
+instead of the bottom.
+
+<ComponentPreview
+  code={`<Meter value={20} low={30} high={70} optimum={100} aria-label="Password strength" />
+<Meter value={50} low={30} high={70} optimum={100} aria-label="Password strength" />
+<Meter value={90} low={30} high={70} optimum={100} aria-label="Password strength" />`}
+>
+  <div className="flex w-full max-w-xs flex-col gap-3">
+    <Meter value={20} low={30} high={70} optimum={100} aria-label="Password strength, weak" />
+    <Meter value={50} low={30} high={70} optimum={100} aria-label="Password strength, medium" />
+    <Meter value={90} low={30} high={70} optimum={100} aria-label="Password strength, strong" />
+  </div>
+</ComponentPreview>
+
+## Optimum in the middle of the range
+
+When `optimum` sits inside `[low, high]`, that band is the only "good" zone —
+values on either side are equally suboptimum (yellow), and this shape never
+produces a critical/red state.
+
+<ComponentPreview
+  code={`<Meter value={50} low={30} high={70} optimum={50} aria-label="Target range" />
+<Meter value={10} low={30} high={70} optimum={50} aria-label="Target range" />
+<Meter value={95} low={30} high={70} optimum={50} aria-label="Target range" />`}
+>
+  <div className="flex w-full max-w-xs flex-col gap-3">
+    <Meter value={50} low={30} high={70} optimum={50} aria-label="Target range, on target" />
+    <Meter value={10} low={30} high={70} optimum={50} aria-label="Target range, under" />
+    <Meter value={95} low={30} high={70} optimum={50} aria-label="Target range, over" />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop         | Type                              | Default                       | Description                                                                                     |
+| ------------ | ---------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `value`      | `number`                           | —                               | Current value of the meter. Clamped to `[min, max]`.                                                |
+| `min`        | `number`                           | `0`                             | Minimum value of the range.                                                                         |
+| `max`        | `number`                           | `100`                           | Maximum value of the range.                                                                          |
+| `low`        | `number`                           | `min`                           | Boundary below which `value` is considered too low to be optimal.                                   |
+| `high`       | `number`                           | `max`                           | Boundary above which `value` is considered too high to be optimal.                                  |
+| `optimum`    | `number`                           | midpoint of `min`/`max`         | The most desirable value; its position relative to `low`/`high` decides which side reads as "good". |
+| `aria-label` | `string`                           | —                               | Accessible name for the meter. Required — like the native `<meter>` element, Meter has no visible label of its own. |
+| `aria-valuetext` | `string`                       | rounded `%` of the range        | Human-readable readout announced instead of the raw number, e.g. `"42 GB of 100 GB"`.               |
+| `className`  | `string`                           | —                               | Merged with the base `kairo-meter` class.                                                            |
+| ...          | `HTMLAttributes<HTMLDivElement>`   | —                               | All other native `<div>` props are passed through.                                                  |

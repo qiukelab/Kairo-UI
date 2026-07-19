@@ -1,0 +1,77 @@
+---
+title: Separator
+description: A thin rule that visually or semantically divides content, with horizontal and vertical orientations.
+icon: SeparatorHorizontal
+---
+
+import { Separator } from '@kairo-ui/react';
+
+## Usage
+
+```tsx
+import { Separator } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <div>
+      <p>Section one</p>
+      <Separator />
+      <p>Section two</p>
+    </div>
+  );
+}
+```
+
+## Orientation
+
+<ComponentPreview code={`<div>
+  <p>Section one</p>
+  <Separator />
+  <p>Section two</p>
+</div>
+<div className="flex h-5 items-center gap-3">
+  <span>Left</span>
+  <Separator orientation="vertical" />
+  <span>Right</span>
+</div>`}>
+  <div className="flex w-full flex-col gap-4">
+    <div>
+      <p>Section one</p>
+      <Separator />
+      <p>Section two</p>
+    </div>
+    <div className="flex h-5 items-center gap-3">
+      <span>Left</span>
+      <Separator orientation="vertical" />
+      <span>Right</span>
+    </div>
+  </div>
+</ComponentPreview>
+
+## Decorative
+
+By default a `Separator` exposes `role="separator"` to assistive technology,
+announcing it as a meaningful boundary between sections of content. When the
+rule is purely visual — say, between two icons in a toolbar — pass
+`decorative` so it's hidden from the accessibility tree instead.
+
+<ComponentPreview code={`<div className="flex items-center gap-3">
+  <span>Bold</span>
+  <Separator orientation="vertical" decorative />
+  <span>Italic</span>
+</div>`}>
+  <div className="flex h-5 items-center gap-3">
+    <span>Bold</span>
+    <Separator orientation="vertical" decorative />
+    <span>Italic</span>
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop          | Type                             | Default        | Description                                                                 |
+| ------------- | ---------------------------------- | ---------------- | ------------------------------------------------------------------------------ |
+| `orientation` | `'horizontal' \| 'vertical'`       | `'horizontal'`   | Axis the separator divides content along.                                       |
+| `decorative`  | `boolean`                          | `false`          | Hides the separator from the accessibility tree instead of exposing `role="separator"`. |
+| `className`   | `string`                           | —                | Merged with the base `kairo-separator` class.                                   |
+| ...           | `HTMLAttributes<HTMLDivElement>`   | —                | All other native `<div>` props are passed through.                              |

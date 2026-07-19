@@ -96,4 +96,16 @@ describe('Tooltip', () => {
     );
     expect(screen.getByText('Helpful info')).not.toHaveAttribute('lang');
   });
+
+  it('portals the popup into a custom container element', () => {
+    const portalTarget = document.createElement('div');
+    document.body.appendChild(portalTarget);
+    render(
+      <Tooltip content="Helpful info" open container={portalTarget}>
+        <button type="button">Hover me</button>
+      </Tooltip>,
+    );
+    expect(portalTarget.contains(screen.getByText('Helpful info'))).toBe(true);
+    document.body.removeChild(portalTarget);
+  });
 });

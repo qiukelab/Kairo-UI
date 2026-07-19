@@ -7,6 +7,7 @@ import type {
   PopoverTriggerProps,
   PopoverPopupProps,
   PopoverPositionerProps,
+  PopoverPortalProps,
   PopoverTitleProps,
   PopoverDescriptionProps,
   PopoverCloseProps,
@@ -59,6 +60,13 @@ export interface PopoverContentProps extends PopoverPopupProps {
   align?: PopoverPositionerProps['align'];
   /** Distance in pixels between the trigger and the popup. @default 8 */
   sideOffset?: PopoverPositionerProps['sideOffset'];
+  /**
+   * A parent element to render the popup's portal into, instead of the
+   * default `document.body`. Needed to portal into a shadow DOM, an iframe,
+   * or the currently active fullscreen element, where `document.body` isn't
+   * reachable or isn't the right paint target.
+   */
+  container?: PopoverPortalProps['container'];
 }
 
 /**
@@ -81,12 +89,12 @@ export interface PopoverContentProps extends PopoverPopupProps {
  */
 export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>(
   function PopoverContent(
-    { className, children, side = 'bottom', align = 'center', sideOffset = 8, ...props },
+    { className, children, side = 'bottom', align = 'center', sideOffset = 8, container, ...props },
     ref,
   ) {
     const locale = useKairoLocale();
     return (
-      <BasePopover.Portal>
+      <BasePopover.Portal container={container}>
         <BasePopover.Positioner side={side} align={align} sideOffset={sideOffset}>
           <BasePopover.Popup
             ref={ref}

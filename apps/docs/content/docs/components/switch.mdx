@@ -37,4 +37,4 @@ export function Example() {
 | `name`            | `string`                                                   | —       | Identifies the field when a form is submitted.                      |
 | `value`           | `string`                                                   | —       | The value submitted with the form when the switch is on.            |
 | `className`       | `string`                                                    | —       | Merged with the base `kairo-switch` class.                          |
-| ...               | `React.ComponentPropsWithoutRef<typeof Switch.Root>` from `@base-ui/react/switch` | — | All other Base UI `Switch.Root` props (e.g. `required`, `readOnly`) are passed through. |
+| ...               | Additional props | — | All other props (e.g. `required`, `readOnly`) are forwarded to the underlying element. |

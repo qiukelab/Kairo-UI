@@ -1,0 +1,29 @@
+/**
+ * Kairo Separator.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-separator`                          — base class, always
+ *     present.
+ *   - `[data-orientation="horizontal|vertical"]`  — axis the rule divides
+ *     content along.
+ */
+
+.kairo-separator {
+  flex-shrink: 0;
+  border: none;
+  background-color: var(--kairo-border);
+}
+
+.kairo-separator[data-orientation='horizontal'] {
+  width: 100%;
+  height: var(--kairo-border-width);
+}
+
+.kairo-separator[data-orientation='vertical'] {
+  /* `height: 100%` covers ancestors with a definite height; `align-self:
+     stretch` covers the common case of a vertical separator between flex
+     siblings in a row, even if the row overrides `align-items`. */
+  width: var(--kairo-border-width);
+  height: 100%;
+  align-self: stretch;
+}

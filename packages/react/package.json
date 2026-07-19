@@ -36,6 +36,14 @@
       "types": "./dist/index.d.mts",
       "import": "./dist/index.mjs"
     },
+    "./accordion": {
+      "types": "./dist/accordion/index.d.mts",
+      "import": "./dist/accordion/index.mjs"
+    },
+    "./alert-dialog": {
+      "types": "./dist/alert-dialog/index.d.mts",
+      "import": "./dist/alert-dialog/index.mjs"
+    },
     "./avatar": {
       "types": "./dist/avatar/index.d.mts",
       "import": "./dist/avatar/index.mjs"
@@ -56,9 +64,25 @@
       "types": "./dist/checkbox/index.d.mts",
       "import": "./dist/checkbox/index.mjs"
     },
+    "./collapsible": {
+      "types": "./dist/collapsible/index.d.mts",
+      "import": "./dist/collapsible/index.mjs"
+    },
+    "./combobox": {
+      "types": "./dist/combobox/index.d.mts",
+      "import": "./dist/combobox/index.mjs"
+    },
+    "./context-menu": {
+      "types": "./dist/context-menu/index.d.mts",
+      "import": "./dist/context-menu/index.mjs"
+    },
     "./dialog": {
       "types": "./dist/dialog/index.d.mts",
       "import": "./dist/dialog/index.mjs"
+    },
+    "./drawer": {
+      "types": "./dist/drawer/index.d.mts",
+      "import": "./dist/drawer/index.mjs"
     },
     "./i18n": {
       "types": "./dist/i18n/index.d.mts",
@@ -68,13 +92,41 @@
       "types": "./dist/input/index.d.mts",
       "import": "./dist/input/index.mjs"
     },
+    "./menu": {
+      "types": "./dist/menu/index.d.mts",
+      "import": "./dist/menu/index.mjs"
+    },
+    "./meter": {
+      "types": "./dist/meter/index.d.mts",
+      "import": "./dist/meter/index.mjs"
+    },
+    "./number-field": {
+      "types": "./dist/number-field/index.d.mts",
+      "import": "./dist/number-field/index.mjs"
+    },
     "./popover": {
       "types": "./dist/popover/index.d.mts",
       "import": "./dist/popover/index.mjs"
     },
+    "./progress": {
+      "types": "./dist/progress/index.d.mts",
+      "import": "./dist/progress/index.mjs"
+    },
+    "./radio-group": {
+      "types": "./dist/radio-group/index.d.mts",
+      "import": "./dist/radio-group/index.mjs"
+    },
     "./select": {
       "types": "./dist/select/index.d.mts",
       "import": "./dist/select/index.mjs"
+    },
+    "./separator": {
+      "types": "./dist/separator/index.d.mts",
+      "import": "./dist/separator/index.mjs"
+    },
+    "./slider": {
+      "types": "./dist/slider/index.d.mts",
+      "import": "./dist/slider/index.mjs"
     },
     "./spinner": {
       "types": "./dist/spinner/index.d.mts",
@@ -91,6 +143,10 @@
     "./toast": {
       "types": "./dist/toast/index.d.mts",
       "import": "./dist/toast/index.mjs"
+    },
+    "./toggle-group": {
+      "types": "./dist/toggle-group/index.d.mts",
+      "import": "./dist/toggle-group/index.mjs"
     },
     "./tooltip": {
       "types": "./dist/tooltip/index.d.mts",

@@ -187,4 +187,23 @@ describe('Select', () => {
     const listbox = await screen.findByRole('listbox');
     expect(listbox).not.toHaveAttribute('lang');
   });
+
+  it('portals the popup into a custom container element', async () => {
+    const portalTarget = document.createElement('div');
+    document.body.appendChild(portalTarget);
+    render(
+      <Select items={fruits}>
+        <SelectTrigger aria-label="Fruit">
+          <SelectValue placeholder="Select a fruit" />
+        </SelectTrigger>
+        <SelectContent container={portalTarget}>
+          <SelectItem value="apple">Apple</SelectItem>
+        </SelectContent>
+      </Select>,
+    );
+    fireEvent.click(screen.getByRole('combobox', { name: 'Fruit' }));
+    const listbox = await screen.findByRole('listbox');
+    expect(portalTarget.contains(listbox)).toBe(true);
+    document.body.removeChild(portalTarget);
+  });
 });
