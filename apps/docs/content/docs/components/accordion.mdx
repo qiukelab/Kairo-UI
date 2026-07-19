@@ -94,7 +94,7 @@ respond to activation.
 | `disabled`      | `boolean`                                 | `false` | Prevents interaction with every item.                                          |
 | `onValueChange` | `(value: any[], eventDetails) => void`    | —       | Called when an item is expanded or collapsed.                                  |
 | `className`     | `string`                                  | —       | Merged with the base `kairo-accordion` class.                                  |
-| ...             | `Accordion.Root` props from `@base-ui/react/accordion` | — | All other Base UI `Accordion.Root` props are passed through.      |
+| ...             | Additional props | — | All other props are forwarded to the underlying element.      |
 
 ### `AccordionItem`
 
@@ -104,7 +104,7 @@ respond to activation.
 | `disabled`     | `boolean`                                   | `false` | Prevents this item's trigger from expanding/collapsing it.            |
 | `onOpenChange` | `(open: boolean, eventDetails) => void`     | —       | Called when this item's panel opens or closes.                        |
 | `className`    | `string`                                    | —       | Merged with the base `kairo-accordion-item` class.                    |
-| ...            | `Accordion.Item` props from `@base-ui/react/accordion` | — | All other Base UI `Accordion.Item` props are passed through. |
+| ...            | Additional props | — | All other props are forwarded to the underlying item element. |
 
 ### `AccordionHeader`
 
@@ -113,7 +113,7 @@ Renders Base UI's `Accordion.Header`, an `<h3>` wrapping an `AccordionTrigger`.
 | Prop        | Type     | Default | Description                                                       |
 | ----------- | -------- | ------- | ----------------------------------------------------------------------- |
 | `className` | `string` | —       | Merged with the base `kairo-accordion-header` class.                    |
-| ...         | `Accordion.Header` props from `@base-ui/react/accordion` | — | All other Base UI `Accordion.Header` props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying header element. |
 
 ### `AccordionTrigger`
 
@@ -124,7 +124,7 @@ rotates when its panel is open.
 | ----------- | --------- | ------- | -------------------------------------------------------------------------- |
 | `disabled`  | `boolean` | `false` | Prevents this trigger from expanding/collapsing its panel.                 |
 | `className` | `string`  | —       | Merged with the base `kairo-accordion-trigger` class.                      |
-| ...         | `Accordion.Trigger` props from `@base-ui/react/accordion` | — | All other Base UI `Accordion.Trigger` props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying trigger element. |
 
 ### `AccordionPanel`
 
@@ -133,11 +133,11 @@ rotates when its panel is open.
 | `keepMounted`      | `boolean` | `false` | Keep the panel in the DOM (hidden) while its item is collapsed.             |
 | `hiddenUntilFound` | `boolean` | `false` | Hide with `hidden="until-found"` so the browser's find-in-page can reveal it. |
 | `className`        | `string`  | —       | Merged with the base `kairo-accordion-panel` class.                         |
-| ...                | `Accordion.Panel` props from `@base-ui/react/accordion` | — | All other Base UI `Accordion.Panel` props are passed through. |
+| ...                | Additional props | — | All other props are forwarded to the underlying panel element. |
 
 `children` passed to `AccordionPanel` are wrapped in an internal
 `kairo-accordion-panel-content` `<div>` that carries the panel's padding — see
 `accordion.css` for why the padding can't live on the panel itself.
 
-All other props from `@base-ui/react/accordion`'s corresponding part are passed
-through on each Kairo component.
+All other props are forwarded to the underlying element on each corresponding
+Kairo component.

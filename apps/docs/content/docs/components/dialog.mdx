@@ -62,7 +62,7 @@ Escape/outside-press dismissal and `role="dialog"` all come from
 | `defaultOpen`  | `boolean`                                               | `false` | Initial open state for an uncontrolled dialog.                                                               |
 | `modal`        | `boolean \| 'trap-focus'`                               | `true`  | Whether the dialog traps focus/locks scroll (`true`), only traps focus (`'trap-focus'`), or neither (`false`). |
 | `onOpenChange` | `(open: boolean, eventDetails) => void`                 | —       | Called when the dialog opens or closes.                                                                      |
-| ...            | `Dialog.Root` props from `@base-ui/react/dialog`        | —       | All other Base UI `Dialog.Root` props are passed through.                                                    |
+| ...            | Additional props | — | All other props are forwarded through.                                                    |
 
 ### `DialogTrigger` / `DialogClose`
 
@@ -74,9 +74,9 @@ Render a native `<button>` by default, or compose with another element via
 | Prop          | Type                                              | Default | Description                                                              |
 | ------------- | ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------ |
 | `className`   | `string`                                             | —       | Merged with the base `kairo-dialog-popup` class on the popup element.          |
-| `initialFocus`| `boolean \| RefObject \| function`                   | —       | Element to focus when the dialog opens. See Base UI's `Dialog.Popup` docs.      |
-| `finalFocus`  | `boolean \| RefObject \| function`                   | —       | Element to focus when the dialog closes. See Base UI's `Dialog.Popup` docs.     |
-| ...           | `Dialog.Popup` props from `@base-ui/react/dialog`    | —       | All other Base UI `Dialog.Popup` props are passed through.                     |
+| `initialFocus`| `boolean \| RefObject \| function`                   | —       | Element to focus when the dialog opens. Defaults to the first tabbable element inside the popup, or the popup itself when opened via touch (to avoid triggering the on-screen keyboard). Accepts `false` (leave focus untouched), `true` (use the default), a `RefObject` (focus that element), or a function — called with the interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — that returns an element, `true`/`null` for the default, or `false`/`undefined` to do nothing. |
+| `finalFocus`  | `boolean \| RefObject \| function`                   | —       | Element to focus when the dialog closes. Defaults to the trigger, or whichever element was focused before it opened. Accepts `false` (leave focus untouched), `true` (use the default), a `RefObject` (focus that element), or a function — called with the interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — that returns an element, `true`/`null` for the default, or `false`/`undefined` to do nothing. |
+| ...           | Additional props | — | All other props are forwarded to the underlying popup element. |
 
 ### `DialogTitle` / `DialogDescription`
 

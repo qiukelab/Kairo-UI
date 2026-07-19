@@ -47,13 +47,13 @@ and Kairo renders it. All interaction and accessibility logic (auto-dismiss
 timers, swipe-to-dismiss, `aria-live` announcements, focus management) comes
 from `@base-ui/react`.
 
-This bundled-viewport shape is the only one Kairo's wrapper exposes. Base
-UI's underlying primitives (`Toast.Root`/`Title`/`Description`/`Action`/
-`Close`/`Positioner`/`Arrow`, plus `Toast.createToastManager()`) are still
-available directly from `@base-ui/react/toast` for advanced cases — e.g.
-anchored "Copied" toasts positioned against a trigger element, or multiple
-independent viewports — which need more than one `Toast.Provider` and are out
-of scope for this convenience wrapper.
+This bundled-viewport shape is the only one Kairo's wrapper exposes: every
+toast queued via `useToast()` or a standalone manager renders into the single
+viewport `ToastProvider` mounts, styled as a title, description, optional
+action button and close button. Anchored toasts positioned against a trigger
+element (e.g. a "Copied" toast pinned to the button that triggered it), and
+multiple independent viewports, are currently out of scope for this
+convenience wrapper.
 
 The close button is Kairo's own (not Base UI's `Toast.Close`), wired directly
 to the manager's `close(id)`: Base UI's `Toast.Close` hides itself from

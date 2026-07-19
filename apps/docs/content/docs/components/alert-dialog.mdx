@@ -88,7 +88,7 @@ keyboard action equivalent to Cancel, not an accidental dismissal.
 | `open`         | `boolean`                                                       | —       | Controlled open state. Use with `onOpenChange`.                                                                                                              |
 | `defaultOpen`  | `boolean`                                                       | `false` | Initial open state for an uncontrolled alert dialog.                                                                                                         |
 | `onOpenChange` | `(open: boolean, eventDetails) => void`                         | —       | Called when the alert dialog opens or closes. `eventDetails.reason` is `'escapeKey'`, `'closePress'`, `'triggerPress'`, `'focusOut'`, or `'imperativeAction'` — never `'outsidePress'`, since that dismissal path is disabled entirely. |
-| ...            | `AlertDialog.Root` props from `@base-ui/react/alert-dialog`     | —       | All other Base UI `AlertDialog.Root` props are passed through. Unlike `Dialog`, `modal` and `disablePointerDismissal` aren't exposed — they're fixed to `true` internally.  |
+| ...            | Additional props | — | All other props are forwarded through. Unlike `Dialog`, `modal` and `disablePointerDismissal` aren't exposed — they're fixed to `true` internally.  |
 
 ### `AlertDialogTrigger` / `AlertDialogClose`
 
@@ -103,9 +103,9 @@ confirming one for any side effect that should run before it closes.
 | Prop           | Type                                                    | Default | Description                                                                             |
 | -------------- | ---------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------- |
 | `className`    | `string`                                                    | —       | Merged with the base `kairo-alert-dialog-popup` class on the popup element.                    |
-| `initialFocus` | `boolean \| RefObject \| function`                          | —       | Element to focus when the alert dialog opens. See Base UI's `AlertDialog.Popup` docs.           |
-| `finalFocus`   | `boolean \| RefObject \| function`                          | —       | Element to focus when the alert dialog closes. See Base UI's `AlertDialog.Popup` docs.          |
-| ...            | `AlertDialog.Popup` props from `@base-ui/react/alert-dialog`| —       | All other Base UI `AlertDialog.Popup` props are passed through.                                |
+| `initialFocus` | `boolean \| RefObject \| function`                          | —       | Element to focus when the alert dialog opens. Defaults to the first tabbable element inside the popup, or the popup itself when opened via touch (to avoid triggering the on-screen keyboard). Accepts `false` (leave focus untouched), `true` (use the default), a `RefObject` (focus that element), or a function — called with the interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — that returns an element, `true`/`null` for the default, or `false`/`undefined` to do nothing. |
+| `finalFocus`   | `boolean \| RefObject \| function`                          | —       | Element to focus when the alert dialog closes. Defaults to the trigger, or whichever element was focused before it opened. Accepts `false` (leave focus untouched), `true` (use the default), a `RefObject` (focus that element), or a function — called with the interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — that returns an element, `true`/`null` for the default, or `false`/`undefined` to do nothing. |
+| ...            | Additional props | — | All other props are forwarded to the underlying popup element. |
 
 ### `AlertDialogTitle` / `AlertDialogDescription`
 

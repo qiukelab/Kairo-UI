@@ -119,7 +119,7 @@ one `SliderThumb` per value — see the range example below.
 | `name`                  | `string`                                                      | —              | Identifies the field when a form is submitted.                                                    |
 | `form`                  | `string`                                                      | —              | Identifies the form that owns the thumb inputs.                                                   |
 | `className`             | `string`                                                      | —              | Merged with the base `kairo-slider` class.                                                        |
-| ...                     | `Slider.Root` props from `@base-ui/react/slider`              | —              | All other Base UI `Slider.Root` props are passed through.                                        |
+| ...                     | Additional props | —              | All other props are forwarded to the underlying element.                                        |
 
 ### `SliderLabel`
 
@@ -130,7 +130,7 @@ own `aria-label`/`aria-labelledby`.
 | Prop        | Type     | Default | Description                                              |
 | ----------- | -------- | ------- | ------------------------------------------------------------ |
 | `className` | `string` | —       | Merged with the base `kairo-slider-label` class.              |
-| ...         | `Slider.Label` props from `@base-ui/react/slider` | — | All other Base UI `Slider.Label` props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying label element. |
 
 ### `SliderValue`
 
@@ -140,7 +140,7 @@ Displays the current value(s) as text; renders Base UI's `<output>`.
 | ----------- | ------------------------------------------------------------------ | ------- | ------------------------------------------------------------------------------ |
 | `children`  | `(formattedValues: readonly string[], values: readonly number[]) => ReactNode` | —       | Renders a custom readout instead of the default `"20 – 80"`-style join.         |
 | `className` | `string`                                                            | —       | Merged with the base `kairo-slider-value` class.                                |
-| ...         | `Slider.Value` props from `@base-ui/react/slider`                   | —       | All other Base UI `Slider.Value` props are passed through.                     |
+| ...         | Additional props | —       | All other props are forwarded to the underlying element.                     |
 
 ### `SliderControl`
 
@@ -150,7 +150,7 @@ The clickable/draggable surface: owns pointer capture, track-press
 | Prop        | Type     | Default | Description                                                  |
 | ----------- | -------- | ------- | ------------------------------------------------------------------ |
 | `className` | `string` | —       | Merged with the base `kairo-slider-control` class.                  |
-| ...         | `Slider.Control` props from `@base-ui/react/slider` | — | All other Base UI `Slider.Control` props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying element. |
 
 ### `SliderTrack`
 
@@ -160,7 +160,7 @@ offset against.
 | Prop        | Type     | Default | Description                                                |
 | ----------- | -------- | ------- | ---------------------------------------------------------------- |
 | `className` | `string` | —       | Merged with the base `kairo-slider-track` class.                  |
-| ...         | `Slider.Track` props from `@base-ui/react/slider` | — | All other Base UI `Slider.Track` props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying element. |
 
 ### `SliderIndicator`
 
@@ -169,7 +169,7 @@ The filled portion of the track, from `min` (or the lower thumb) to the value.
 | Prop        | Type     | Default | Description                                                    |
 | ----------- | -------- | ------- | ---------------------------------------------------------------------- |
 | `className` | `string` | —       | Merged with the base `kairo-slider-indicator` class.                    |
-| ...         | `Slider.Indicator` props from `@base-ui/react/slider` | — | All other Base UI `Slider.Indicator` props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying element. |
 
 ### `SliderThumb`
 
@@ -181,7 +181,7 @@ The draggable handle. Renders a `<div>` wrapping Base UI's visually-hidden
 | `index`     | `number`  | —       | The thumb's index in a range slider. Inferred from mount order if omitted.                  |
 | `disabled`  | `boolean` | `false` | Prevents this thumb from being moved.                                                        |
 | `className` | `string`  | —       | Merged with the base `kairo-slider-thumb` class.                                             |
-| ...         | `Slider.Thumb` props from `@base-ui/react/slider` | — | All other Base UI `Slider.Thumb` props are passed through, including `aria-label`. |
+| ...         | Additional props | — | All other props, including `aria-label`, are forwarded to the underlying element. |
 
-All other props from `@base-ui/react/slider`'s corresponding part are passed
-through on each Kairo component.
+All other props are forwarded to the underlying element on each corresponding
+Kairo component.

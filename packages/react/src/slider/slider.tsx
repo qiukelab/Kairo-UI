@@ -35,10 +35,10 @@ import type {
  * wrapper can't preserve `Slider.Root`'s own generic `<Value extends number |
  * readonly number[]>` signature (`forwardRef` has no way to express a
  * generic component), so `value`/`defaultValue`/`onValueChange` are typed
- * against the non-generic default (`number | readonly number[]`) here —
- * consumers who want the narrowed `number`-only or `readonly number[]`-only
- * shape can still import `SliderRootProps<Value>` from `@base-ui/react/slider`
- * for their own annotations.
+ * against the non-generic default (`number | readonly number[]`) here — the
+ * type Kairo exposes for `Slider`. A narrower `number`-only or `readonly
+ * number[]`-only annotation isn't currently available from this wrapper —
+ * open an issue if you need it.
  */
 export const Slider = forwardRef<HTMLDivElement, SliderRootProps>(function Slider(
   { className, ...props },

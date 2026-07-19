@@ -79,7 +79,7 @@ inline — all of this comes from `@base-ui/react`.
 | `onOpenChange` | `(open: boolean, eventDetails) => void`    | —       | Called when the panel opens or closes.                             |
 | `disabled`     | `boolean`                                  | `false` | Prevents user interaction (the trigger included, unless overridden). |
 | `className`    | `string`                                   | —       | Merged with the base `kairo-collapsible` class.                    |
-| ...            | `Collapsible.Root` props from `@base-ui/react/collapsible` | — | All other Base UI `Collapsible.Root` props are passed through. |
+| ...            | Additional props | — | All other props are forwarded to the underlying element. |
 
 ### `CollapsibleTrigger`
 
@@ -100,5 +100,5 @@ present on it while the panel is open.
 | `hiddenUntilFound`  | `boolean` | `false` | Use `hidden="until-found"` so the browser's page search can reveal the panel.          |
 | `className`         | `string`  | —       | Merged with the base `kairo-collapsible-panel` class.                                 |
 
-All other props from `@base-ui/react/collapsible`'s corresponding part are
-passed through on each Kairo component.
+All other props are forwarded to the underlying element on each corresponding
+Kairo component.

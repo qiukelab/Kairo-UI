@@ -158,7 +158,7 @@ customize that when an item isn't shaped like `{ value, label }`.
 | `autoHighlight`      | `boolean \| 'always'`                             | `false`    | Whether the first matching item is highlighted automatically.                              |
 | `name`               | `string`                                          | —          | Identifies the field when a form is submitted.                                             |
 | `itemToStringLabel`  | `(item) => string`                                | —          | Formats an object item for display; used automatically for `{ value, label }` shapes.      |
-| ...                  | `Combobox.Root` props from `@base-ui/react/combobox` | — | All other Base UI `Combobox.Root` props are passed through.                                |
+| ...                  | Additional props | — | All other props are forwarded through.                                |
 
 ### `ComboboxControl`
 
@@ -168,7 +168,7 @@ here, not on the input) and the element the popup anchors to.
 | Prop        | Type     | Default | Description                                                     |
 | ----------- | -------- | ------- | ------------------------------------------------------------------- |
 | `className` | `string` | —       | Merged with the base `kairo-combobox-control` class.                 |
-| ...         | `Combobox.InputGroup` props from `@base-ui/react/combobox` | — | All other Base UI `Combobox.InputGroup` props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying control element. |
 
 ### `ComboboxInput`
 
@@ -178,7 +178,7 @@ Renders a plain, borderless `<input>`. Give it an accessible name with
 | Prop        | Type     | Default | Description                                          |
 | ----------- | -------- | ------- | --------------------------------------------------------- |
 | `className` | `string` | —       | Merged with the base `kairo-combobox-input` class.          |
-| ...         | `Combobox.Input` props from `@base-ui/react/combobox` | — | All other Base UI `Combobox.Input` props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying input element. |
 
 ### `ComboboxTrigger`
 
@@ -190,7 +190,7 @@ A button that opens the popup without typing. Renders a default chevron
 | `aria-hidden`  | `boolean` | `true`  | Hides it from the accessibility tree — the input already exposes `role="combobox"` with `aria-expanded`. |
 | `tabIndex`     | `number`  | `-1`    | Kept out of the tab order; the input is the sole keyboard entry point.                                 |
 | `className`    | `string`  | —       | Merged with the base `kairo-combobox-trigger` class.                                                   |
-| ...            | `Combobox.Trigger` props from `@base-ui/react/combobox` | — | All other Base UI `Combobox.Trigger` props are passed through.                     |
+| ...            | Additional props | — | All other props are forwarded to the underlying trigger element.                     |
 
 ### `ComboboxClear`
 
@@ -202,7 +202,7 @@ clear (unless `keepMounted`). Renders a default X icon when given no
 | -------------- | -------- | -------------------- | --------------------------------------------- |
 | `aria-label`   | `string` | `'Clear selection'`  | The button's accessible name.                 |
 | `className`    | `string` | —                    | Merged with the base `kairo-combobox-clear` class. |
-| ...            | `Combobox.Clear` props from `@base-ui/react/combobox` | — | All other Base UI `Combobox.Clear` props are passed through. |
+| ...            | Additional props | — | All other props are forwarded to the underlying clear button element. |
 
 ### `ComboboxContent`
 
@@ -212,7 +212,7 @@ clear (unless `keepMounted`). Renders a default X icon when given no
 | `align`       | `'start' \| 'center' \| 'end'`              | `'start'` | How to align the popup relative to `side`.                                    |
 | `sideOffset`  | `number`                                    | `8`     | Distance in pixels between the control and the popup.                           |
 | `className`   | `string`                                    | —       | Merged with the base `kairo-combobox-popup` class on the popup element.         |
-| ...           | `Combobox.Popup` props from `@base-ui/react/combobox` | — | All other Base UI `Combobox.Popup` props (e.g. `finalFocus`) are passed through. |
+| ...           | Additional props | — | All other props (e.g. `finalFocus`) are forwarded to the underlying popup element. |
 
 ### `ComboboxList`
 
@@ -252,5 +252,5 @@ A visual divider between items/groups. Hidden from the accessibility tree
 (`aria-hidden="true"`) by default, since the listbox role only permits
 `option`/`group` children.
 
-All other props from `@base-ui/react/combobox`'s corresponding part are passed
-through on each Kairo component.
+All other props are forwarded to the underlying element on each corresponding
+Kairo component.

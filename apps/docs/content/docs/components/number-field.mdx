@@ -113,7 +113,7 @@ automatically.
 | `name`              | `string`                                               | —                       | Identifies the field when a form is submitted.                                                               |
 | `form`              | `string`                                               | —                       | Identifies the form that owns the hidden `<input>`.                                                          |
 | `className`         | `string`                                               | —                       | Merged with the base `kairo-number-field` class.                                                             |
-| ...                 | `NumberField.Root` props from `@base-ui/react/number-field` | —                 | All other Base UI `NumberField.Root` props (e.g. `id`, `inputRef`) are passed through.                        |
+| ...                 | Additional props | —                 | All other props (e.g. `id`, `inputRef`) are forwarded to the underlying element.                        |
 
 ### `NumberFieldGroup`
 
@@ -124,7 +124,7 @@ focusable part of the group).
 | Prop        | Type     | Default | Description                                                    |
 | ----------- | -------- | ------- | ---------------------------------------------------------------- |
 | `className` | `string` | —       | Merged with the base `kairo-number-field-group` class.            |
-| ...         | `NumberField.Group` props from `@base-ui/react/number-field` | — | All other Base UI `NumberField.Group` props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying element. |
 
 ### `NumberFieldInput`
 
@@ -132,7 +132,7 @@ focusable part of the group).
 | ----------------------- | --------- | ------------------ | ----------------------------------------------------------------------------------------------------- |
 | `aria-roledescription`  | `string`  | `'Number field'`   | Role description announced to assistive tech (not an accessible name — pass `aria-label` for that).  |
 | `className`             | `string`  | —                  | Merged with the base `kairo-number-field-input` class.                                                |
-| ...                     | `NumberField.Input` props from `@base-ui/react/number-field` | — | All other Base UI `NumberField.Input` props are passed through.                                       |
+| ...                     | Additional props | — | All other props are forwarded to the underlying input element.                                       |
 
 ### `NumberFieldIncrement` / `NumberFieldDecrement`
 
@@ -142,7 +142,7 @@ plus/minus icon when no `children` are given.
 | Prop        | Type     | Default | Description                                                                          |
 | ----------- | -------- | ------- | --------------------------------------------------------------------------------------- |
 | `className` | `string` | —       | Merged with the base `kairo-number-field-increment`/`kairo-number-field-decrement` class. |
-| ...         | `NumberField.Increment`/`NumberField.Decrement` props from `@base-ui/react/number-field` | — | All other Base UI props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying button element. |
 
-All other props from `@base-ui/react/number-field`'s corresponding part are passed
-through on each Kairo component.
+All other props are forwarded to the underlying element on each corresponding
+Kairo component.

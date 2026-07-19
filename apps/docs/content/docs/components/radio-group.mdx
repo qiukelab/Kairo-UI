@@ -104,7 +104,7 @@ checkboxes.
 | `name`           | `string`                                | —       | Identifies the field when a form is submitted.                         |
 | `form`           | `string`                                | —       | Identifies the form that owns the group's hidden inputs.                |
 | `className`      | `string`                                | —       | Merged with the base `kairo-radio-group` class.                        |
-| ...              | `RadioGroup` props from `@base-ui/react/radio-group` | — | All other Base UI `RadioGroup` props are passed through.                |
+| ...              | Additional props | — | All other props are forwarded to the underlying element.                |
 
 ### `Radio`
 
@@ -115,7 +115,7 @@ checkboxes.
 | `readOnly`  | `boolean` | `false` | Prevents this radio from being selected by the user.                   |
 | `required`  | `boolean` | `false` | Whether a value must be chosen before submitting a form.                |
 | `className` | `string`  | —       | Merged with the base `kairo-radio` class.                               |
-| ...         | `Radio.Root` props from `@base-ui/react/radio` | — | All other Base UI `Radio.Root` props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying element. |
 
 Renders Base UI's `Radio.Root`/`Radio.Indicator` anatomy — the indicator is a
 plain `<span>` styled into a dot purely with CSS (no icon markup), shown only

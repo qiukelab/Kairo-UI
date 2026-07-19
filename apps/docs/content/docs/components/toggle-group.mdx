@@ -115,7 +115,7 @@ standalone or inside a group — always needs an `aria-label`.
 | `variant`         | `'solid' \| 'outline' \| 'ghost'`             | `'outline'` | Unpressed chrome, on the same scale as `Button`'s `variant`.                        |
 | `size`            | `'sm' \| 'md' \| 'lg'`                        | `'md'`      | Sizing, on the same scale as `Button`'s `size`.                                     |
 | `className`       | `string`                                      | —           | Merged with the base `kairo-toggle` class.                                          |
-| ...               | `Toggle` props from `@base-ui/react/toggle`   | —           | All other Base UI `Toggle` props are passed through.                               |
+| ...               | Additional props | —           | All other props are forwarded to the underlying element.                               |
 
 ### `ToggleGroup`
 
@@ -129,7 +129,7 @@ standalone or inside a group — always needs an `aria-label`.
 | `orientation`   | `'horizontal' \| 'vertical'`         | `'horizontal'` | Layout flow direction and the axis arrow keys navigate along.                   |
 | `loopFocus`     | `boolean`                             | `true`         | Loop keyboard focus back to the first item at the end of the list.             |
 | `className`     | `string`                              | —              | Merged with the base `kairo-toggle-group` class.                               |
-| ...             | `ToggleGroup` props from `@base-ui/react/toggle-group` | — | All other Base UI `ToggleGroup` props are passed through.                       |
+| ...             | Additional props | — | All other props are forwarded to the underlying element.                       |
 
 Renders Base UI's `ToggleGroup` — a `<div role="group">`, not `radiogroup`,
 even when `multiple` is `false` — and gives its `Toggle` children roving

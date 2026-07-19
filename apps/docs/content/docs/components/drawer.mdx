@@ -100,7 +100,7 @@ is what dismisses it.
 | `modal`                    | `boolean \| 'trap-focus'`                  | `true`  | Whether the drawer traps focus/locks scroll (`true`), only traps focus (`'trap-focus'`), or neither (`false`).         |
 | `onOpenChange`             | `(open: boolean, eventDetails) => void`    | —       | Called when the drawer opens or closes.                                                                                |
 | `disablePointerDismissal`  | `boolean`                                  | `false` | Prevents the drawer from closing on outside presses (and, for non-modal drawers, on focus moving outside it).          |
-| ...                        | `Drawer.Root` props from `@base-ui/react/drawer` | — | All other Base UI `Drawer.Root` props (e.g. `snapPoints`, `handle`) are passed through — `swipeDirection` itself isn't exposed, since `side` drives it. |
+| ...                        | Additional props | — | All other props (e.g. `snapPoints`, `handle`) are forwarded through — `swipeDirection` itself isn't exposed, since `side` drives it. |
 
 ### `DrawerTrigger` / `DrawerClose`
 
@@ -112,9 +112,9 @@ Render a native `<button>` by default, or compose with another element via `rend
 | Prop           | Type                                              | Default | Description                                                                       |
 | --------------- | ---------------------------------------------------- | ------- | --------------------------------------------------------------------------------------- |
 | `className`     | `string`                                             | —       | Merged with the base `kairo-drawer-popup` class on the popup element.                   |
-| `initialFocus`  | `boolean \| RefObject \| function`                   | —       | Element to focus when the drawer opens. See Base UI's `Drawer.Popup` docs.               |
-| `finalFocus`    | `boolean \| RefObject \| function`                   | —       | Element to focus when the drawer closes. See Base UI's `Drawer.Popup` docs.              |
-| ...             | `Drawer.Popup` props from `@base-ui/react/drawer`    | —       | All other Base UI `Drawer.Popup` props are passed through.                              |
+| `initialFocus`  | `boolean \| RefObject \| function`                   | —       | Element to focus when the drawer opens. Defaults to the first tabbable element inside the popup, or the popup itself when opened via touch (to avoid triggering the on-screen keyboard). Accepts `false` (leave focus untouched), `true` (use the default), a `RefObject` (focus that element), or a function — called with the interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — that returns an element, `true`/`null` for the default, or `false`/`undefined` to do nothing. |
+| `finalFocus`    | `boolean \| RefObject \| function`                   | —       | Element to focus when the drawer closes. Defaults to the trigger, or whichever element was focused before it opened. Accepts `false` (leave focus untouched), `true` (use the default), a `RefObject` (focus that element), or a function — called with the interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — that returns an element, `true`/`null` for the default, or `false`/`undefined` to do nothing. |
+| ...             | Additional props | — | All other props are forwarded to the underlying popup element. |
 
 Composes Base UI's `Drawer.Portal` > `Drawer.Backdrop` + `Drawer.Viewport` >
 `Drawer.Popup`. Sets `aria-modal="true"` on the popup by default (Base UI's Drawer

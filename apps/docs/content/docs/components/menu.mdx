@@ -88,7 +88,7 @@ keyboard navigation & typeahead, and closing on item selection all come from
 | `onOpenChange` | `(open: boolean, eventDetails) => void`    | —       | Called when the menu opens or closes.                              |
 | `modal`        | `boolean`                                  | `true`  | Whether the menu is modal (traps focus, blocks outside interaction). |
 | `disabled`     | `boolean`                                  | `false` | Prevents user interaction with the whole menu.                     |
-| ...            | `Menu.Root` props from `@base-ui/react/menu` | —     | All other Base UI `Menu.Root` props are passed through.            |
+| ...            | Additional props                             | —     | All other props are forwarded through.                             |
 
 ### `MenuTrigger`
 
@@ -105,7 +105,7 @@ attribute, since this is a real button) to style the disabled state.
 | `align`      | `'start' \| 'center' \| 'end'`                       | `'start'` | How to align the popup relative to `side`.                                    |
 | `sideOffset` | `number`                                             | `8`     | Distance in pixels between the trigger and the popup.                          |
 | `className`  | `string`                                             | —       | Merged with the base `kairo-menu-popup` class on the popup element.            |
-| ...          | `Menu.Popup` props from `@base-ui/react/menu`        | —       | All other Base UI `Menu.Popup` props (e.g. `finalFocus`) are passed through.    |
+| ...          | Additional props                                     | —       | All other props (e.g. `finalFocus`) are forwarded to the underlying popup element. |
 
 Reused as-is for a submenu's popup — render it as the second child of a
 `MenuSub`, after a `MenuSubmenuTrigger`.
@@ -163,5 +163,5 @@ and a `MenuContent`. `MenuSubmenuTrigger` renders `children` followed by a
 default chevron, and opens its submenu on hover, focus, or activation
 (`ArrowRight` when highlighted in a vertical menu).
 
-All other props from `@base-ui/react/menu`'s corresponding part are passed
-through on each Kairo component.
+All other props are forwarded to the underlying element on each corresponding
+Kairo component.

@@ -76,9 +76,9 @@ from `@base-ui/react`.
 </ComponentPreview>
 
 Passing the `items` prop to `Select` renders the matching label in the
-trigger (via `SelectValue`) instead of the raw `value` — see Base UI's
-[Formatting the value](https://base-ui.com/react/components/select#formatting-the-value)
-guide.
+trigger (via `SelectValue`) instead of the raw `value`. To take full control
+over the formatted output instead, pass a function to `SelectValue`'s
+`children` — see **Props** below.
 
 ## Props
 
@@ -96,7 +96,7 @@ guide.
 | `multiple`        | `boolean`                                   | `false` | Whether multiple items can be selected.                                         |
 | `disabled`        | `boolean`                                   | `false` | Prevents user interaction.                                                      |
 | `name`            | `string`                                    | —       | Identifies the field when a form is submitted.                                  |
-| ...               | `Select.Root` props from `@base-ui/react/select` | — | All other Base UI `Select.Root` props are passed through.                       |
+| ...               | Additional props | — | All other props are forwarded through.                       |
 
 ### `SelectTrigger`
 
@@ -119,7 +119,7 @@ Renders a native `<button>` with `role="combobox"`, `children` (typically a
 | `sideOffset`           | `number`                                 | `4`     | Distance in pixels between the trigger and the popup.                                     |
 | `alignItemWithTrigger` | `boolean`                                | `true`  | Whether the popup overlaps the trigger so the selected item's text lines up with it.       |
 | `className`            | `string`                                 | —       | Merged with the base `kairo-select-popup` class on the popup element.                     |
-| ...                    | `Select.Popup` props from `@base-ui/react/select` | — | All other Base UI `Select.Popup` props (e.g. `finalFocus`) are passed through.             |
+| ...                    | Additional props | — | All other props (e.g. `finalFocus`) are forwarded to the underlying popup element.             |
 
 ### `SelectItem`
 
@@ -144,5 +144,5 @@ A visual divider between items/groups. Hidden from the accessibility tree
 (`aria-hidden="true"`) by default, since the listbox role only permits
 `option`/`group` children.
 
-All other props from `@base-ui/react/select`'s corresponding part are passed
-through on each Kairo component.
+All other props are forwarded to the underlying element on each corresponding
+Kairo component.

@@ -116,7 +116,7 @@ is a flex row with `justify-content: space-between` for exactly that.
 | `defaultOpen`  | `boolean`                                  | `false` | Initial open state for an uncontrolled context menu.                                                                                                     |
 | `onOpenChange` | `(open: boolean, eventDetails) => void`    | —       | Called when the menu opens or closes.                                                                                                                    |
 | `disabled`     | `boolean`                                  | `false` | Prevents the trigger from opening the menu — right-clicking the trigger falls through to the browser's native context menu instead of being suppressed. |
-| ...            | `ContextMenu.Root` props from `@base-ui/react/context-menu` | — | All other Base UI `ContextMenu.Root` props are passed through. Unlike a dropdown `Menu`, `modal`, `openOnHover`, `delay`, and `closeDelay` aren't exposed — omitted since they don't apply to a menu that opens from a cursor position rather than hover/press on a trigger. |
+| ...            | Additional props | — | All other props are forwarded through. Unlike a dropdown `Menu`, `modal`, `openOnHover`, `delay`, and `closeDelay` aren't exposed — omitted since they don't apply to a menu that opens from a cursor position rather than hover/press on a trigger. |
 
 ### `ContextMenuTrigger`
 
@@ -127,7 +127,7 @@ reacts to a native `contextmenu` event (right click) or a touch long-press.
 | Prop        | Type      | Default | Description                                                        |
 | ----------- | --------- | ------- | -------------------------------------------------------------------------- |
 | `className` | `string`  | —       | Merged with the base `kairo-context-menu-trigger` class.                   |
-| ...         | `ContextMenu.Trigger` props from `@base-ui/react/context-menu` | — | All other Base UI `ContextMenu.Trigger` props are passed through. |
+| ...         | Additional props | — | All other props are forwarded to the underlying trigger element. |
 
 ### `ContextMenuContent`
 
@@ -140,9 +140,9 @@ element. No arrow is rendered — see the callout above.
 | `side`       | `'top' \| 'bottom' \| 'left' \| 'right' \| 'inline-end' \| 'inline-start'`     | —       | Which side of the cursor to render the popup against. Left undefined, Base UI picks whichever side has room in the viewport. |
 | `align`      | `'start' \| 'center' \| 'end'`                                                 | —       | How to align the popup relative to `side`. Base UI defaults this to `'start'` for a context menu. Only pass this to override it. |
 | `sideOffset` | `number`                                                                       | —       | Distance in pixels between the cursor and the popup along `side`. Base UI defaults this to a small negative offset so the popup overlaps the cursor slightly. Only pass this to override it. |
-| `finalFocus` | `boolean \| RefObject \| function`                                             | —       | Element to focus when the menu closes. See Base UI's `ContextMenu.Popup` docs.               |
+| `finalFocus` | `boolean \| RefObject \| function`                                             | —       | Element to focus when the menu closes. Defaults to the trigger, or whichever element was focused before it opened. Accepts `false` (leave focus untouched), `true` (use the default), a `RefObject` (focus that element), or a function — called with the interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — that returns an element, `true`/`null` for the default, or `false`/`undefined` to do nothing. |
 | `className`  | `string`                                                                       | —       | Merged with the base `kairo-context-menu-popup` class on the popup element.                  |
-| ...          | `ContextMenu.Popup` props from `@base-ui/react/context-menu`                  | —       | All other Base UI `ContextMenu.Popup` props are passed through.                              |
+| ...          | Additional props | — | All other props are forwarded to the underlying popup element. |
 
 ### `ContextMenuItem`
 
@@ -152,7 +152,7 @@ element. No arrow is rendered — see the callout above.
 | `closeOnClick` | `boolean`                                   | `true`  | Whether activating the item closes the menu.                               |
 | `onClick`      | `(event) => void`                           | —       | Called when the item is activated (click, or Enter/Space while highlighted). |
 | `className`    | `string`                                    | —       | Merged with the base `kairo-context-menu-item` class.                      |
-| ...            | `ContextMenu.Item` props from `@base-ui/react/context-menu` | — | All other Base UI `ContextMenu.Item` props are passed through. |
+| ...            | Additional props | — | All other props are forwarded to the underlying item element. |
 
 ### `ContextMenuGroup` / `ContextMenuGroupLabel`
 
@@ -167,5 +167,5 @@ A visual divider between items/groups. Unlike `SelectSeparator`, this is
 UI's default `role="separator"` here is valid ARIA. Pass `aria-hidden` to opt
 back out.
 
-All other props from `@base-ui/react/context-menu`'s corresponding part are
-passed through on each Kairo component.
+All other props are forwarded to the underlying element on each corresponding
+Kairo component.
