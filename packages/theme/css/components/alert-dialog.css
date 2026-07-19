@@ -5,7 +5,12 @@
  *   - `.kairo-alert-dialog-backdrop`  — Base UI's `AlertDialog.Backdrop`
  *     (which is `Dialog.Backdrop` re-exported — Base UI's `AlertDialog` is
  *     `Dialog` running in a different mode, sharing every part except
- *     `Root`/`Trigger`).
+ *     `Root`/`Trigger`). Always present while the dialog is mounted: unlike
+ *     `dialog.css`'s backdrop, which `dialog.tsx` renders only for a fully
+ *     modal root, an alert dialog is modal by construction — Base UI hardcodes
+ *     `modal: true` for it and omits the prop from `AlertDialogRootProps` — so
+ *     there is no non-modal case in which this full-screen layer would be
+ *     wrong.
  *   - `.kairo-alert-dialog-popup`     — Base UI's `AlertDialog.Popup` (same
  *     note: this is `Dialog.Popup`, reading `role="alertdialog"` off the
  *     `AlertDialog.Root`'s store instead of `role="dialog"`).

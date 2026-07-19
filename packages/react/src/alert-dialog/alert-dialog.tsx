@@ -5,6 +5,7 @@ import { AlertDialog as BaseAlertDialog } from '@base-ui/react/alert-dialog';
 import type {
   AlertDialogRootProps,
   AlertDialogTriggerProps,
+  AlertDialogPortalProps,
   AlertDialogPopupProps,
   AlertDialogTitleProps,
   AlertDialogDescriptionProps,
@@ -51,8 +52,13 @@ export interface AlertDialogProps extends AlertDialogRootProps {}
  * Consumers who need to disable even that can pass `onOpenChange` and call
  * `eventDetails.cancel()` when `eventDetails.reason === 'escapeKey'`.
  *
- * `AlertDialog.Root` renders no DOM element of its own, so it's re-exported
- * as-is.
+ * Unlike `Dialog` (which wraps `Dialog.Root` in a context provider so
+ * `DialogContent` can read back a `modal` value that varies), an alert
+ * dialog is modal by definition — `modal` is hard-coded to `true` and can't
+ * be relaxed, as noted above — so there's no modality for `AlertDialogContent`
+ * to ever need to look up. With nothing to publish and no DOM element of its
+ * own to render, `AlertDialog.Root` is re-exported as-is; this is a
+ * deliberate asymmetry with `Dialog`, not an oversight.
  */
 export const AlertDialog = BaseAlertDialog.Root;
 
@@ -76,7 +82,17 @@ export const AlertDialogTrigger = forwardRef<HTMLButtonElement, AlertDialogTrigg
 
 AlertDialogTrigger.displayName = 'AlertDialogTrigger';
 
-export interface AlertDialogContentProps extends AlertDialogPopupProps {}
+export interface AlertDialogContentProps extends AlertDialogPopupProps {
+  /**
+   * A parent element to render the portal element into. Forwarded to Base
+   * UI's `AlertDialog.Portal` (which `AlertDialogContent` renders internally,
+   * so it is otherwise unreachable), unblocking shadow roots, iframe documents
+   * and Fullscreen API containers — an alert dialog portalled to
+   * `document.body` is invisible while another element is fullscreen.
+   * Defaults to `<body>`.
+   */
+  container?: AlertDialogPortalProps['container'];
+}
 
 /**
  * Composes Base UI's `AlertDialog.Portal` > `AlertDialog.Backdrop` +
@@ -84,10 +100,17 @@ export interface AlertDialogContentProps extends AlertDialogPopupProps {}
  * renders the backdrop and the popup's contents in one go. The forwarded ref
  * attaches to the popup element.
  *
- * Base UI's `AlertDialog.Popup` sets `role="alertdialog"` but, notably,
- * doesn't add `aria-modal` itself (modality is instead enforced via its
- * focus-trapping `FloatingFocusManager`, not the DOM attribute) — Kairo adds
- * `aria-modal="true"` here, matching `DialogContent`.
+ * Like `DialogContent`, this sets no `aria-modal`: Base UI's
+ * `AlertDialog.Popup` (literally `Dialog.Popup`) sets `role="alertdialog"` and
+ * conveys modality by marking everything outside the popup `aria-hidden`/inert
+ * through its `FloatingFocusManager`, which screen readers support better than
+ * the attribute. See `DialogContent`'s comment for the full reasoning and the
+ * matching precedent in Radix UI.
+ *
+ * The backdrop, unlike `DialogContent`'s, is rendered unconditionally, because
+ * an alert dialog is always fully modal: `useRenderDialogRoot` hardcodes
+ * `modal = isAlertDialog ? true : modalProp`, and `AlertDialogRootProps` omits
+ * the `modal` prop entirely, so there is no non-modal case to guard against.
  *
  * When a `KairoLocaleProvider` with a `locale` is mounted above it, this also
  * sets `lang` on the popup — Base UI portals it to `document.body`, outside
@@ -95,14 +118,13 @@ export interface AlertDialogContentProps extends AlertDialogPopupProps {}
  * reach it. Pass `lang` explicitly to override.
  */
 export const AlertDialogContent = forwardRef<HTMLDivElement, AlertDialogContentProps>(
-  function AlertDialogContent({ className, children, ...props }, ref) {
+  function AlertDialogContent({ className, children, container, ...props }, ref) {
     const locale = useKairoLocale();
     return (
-      <BaseAlertDialog.Portal>
+      <BaseAlertDialog.Portal container={container}>
         <BaseAlertDialog.Backdrop className="kairo-alert-dialog-backdrop" />
         <BaseAlertDialog.Popup
           ref={ref}
-          aria-modal="true"
           lang={locale}
           className={className ? `kairo-alert-dialog-popup ${className}` : 'kairo-alert-dialog-popup'}
           {...props}

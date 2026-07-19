@@ -5,6 +5,7 @@ import { Drawer as BaseDrawer } from '@base-ui/react/drawer';
 import type {
   DrawerRootProps,
   DrawerTriggerProps,
+  DrawerPortalProps,
   DrawerPopupProps,
   DrawerTitleProps,
   DrawerDescriptionProps,
@@ -38,6 +39,25 @@ export type DrawerSide = 'top' | 'right' | 'bottom' | 'left';
 const DrawerSideContext = createContext<DrawerSide>('right');
 
 /**
+ * The resolved value of the root's `modal` prop: `true` (focus trapped, page
+ * scroll locked, outside pointer interaction disabled), `false` (the rest of
+ * the document stays fully usable) or `'trap-focus'` (focus trapped, but page
+ * scroll and outside pointer interaction stay enabled).
+ */
+type DrawerModality = NonNullable<DrawerRootProps['modal']>;
+
+/**
+ * Publishes the root's resolved `modal` value to `DrawerContent`, which needs
+ * it to decide whether to render a backdrop and whether the (mandatory,
+ * full-screen) viewport should let pointer events through — see
+ * `DrawerContent`. Base UI keeps `modal` in an internal store and exposes it
+ * neither as a context/hook nor as a data attribute on any part, so Kairo
+ * carries it itself, exactly as it already carries `side` above. Defaults to
+ * `true`, matching Base UI's own default.
+ */
+const DrawerModalityContext = createContext<DrawerModality>(true);
+
+/**
  * Base UI's `swipeDirection` names an axis of travel (`'up' | 'down' | 'left'
  * | 'right'`), not an edge, so it can't just be handed a {@link DrawerSide}
  * as-is (`'top'`/`'bottom'` in particular have no `SwipeDirection`
@@ -61,9 +81,10 @@ export interface DrawerProps extends Omit<DrawerRootProps, 'swipeDirection'> {
   /**
    * Which edge the drawer is pinned to and slides in from. Also sets Base
    * UI's `swipeDirection` to match (see {@link DrawerSide}) — `swipeDirection`
-   * itself isn't exposed here so the two can't drift out of sync; drop down
-   * to `@base-ui/react/drawer` directly if you need to decouple them (e.g. a
-   * right-pinned drawer dismissible only by an upward swipe).
+   * itself isn't exposed here, so the two are deliberately coupled and can't
+   * drift out of sync. Decoupling them (e.g. a right-pinned drawer
+   * dismissible only by an upward swipe) isn't currently supported — open an
+   * issue if you need it.
    * @default 'right'
    */
   side?: DrawerSide;
@@ -78,15 +99,18 @@ export interface DrawerProps extends Omit<DrawerRootProps, 'swipeDirection'> {
  * all come from the same place Dialog's do — plus swipe-to-dismiss gestures,
  * which Base UI's Drawer ships on top and Dialog doesn't.
  *
- * Unlike Dialog's root (which renders no DOM and is re-exported as-is),
- * `Drawer` wraps `Drawer.Root` in a context provider so `DrawerContent` can
- * read back the resolved `side` and stamp it onto the popup as `data-side`;
- * it still renders no DOM element of its own.
+ * `Drawer` wraps `Drawer.Root` in context providers so `DrawerContent` can
+ * read back the resolved `side` (stamped onto the popup as `data-side`) and
+ * the resolved `modal` (which decides whether a backdrop is rendered at all,
+ * and whether the viewport captures pointer events); it still renders no DOM
+ * element of its own.
  */
-export function Drawer({ side = 'right', ...props }: DrawerProps) {
+export function Drawer({ side = 'right', modal = true, ...props }: DrawerProps) {
   return (
     <DrawerSideContext.Provider value={side}>
-      <BaseDrawer.Root {...props} swipeDirection={SWIPE_DIRECTION_BY_SIDE[side]} />
+      <DrawerModalityContext.Provider value={modal}>
+        <BaseDrawer.Root {...props} modal={modal} swipeDirection={SWIPE_DIRECTION_BY_SIDE[side]} />
+      </DrawerModalityContext.Provider>
     </DrawerSideContext.Provider>
   );
 }
@@ -111,7 +135,16 @@ export const DrawerTrigger = forwardRef<HTMLButtonElement, DrawerTriggerComponen
 
 DrawerTrigger.displayName = 'DrawerTrigger';
 
-export interface DrawerContentProps extends DrawerPopupProps {}
+export interface DrawerContentProps extends DrawerPopupProps {
+  /**
+   * A parent element to render the portal element into. Forwarded to Base
+   * UI's `Drawer.Portal` (which `DrawerContent` renders internally, so it is
+   * otherwise unreachable), unblocking shadow roots, iframe documents and
+   * Fullscreen API containers — a drawer portalled to `document.body` is
+   * invisible while another element is fullscreen. Defaults to `<body>`.
+   */
+  container?: DrawerPortalProps['container'];
+}
 
 /**
  * Composes Base UI's `Drawer.Portal` > `Drawer.Backdrop` + `Drawer.Viewport`
@@ -125,14 +158,37 @@ export interface DrawerContentProps extends DrawerPopupProps {}
  * `DrawerContent` always supplies one. Base UI's own additional `Drawer.Content`
  * inner-wrapper part (which exists upstream only to let mouse text-selection
  * opt out of swipe handling) is intentionally omitted here to keep this
- * component's DOM output flat, matching `DialogContent`; reach for
- * `@base-ui/react/drawer`'s `Drawer.Content` directly around your children if
- * you need that specific text-selection affordance.
+ * component's DOM output deliberately flat, matching `DialogContent`; that
+ * specific text-selection affordance isn't currently exposed by this wrapper
+ * — open an issue if you need it.
  *
  * Base UI's `Drawer.Popup` sets `role="dialog"` (its root renders a Dialog
- * underneath) but, like Dialog, doesn't add `aria-modal` itself — Kairo adds
- * `aria-modal="true"` here for the common modal case; pass `aria-modal={false}`
- * explicitly if you set the root's `modal` prop to `false`/`'trap-focus'`.
+ * underneath) and, like Dialog, adds no `aria-modal` — and neither does Kairo.
+ * Modality reaches assistive tech through `FloatingFocusManager` marking
+ * everything outside the popup `aria-hidden`/inert, which screen readers
+ * support better than the attribute and which, unlike the hardcoded
+ * `aria-modal="true"` this used to set, tracks the root's actual `modal` prop.
+ * See `DialogContent`'s comment for the full reasoning and the matching
+ * precedent in Radix UI.
+ *
+ * Both full-screen layers Kairo renders here are made non-blocking when the
+ * root isn't fully modal (`modal={false}` or `'trap-focus'`, both of which
+ * leave the rest of the page interactive per Base UI's own docs):
+ *   - the decorative `.kairo-drawer-backdrop` is not rendered at all — Base UI
+ *     does its own pointer blocking with a separate internal backdrop that
+ *     `Drawer.Portal` (which is `Dialog.Portal`) renders only when
+ *     `modal === true`. Omitting it also *restores* outside-press dismissal
+ *     under `'trap-focus'`: Base UI's `useDismiss` only accepts an outside
+ *     press whose target is the backdrop when a backdrop exists, and accepts
+ *     any outside press when none does.
+ *   - the viewport can't be dropped the same way (Base UI needs it for swipe
+ *     and touch-scroll handling) and is `position: fixed; inset: 0`, so it
+ *     would keep swallowing every click on the page. Instead the resolved
+ *     modality is stamped on it as Kairo's own `data-modal` attribute
+ *     (`'true' | 'false' | 'trap-focus'`) and `drawer.css` turns off its
+ *     `pointer-events` for the non-`true` values, re-enabling them on the open
+ *     popup inside. Base UI's swipe listeners sit on the viewport but receive
+ *     the popup's events by bubbling, so gestures are unaffected.
  *
  * `data-side` (Kairo's own, not Base UI's — see `drawer.tsx`'s `DrawerSide`
  * doc comment) is read from the nearest `Drawer` via context and stamped on
@@ -145,16 +201,16 @@ export interface DrawerContentProps extends DrawerPopupProps {}
  * reach it. Pass `lang` explicitly to override.
  */
 export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
-  function DrawerContent({ className, children, ...props }, ref) {
+  function DrawerContent({ className, children, container, ...props }, ref) {
     const locale = useKairoLocale();
     const side = useContext(DrawerSideContext);
+    const modal = useContext(DrawerModalityContext);
     return (
-      <BaseDrawer.Portal>
-        <BaseDrawer.Backdrop className="kairo-drawer-backdrop" />
-        <BaseDrawer.Viewport className="kairo-drawer-viewport">
+      <BaseDrawer.Portal container={container}>
+        {modal === true && <BaseDrawer.Backdrop className="kairo-drawer-backdrop" />}
+        <BaseDrawer.Viewport className="kairo-drawer-viewport" data-modal={String(modal)}>
           <BaseDrawer.Popup
             ref={ref}
-            aria-modal="true"
             lang={locale}
             data-side={side}
             className={className ? `kairo-drawer-popup ${className}` : 'kairo-drawer-popup'}

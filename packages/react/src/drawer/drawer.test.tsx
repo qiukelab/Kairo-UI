@@ -33,8 +33,25 @@ describe('Drawer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Open drawer' }));
     const drawer = await screen.findByRole('dialog');
     expect(drawer).toBeInTheDocument();
-    expect(drawer).toHaveAttribute('aria-modal', 'true');
     expect(screen.getByText('Drawer title')).toBeInTheDocument();
+  });
+
+  // Base UI (like Radix) deliberately emits no `aria-modal`, conveying modality
+  // by marking everything outside the popup aria-hidden/inert instead. Kairo
+  // used to hardcode `aria-modal="true"`, which lied for `modal={false}`.
+  it('sets no aria-modal on the popup, whatever the root modality', async () => {
+    const modes = [undefined, true, false, 'trap-focus'] as const;
+    for (const modal of modes) {
+      const { unmount } = render(
+        <Drawer defaultOpen modal={modal}>
+          <DrawerContent>
+            <DrawerTitle>Drawer title</DrawerTitle>
+          </DrawerContent>
+        </Drawer>,
+      );
+      expect(await screen.findByRole('dialog')).not.toHaveAttribute('aria-modal');
+      unmount();
+    }
   });
 
   it('wires the accessible name and description to the title/description parts', async () => {
@@ -128,6 +145,62 @@ describe('Drawer', () => {
     await screen.findByRole('dialog');
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
     expect(ref.current).toHaveClass('kairo-drawer-popup');
+  });
+
+  // A non-modal drawer must leave the page interactive: the decorative backdrop
+  // is dropped entirely, and the viewport — which can't be dropped, since Base
+  // UI's swipe/touch-scroll handling lives on it — carries the modality as
+  // Kairo's own `data-modal`, which `drawer.css` uses to switch off its
+  // `pointer-events`.
+  it('drops the backdrop and marks the viewport when the root is not fully modal', async () => {
+    const modes = [false, 'trap-focus'] as const;
+    for (const modal of modes) {
+      const { unmount } = render(
+        <Drawer defaultOpen modal={modal}>
+          <DrawerContent>
+            <DrawerTitle>Drawer title</DrawerTitle>
+          </DrawerContent>
+        </Drawer>,
+      );
+      await screen.findByRole('dialog');
+      expect(document.querySelector('.kairo-drawer-backdrop')).not.toBeInTheDocument();
+      expect(document.querySelector('.kairo-drawer-viewport')).toHaveAttribute(
+        'data-modal',
+        String(modal),
+      );
+      unmount();
+    }
+  });
+
+  it('keeps the backdrop and marks the viewport modal by default', async () => {
+    render(
+      <Drawer defaultOpen>
+        <DrawerContent>
+          <DrawerTitle>Drawer title</DrawerTitle>
+        </DrawerContent>
+      </Drawer>,
+    );
+    await screen.findByRole('dialog');
+    expect(document.querySelector('.kairo-drawer-backdrop')).toBeInTheDocument();
+    expect(document.querySelector('.kairo-drawer-viewport')).toHaveAttribute('data-modal', 'true');
+  });
+
+  it('forwards the container prop to the portal', async () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    try {
+      render(
+        <Drawer defaultOpen>
+          <DrawerContent container={container}>
+            <DrawerTitle>Drawer title</DrawerTitle>
+          </DrawerContent>
+        </Drawer>,
+      );
+      const drawer = await screen.findByRole('dialog');
+      expect(container).toContainElement(drawer);
+    } finally {
+      container.remove();
+    }
   });
 
   it('has no axe violations when open', async () => {

@@ -3,13 +3,27 @@
  *
  * Selectors this component keys on (for future ports, e.g. Vue):
  *   - `.kairo-drawer-backdrop`  — Kairo's own class, on Base UI's `Drawer.Backdrop`.
+ *     Purely decorative, and rendered by `drawer.tsx` **only when the root is
+ *     fully modal** (`modal={true}`); the pointer blocking a modal drawer needs
+ *     comes from a separate internal backdrop Base UI renders itself. A
+ *     `modal={false}`/`'trap-focus'` drawer therefore has no element matching
+ *     this selector at all.
  *   - `.kairo-drawer-viewport`  — Kairo's own class, on Base UI's `Drawer.Viewport`
  *     (the fixed, full-screen container Base UI requires wrapping `Drawer.Popup`
  *     to enable swipe/touch-scroll handling — Dialog has no equivalent part).
- *     It carries no positioning of its own beyond `inset: 0`; like the backdrop,
- *     it is left free to capture pointer events across the whole screen while
- *     the (modal, by default) drawer is open, matching Base UI's own reference
- *     CSS, which doesn't set `pointer-events: none` on it either.
+ *     It carries no positioning of its own beyond `inset: 0`, and while the
+ *     drawer is fully modal it is left free to capture pointer events across
+ *     the whole screen, matching Base UI's own reference CSS, which doesn't set
+ *     `pointer-events: none` on it either.
+ *   - `[data-modal]` — **Kairo's own attribute, NOT from Base UI**, stamped on
+ *     the viewport by `drawer.tsx` with the root's resolved modality
+ *     (`'true' | 'false' | 'trap-focus'`). Base UI keeps `modal` in an internal
+ *     store and surfaces it on no part, but the viewport can't simply be
+ *     dropped for a non-modal drawer the way the backdrop is (swipe and
+ *     touch-scroll handling live on it), so this attribute is what lets the
+ *     rules below stop that full-screen layer from swallowing every click on a
+ *     page that a `modal={false}`/`'trap-focus'` drawer is supposed to leave
+ *     interactive.
  *   - `.kairo-drawer-popup`     — Kairo's own class, on Base UI's `Drawer.Popup`.
  *     Positioned directly with `position: fixed` + inset offsets (not via the
  *     viewport's layout), so nesting inside the also-fixed viewport is safe.
@@ -79,6 +93,21 @@
   position: fixed;
   inset: 0;
   z-index: 51;
+}
+
+/* A non-modal drawer (`modal={false}` or `'trap-focus'`) leaves the rest of the
+   page interactive, so this full-screen layer must not intercept its clicks.
+   Base UI's swipe/touch handlers are attached to the viewport but fire on
+   events bubbling up from the popup, so they keep working. */
+.kairo-drawer-viewport:not([data-modal='true']) {
+  pointer-events: none;
+}
+
+/* ...but the panel itself still needs them. Scoped to `[data-open]` so a popup
+   animating out stays click-through, preserving Base UI's own
+   `pointer-events: none` on the closing viewport. */
+.kairo-drawer-viewport:not([data-modal='true']) .kairo-drawer-popup[data-open] {
+  pointer-events: auto;
 }
 
 .kairo-drawer-popup {

@@ -33,8 +33,25 @@ describe('Dialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Open dialog' }));
     const dialog = await screen.findByRole('dialog');
     expect(dialog).toBeInTheDocument();
-    expect(dialog).toHaveAttribute('aria-modal', 'true');
     expect(screen.getByText('Dialog title')).toBeInTheDocument();
+  });
+
+  // Base UI (like Radix) deliberately emits no `aria-modal`, conveying modality
+  // by marking everything outside the popup aria-hidden/inert instead. Kairo
+  // used to hardcode `aria-modal="true"`, which lied for `modal={false}`.
+  it('sets no aria-modal on the popup, whatever the root modality', async () => {
+    const modes = [undefined, true, false, 'trap-focus'] as const;
+    for (const modal of modes) {
+      const { unmount } = render(
+        <Dialog defaultOpen modal={modal}>
+          <DialogContent>
+            <DialogTitle>Dialog title</DialogTitle>
+          </DialogContent>
+        </Dialog>,
+      );
+      expect(await screen.findByRole('dialog')).not.toHaveAttribute('aria-modal');
+      unmount();
+    }
   });
 
   it('moves focus into the dialog when opened', async () => {
@@ -66,6 +83,42 @@ describe('Dialog', () => {
     const dialog = await screen.findByRole('dialog');
     expect(dialog).toHaveClass('kairo-dialog-popup');
     expect(document.querySelector('.kairo-dialog-backdrop')).toBeInTheDocument();
+  });
+
+  // The backdrop is `position: fixed; inset: 0` and would dim and swallow every
+  // click on a page that a non-modal dialog is supposed to leave interactive.
+  it('renders no backdrop when the root is not fully modal', async () => {
+    const modes = [false, 'trap-focus'] as const;
+    for (const modal of modes) {
+      const { unmount } = render(
+        <Dialog defaultOpen modal={modal}>
+          <DialogContent>
+            <DialogTitle>Dialog title</DialogTitle>
+          </DialogContent>
+        </Dialog>,
+      );
+      await screen.findByRole('dialog');
+      expect(document.querySelector('.kairo-dialog-backdrop')).not.toBeInTheDocument();
+      unmount();
+    }
+  });
+
+  it('forwards the container prop to the portal', async () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    try {
+      render(
+        <Dialog defaultOpen>
+          <DialogContent container={container}>
+            <DialogTitle>Dialog title</DialogTitle>
+          </DialogContent>
+        </Dialog>,
+      );
+      const dialog = await screen.findByRole('dialog');
+      expect(container).toContainElement(dialog);
+    } finally {
+      container.remove();
+    }
   });
 
   it('has no axe violations when open', async () => {

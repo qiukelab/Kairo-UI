@@ -49,8 +49,48 @@ describe('AlertDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Delete account' }));
     const dialog = await screen.findByRole('alertdialog');
     expect(dialog).toBeInTheDocument();
-    expect(dialog).toHaveAttribute('aria-modal', 'true');
     expect(screen.getByText('Delete account?')).toBeInTheDocument();
+  });
+
+  // Base UI (like Radix) deliberately emits no `aria-modal`, conveying modality
+  // by marking everything outside the popup aria-hidden/inert instead; Kairo
+  // used to hardcode `aria-modal="true"` here.
+  it('sets no aria-modal on the popup', async () => {
+    render(<Example />);
+    fireEvent.click(screen.getByRole('button', { name: 'Delete account' }));
+    expect(await screen.findByRole('alertdialog')).not.toHaveAttribute('aria-modal');
+  });
+
+  // Unlike Dialog's, this backdrop is unconditional: Base UI hardcodes
+  // `modal: true` for alert dialogs, so there is no non-modal case.
+  it('always renders the backdrop', async () => {
+    render(
+      <AlertDialog defaultOpen>
+        <AlertDialogContent>
+          <AlertDialogTitle>Delete account?</AlertDialogTitle>
+        </AlertDialogContent>
+      </AlertDialog>,
+    );
+    await screen.findByRole('alertdialog');
+    expect(document.querySelector('.kairo-alert-dialog-backdrop')).toBeInTheDocument();
+  });
+
+  it('forwards the container prop to the portal', async () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    try {
+      render(
+        <AlertDialog defaultOpen>
+          <AlertDialogContent container={container}>
+            <AlertDialogTitle>Delete account?</AlertDialogTitle>
+          </AlertDialogContent>
+        </AlertDialog>,
+      );
+      const dialog = await screen.findByRole('alertdialog');
+      expect(container).toContainElement(dialog);
+    } finally {
+      container.remove();
+    }
   });
 
   it('uses role="alertdialog", not role="dialog"', async () => {
