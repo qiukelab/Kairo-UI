@@ -1,0 +1,84 @@
+---
+title: Dialog
+description: overlay แบบ modal สำหรับงานที่ต้องโฟกัสเฉพาะจุดและการยืนยัน สร้างบน Base UI
+icon: AppWindow
+---
+
+import { DialogDemo } from '@/components/demos/dialog-demo';
+
+## การใช้งาน
+
+```tsx
+import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Dialog>
+      <DialogTrigger>Edit profile</DialogTrigger>
+      <DialogContent>
+        <DialogTitle>Edit profile</DialogTitle>
+        <DialogDescription>Make changes to your profile here.</DialogDescription>
+        <DialogClose>Close</DialogClose>
+      </DialogContent>
+    </Dialog>
+  );
+}
+```
+
+`Dialog` เป็นตัวรวมส่วนประกอบต่าง ๆ เข้าด้วยกัน (ไม่ render DOM element ของ
+ตัวเองเลย เหมือนกับ `Dialog.Root` ของ Base UI) ส่วน `DialogContent` รวม
+`Dialog.Portal` > `Dialog.Backdrop` + `Dialog.Popup` ของ Base UI ไว้ในการ
+เรียกเดียว เพื่อให้คุณไม่ต้องไปประกอบส่วนเหล่านั้นเองทีละชิ้น การ trap
+focus, การล็อกการ scroll, การปิดด้วย Escape/การคลิกนอกพื้นที่ และ
+`role="dialog"` ทั้งหมดมาจาก `@base-ui/react`
+
+## Trigger หัวข้อ คำอธิบาย และปุ่มปิด
+
+<ComponentPreview
+  code={`<Dialog>
+  <DialogTrigger render={<Button variant="outline">แก้ไขโปรไฟล์</Button>} />
+  <DialogContent>
+    <DialogTitle>แก้ไขโปรไฟล์</DialogTitle>
+    <DialogDescription>
+      แก้ไขข้อมูลโปรไฟล์ของคุณที่นี่ แล้วกดบันทึกเมื่อเสร็จ
+    </DialogDescription>
+    <div className="mt-6 flex justify-end gap-3">
+      <DialogClose render={<Button variant="ghost">ยกเลิก</Button>} />
+      <DialogClose render={<Button>บันทึกการเปลี่ยนแปลง</Button>} />
+    </div>
+  </DialogContent>
+</Dialog>`}
+>
+  <DialogDemo />
+</ComponentPreview>
+
+## Props
+
+### `Dialog`
+
+| Prop           | Type                                                  | Default | Description                                                                                            |
+| -------------- | ------------------------------------------------------ | ------- | ----------------------------------------------------------------------------------------------------------- |
+| `open`         | `boolean`                                               | —       | สถานะเปิดแบบ controlled ใช้คู่กับ `onOpenChange`                                                              |
+| `defaultOpen`  | `boolean`                                               | `false` | สถานะเปิดเริ่มต้นสำหรับ dialog แบบ uncontrolled                                                               |
+| `modal`        | `boolean \| 'trap-focus'`                               | `true`  | กำหนดว่า dialog จะ trap focus และล็อกการ scroll (`true`), trap focus อย่างเดียว (`'trap-focus'`) หรือไม่ทำทั้งสองอย่างเลย (`false`) |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`                 | —       | เรียกเมื่อ dialog เปิดหรือปิด                                                                                  |
+| ...            | Additional props | — | props อื่น ๆ ที่เหลือทั้งหมดจะถูกส่งต่อไป                                                    |
+
+### `DialogTrigger` / `DialogClose`
+
+ค่าเริ่มต้น render เป็น `<button>` ดั้งเดิม หรือจะ compose กับ element อื่น
+ผ่าน `render` ก็ได้ (เช่น `<DialogTrigger render={<Button>Open</Button>} />`)
+
+### `DialogContent`
+
+| Prop          | Type                                              | Default | Description                                                              |
+| ------------- | ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------ |
+| `className`   | `string`                                             | —       | รวมกับคลาสพื้นฐาน `kairo-dialog-popup` บน element ของ popup                     |
+| `initialFocus`| `boolean \| RefObject \| function`                   | —       | Element ที่จะโฟกัสเมื่อ dialog เปิดขึ้น ค่าเริ่มต้นคือ element แรกที่ tab ไปถึงได้ภายใน popup หรือตัว popup เองถ้าเปิดผ่านการสัมผัส (touch) (เพื่อไม่ให้ไปเรียก on-screen keyboard) รับค่า `false` (ไม่ยุ่งกับโฟกัสเลย), `true` (ใช้ค่าเริ่มต้น), `RefObject` (โฟกัส element นั้น) หรือฟังก์ชัน — ที่ถูกเรียกพร้อม interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — ที่คืนค่า element, `true`/`null` สำหรับค่าเริ่มต้น หรือ `false`/`undefined` เพื่อไม่ทำอะไรเลย |
+| `finalFocus`  | `boolean \| RefObject \| function`                   | —       | Element ที่จะโฟกัสเมื่อ dialog ปิดลง ค่าเริ่มต้นคือ trigger หรือ element ที่โฟกัสอยู่ก่อนเปิด รับค่า `false` (ไม่ยุ่งกับโฟกัสเลย), `true` (ใช้ค่าเริ่มต้น), `RefObject` (โฟกัส element นั้น) หรือฟังก์ชัน — ที่ถูกเรียกพร้อม interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — ที่คืนค่า element, `true`/`null` สำหรับค่าเริ่มต้น หรือ `false`/`undefined` เพื่อไม่ทำอะไรเลย |
+| ...           | Additional props | — | props อื่น ๆ ที่เหลือทั้งหมดจะถูกส่งต่อไปยัง element ของ popup ด้านล่าง |
+
+### `DialogTitle` / `DialogDescription`
+
+Render เป็น `<h2>`/`<p>` ตามลำดับ และเชื่อมกับ popup ผ่าน
+`aria-labelledby`/`aria-describedby` ให้อัตโนมัติ

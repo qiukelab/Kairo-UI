@@ -1,0 +1,86 @@
+---
+title: Tabs
+description: จัดระเบียบเนื้อหาเป็นพาเนลที่สลับได้ พร้อมตัวชี้แท็บที่ active แบบมีแอนิเมชัน สร้างบน Base UI
+icon: Rows3
+---
+
+import { TabsDemo } from '@/components/demos/tabs-demo';
+
+## การใช้งาน
+
+```tsx
+import { Tabs, TabsList, Tab, TabPanel } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Tabs defaultValue="account">
+      <TabsList>
+        <Tab value="account">Account</Tab>
+        <Tab value="password">Password</Tab>
+      </TabsList>
+      <TabPanel value="account">Account settings</TabPanel>
+      <TabPanel value="password">Password settings</TabPanel>
+    </Tabs>
+  );
+}
+```
+
+## แท็บที่ปิดใช้งานและการนำทางด้วยคีย์บอร์ด
+
+ใช้ <kbd>Arrow Left</kbd>/<kbd>Arrow Right</kbd> เพื่อย้ายโฟกัสระหว่างแท็บ
+(แท็บ "ทีม" ที่ปิดใช้งานอยู่จะถูกข้ามไป) จากนั้นกด <kbd>Enter</kbd> หรือ
+<kbd>Space</kbd> เพื่อเปิดใช้งานแท็บที่โฟกัสอยู่
+
+<ComponentPreview
+  code={`<Tabs defaultValue="account">
+  <TabsList>
+    <Tab value="account">บัญชี</Tab>
+    <Tab value="password">รหัสผ่าน</Tab>
+    <Tab value="team" disabled>ทีม</Tab>
+  </TabsList>
+  <TabPanel value="account">อัปเดตรายละเอียดบัญชีของคุณที่นี่</TabPanel>
+  <TabPanel value="password">เปลี่ยนรหัสผ่านของคุณที่นี่</TabPanel>
+  <TabPanel value="team">จัดการสมาชิกในทีมของคุณที่นี่</TabPanel>
+</Tabs>`}
+>
+  <TabsDemo />
+</ComponentPreview>
+
+## Props
+
+### `Tabs`
+
+| Prop            | Type                                        | Default | Description                                                    |
+| --------------- | -------------------------------------------- | ------- | ------------------------------------------------------------------ |
+| `value`         | `any`                                         | —       | ค่าของแท็บที่ active อยู่ในปัจจุบัน ใช้ตอนเป็นแบบ controlled           |
+| `defaultValue`  | `any`                                         | `0`     | ค่าของแท็บ active เริ่มต้นสำหรับ `Tabs` แบบ uncontrolled              |
+| `orientation`   | `'horizontal' \| 'vertical'`                  | `'horizontal'` | ทิศทางการจัดวางเลย์เอาต์                                       |
+| `onValueChange` | `(value: any, eventDetails) => void`          | —       | เรียกเมื่อแท็บ active เปลี่ยน                                       |
+| `className`     | `string`                                      | —       | รวมกับคลาสพื้นฐาน `kairo-tabs`                                     |
+
+### `TabsList`
+
+| Prop              | Type      | Default | Description                                                                |
+| ----------------- | --------- | ------- | ------------------------------------------------------------------------------ |
+| `activateOnFocus` | `boolean` | `false` | เปิดใช้งานแท็บทันทีที่ได้รับโฟกัสจากปุ่มลูกศร แทนที่จะต้องกด Enter/Space          |
+| `loopFocus`       | `boolean` | `true`  | วนโฟกัสด้วยคีย์บอร์ดกลับไปแท็บแรกเมื่อถึงท้ายรายการ                              |
+| `className`       | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-tabs-list`                                            |
+
+### `Tab`
+
+| Prop        | Type      | Default | Description                                |
+| ----------- | --------- | ------- | ----------------------------------------------- |
+| `value`     | `any`     | —       | ค่าของแท็บนี้ (จำเป็นต้องระบุ)                     |
+| `disabled`  | `boolean` | `false` | ป้องกันไม่ให้เลือกแท็บนี้ได้                        |
+| `className` | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-tab`                      |
+
+### `TabPanel`
+
+| Prop          | Type      | Default | Description                                              |
+| ------------- | --------- | ------- | ------------------------------------------------------------ |
+| `value`       | `any`     | —       | แสดงเมื่อ `Tab` ที่มีค่าตรงกันกำลัง active อยู่                 |
+| `keepMounted` | `boolean` | `false` | คงพาเนลไว้ใน DOM (ซ่อนไว้) ขณะไม่ active                        |
+| `className`   | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-tab-panel`                             |
+
+props อื่น ๆ ที่เหลือทั้งหมดจะถูกส่งต่อไปยัง element ด้านล่างของแต่ละ Kairo
+component ที่เกี่ยวข้อง (`Tabs`, `TabsList`, `Tab`, `TabPanel`)

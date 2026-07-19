@@ -1,0 +1,130 @@
+---
+title: Drawer
+description: แผงด้านข้างที่ปักไว้กับขอบจอ เลื่อนเข้ามาจากด้านบน ขวา ล่าง หรือซ้าย รองรับการปัดเพื่อปิด สร้างบน Base UI
+icon: PanelBottom
+---
+
+import { DrawerDemo } from '@/components/demos/drawer-demo';
+
+## การใช้งาน
+
+```tsx
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerClose,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Drawer side="right">
+      <DrawerTrigger>Open settings</DrawerTrigger>
+      <DrawerContent>
+        <DrawerTitle>Settings</DrawerTitle>
+        <DrawerDescription>Make changes to your preferences here.</DrawerDescription>
+        <DrawerClose>Close</DrawerClose>
+      </DrawerContent>
+    </Drawer>
+  );
+}
+```
+
+`Drawer` รวบรวมส่วนประกอบต่าง ๆ เข้าด้วยกัน และ render `Drawer.Root` ของ Base UI
+อยู่ข้างใต้ (ซึ่งตัวมันเองก็ render `Dialog.Root` อีกที ดังนั้นเรื่อง focus
+trapping, scroll locking, การปิดด้วย Escape/การกดนอกพื้นที่ และ
+`role="dialog"` จึงมาจากที่เดียวกับที่ Dialog ใช้) `DrawerContent` ประกอบ
+`Drawer.Portal` > `Drawer.Backdrop` + `Drawer.Viewport` > `Drawer.Popup` ของ
+Base UI ไว้ในคำเรียกเดียว คุณจึงไม่ต้องไปเรียกใช้ส่วนเหล่านั้นเอง
+
+Drawer ของ Base UI เองไม่มีแนวคิดเรื่อง "side"/ตำแหน่งวางในตัวเลย มีแค่
+`swipeDirection` (แกนของ *ท่าทางปัดเพื่อปิด* ไม่ใช่ตำแหน่งที่พัก) ส่วน `side`
+เป็นสิ่งที่ Kairo เพิ่มเข้ามาเอง: มันประทับ attribute `data-side` ไว้บน popup
+(ที่ `@kairo-ui/theme` อ่านไปใช้จัดตำแหน่ง ขนาด และ animation) และตั้งค่า
+`swipeDirection` ของ Base UI ให้ตรงกัน ทำให้การปัดแผงกลับไปทางขอบที่มันพักอยู่
+คือท่าทางที่ใช้ปิดมัน
+
+## ด้านละหนึ่ง Trigger
+
+<ComponentPreview
+  code={`<Drawer side="top">
+  <DrawerTrigger>บน</DrawerTrigger>
+  <DrawerContent>
+    <DrawerTitle>บน drawer</DrawerTitle>
+    <DrawerDescription>แผงนี้ถูกปักไว้ที่ขอบด้านบน และเลื่อนเข้ามาจากด้านนั้น</DrawerDescription>
+    <DrawerClose>ปิด</DrawerClose>
+  </DrawerContent>
+</Drawer>
+
+<Drawer side="right">
+  <DrawerTrigger>ขวา</DrawerTrigger>
+  <DrawerContent>
+    <DrawerTitle>ขวา drawer</DrawerTitle>
+    <DrawerDescription>แผงนี้ถูกปักไว้ที่ขอบด้านขวา และเลื่อนเข้ามาจากด้านนั้น</DrawerDescription>
+    <DrawerClose>ปิด</DrawerClose>
+  </DrawerContent>
+</Drawer>
+
+<Drawer side="bottom">
+  <DrawerTrigger>ล่าง</DrawerTrigger>
+  <DrawerContent>
+    <DrawerTitle>ล่าง drawer</DrawerTitle>
+    <DrawerDescription>แผงนี้ถูกปักไว้ที่ขอบด้านล่าง และเลื่อนเข้ามาจากด้านนั้น</DrawerDescription>
+    <DrawerClose>ปิด</DrawerClose>
+  </DrawerContent>
+</Drawer>
+
+<Drawer side="left">
+  <DrawerTrigger>ซ้าย</DrawerTrigger>
+  <DrawerContent>
+    <DrawerTitle>ซ้าย drawer</DrawerTitle>
+    <DrawerDescription>แผงนี้ถูกปักไว้ที่ขอบด้านซ้าย และเลื่อนเข้ามาจากด้านนั้น</DrawerDescription>
+    <DrawerClose>ปิด</DrawerClose>
+  </DrawerContent>
+</Drawer>`}
+>
+  <DrawerDemo />
+</ComponentPreview>
+
+## Props
+
+### `Drawer`
+
+| Prop                      | Type                                     | Default | Description                                                                                                     |
+| -------------------------- | ------------------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `side`                     | `'top' \| 'right' \| 'bottom' \| 'left'`   | `'right'` | ขอบด้านที่ drawer ถูกปักไว้และเลื่อนเข้ามาจาก และตั้งค่า `swipeDirection` ของ Base UI ให้ตรงกันด้วย                 |
+| `open`                     | `boolean`                                  | —       | สถานะเปิดแบบควบคุม ใช้คู่กับ `onOpenChange`                                                                        |
+| `defaultOpen`              | `boolean`                                  | `false` | สถานะเปิดเริ่มต้นสำหรับ drawer แบบไม่ควบคุม                                                                         |
+| `modal`                    | `boolean \| 'trap-focus'`                  | `true`  | กำหนดว่า drawer จะดักโฟกัส/ล็อกการเลื่อนหน้าจอ (`true`) ดักเฉพาะโฟกัส (`'trap-focus'`) หรือไม่ทำทั้งสองอย่าง (`false`)         |
+| `onOpenChange`             | `(open: boolean, eventDetails) => void`    | —       | เรียกเมื่อ drawer เปิดหรือปิด                                                                                |
+| `disablePointerDismissal`  | `boolean`                                  | `false` | ป้องกันไม่ให้ drawer ปิดเมื่อกดนอกพื้นที่ (และสำหรับ drawer แบบไม่ใช่ modal จะป้องกันตอนโฟกัสเลื่อนออกไปนอกด้วย)          |
+| ...                        | Additional props | — | props อื่น ๆ ทั้งหมด (เช่น `snapPoints`, `handle`) ถูกส่งต่อไปตามปกติ — ส่วน `swipeDirection` เองไม่ได้เปิดให้ใช้ตรง ๆ เพราะ `side` เป็นตัวกำหนดค่านี้แทน |
+
+### `DrawerTrigger` / `DrawerClose`
+
+โดยค่าเริ่มต้นจะ render เป็น `<button>` ดั้งเดิม หรือจะ compose กับอีลีเมนต์อื่น
+ผ่าน `render` ก็ได้ (เช่น `<DrawerTrigger render={<Button>Open</Button>} />`)
+
+### `DrawerContent`
+
+| Prop           | Type                                              | Default | Description                                                                       |
+| --------------- | ---------------------------------------------------- | ------- | --------------------------------------------------------------------------------------- |
+| `className`     | `string`                                             | —       | รวมกับคลาสพื้นฐาน `kairo-drawer-popup` บนอีลีเมนต์ popup                                  |
+| `initialFocus`  | `boolean \| RefObject \| function`                   | —       | อีลีเมนต์ที่จะโฟกัสเมื่อ drawer เปิด ค่าเริ่มต้นคืออีลีเมนต์แรกที่ tab ไปถึงได้ภายใน popup หรือตัว popup เองเมื่อเปิดผ่านการสัมผัส (เพื่อเลี่ยงไม่ให้ on-screen keyboard เด้งขึ้นมา) รับค่า `false` (ไม่ยุ่งกับโฟกัสเลย), `true` (ใช้ค่าเริ่มต้น), `RefObject` (โฟกัสอีลีเมนต์นั้น) หรือฟังก์ชัน — ที่ถูกเรียกพร้อม interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — ซึ่งคืนค่าเป็นอีลีเมนต์, `true`/`null` สำหรับค่าเริ่มต้น หรือ `false`/`undefined` เพื่อไม่ทำอะไรเลย |
+| `finalFocus`    | `boolean \| RefObject \| function`                   | —       | อีลีเมนต์ที่จะโฟกัสเมื่อ drawer ปิด ค่าเริ่มต้นคือ trigger หรืออีลีเมนต์ที่มีโฟกัสอยู่ก่อนเปิด รับค่า `false` (ไม่ยุ่งกับโฟกัสเลย), `true` (ใช้ค่าเริ่มต้น), `RefObject` (โฟกัสอีลีเมนต์นั้น) หรือฟังก์ชัน — ที่ถูกเรียกพร้อม interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — ซึ่งคืนค่าเป็นอีลีเมนต์, `true`/`null` สำหรับค่าเริ่มต้น หรือ `false`/`undefined` เพื่อไม่ทำอะไรเลย |
+| ...             | Additional props | — | props อื่น ๆ ทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ popup ด้านใน |
+
+ประกอบ `Drawer.Portal` > `Drawer.Backdrop` + `Drawer.Viewport` > `Drawer.Popup`
+ของ Base UI เข้าด้วยกัน ตั้งค่า `aria-modal="true"` บน popup ให้โดยอัตโนมัติ
+(Drawer ของ Base UI เองไม่ได้ใส่ attribute นี้ให้) — ส่ง `aria-modal={false}`
+เข้าไปเองถ้า prop `modal` ของ root เป็น `false`/`'trap-focus'` และยังตั้งค่า
+`lang` บน popup จาก `KairoLocaleProvider` ที่ใกล้ที่สุดด้วย เนื่องจาก Base UI
+portal มันไปไว้ที่ `document.body` ซึ่งอยู่นอกขอบเขตของ `lang` ที่ตั้งไว้ใน
+ระดับที่สูงกว่า
+
+### `DrawerTitle` / `DrawerDescription`
+
+render เป็น `<h2>`/`<p>` ตามลำดับ และเชื่อมกับ popup ผ่าน
+`aria-labelledby`/`aria-describedby` ให้โดยอัตโนมัติ

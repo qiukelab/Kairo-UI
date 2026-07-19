@@ -1,0 +1,80 @@
+---
+title: Tooltip
+description: popup ขนาดเล็กที่แสดงข้อมูลเพิ่มเติมของ element เมื่อ hover หรือ focus สร้างบน Base UI
+icon: Info
+---
+
+import { TooltipDemo } from '@/components/demos/tooltip-demo';
+
+## การใช้งาน
+
+```tsx
+import { Tooltip } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Tooltip content="Saved to your library">
+      <button type="button">Hover me</button>
+    </Tooltip>
+  );
+}
+```
+
+`children` คือ element ของ trigger — Kairo render มันโดยตรง (ผ่านการ
+compose แบบ `render` ของ Base UI) และรวม hover/focus interaction handler
+เข้ากับมันเลย จึงไม่มี DOM wrapper เพิ่มเข้ามา `content` คือเนื้อหาของ popup
+
+ถ้าคุณ render tooltip หลายตัว ให้ครอบ subtree ด้วย `<TooltipProvider>` สัก
+ครั้งเดียว เพื่อให้ tooltip ที่อยู่ติดกันแชร์จังหวะเวลา delay เปิด/ปิดร่วม
+กัน (พอ hover จาก trigger หนึ่งไปอีกตัว จะเปิดทันทีโดยไม่ต้องรอ) ส่วน
+`<Tooltip>` ตัวเดียวก็ทำงานได้ปกติโดยไม่ต้องมี provider
+
+## ตำแหน่งการแสดงผลและกลุ่มดีเลย์ร่วมกัน
+
+<ComponentPreview
+  code={`<TooltipProvider>
+  <Tooltip content="บันทึกลงคลังของคุณแล้ว">
+    <Button variant="outline">บน (ค่าเริ่มต้น)</Button>
+  </Tooltip>
+  <Tooltip content="ลบรายการนี้อย่างถาวร" side="bottom">
+    <Button variant="outline">ล่าง</Button>
+  </Tooltip>
+  <Tooltip content="เปิดในแท็บใหม่" side="right">
+    <Button variant="outline">ขวา</Button>
+  </Tooltip>
+</TooltipProvider>`}
+>
+  <TooltipDemo />
+</ComponentPreview>
+
+## Props
+
+### `Tooltip`
+
+| Prop         | Type                                                          | Default    | Description                                                                    |
+| ------------ | -------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------- |
+| `children`   | `ReactElement`                                                  | —          | Element ของ trigger จำเป็นต้องระบุ                                                  |
+| `content`    | `ReactNode`                                                     | —          | เนื้อหาของ popup จำเป็นต้องระบุ                                                     |
+| `side`       | `'top' \| 'bottom' \| 'left' \| 'right' \| 'inline-end' \| 'inline-start'` | `'top'`    | ด้านของ trigger ที่จะ render popup ให้ชิด                                          |
+| `align`      | `'start' \| 'center' \| 'end'`                                  | `'center'` | วิธีจัดตำแหน่ง popup โดยอ้างอิงกับ `side`                                            |
+| `sideOffset` | `number`                                                        | `8`        | ระยะห่างเป็นพิกเซลระหว่าง trigger กับ popup                                          |
+| `delay`      | `number`                                                        | `600`      | ระยะเวลาที่ต้องรอก่อนเปิด tooltip หน่วยเป็น ms                                       |
+| `closeDelay` | `number`                                                        | `0`        | ระยะเวลาที่ต้องรอก่อนปิด tooltip หน่วยเป็น ms                                        |
+| `open`       | `boolean`                                                       | —          | สถานะเปิดแบบ controlled ใช้คู่กับ `onOpenChange`                                     |
+| `defaultOpen`| `boolean`                                                       | `false`    | สถานะเปิดเริ่มต้นสำหรับ tooltip แบบ uncontrolled                                     |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`                       | —          | เรียกเมื่อ tooltip เปิดหรือปิด                                                       |
+| `className`  | `string`                                                        | —          | รวมกับคลาสพื้นฐาน `kairo-tooltip-popup` บน element ของ popup                        |
+| ...          | Additional props | —          | props อื่น ๆ ที่เหลือ (เช่น `trackCursorAxis`, `disabled`) จะถูกส่งต่อไป |
+
+### `TooltipProvider`
+
+รวม `Tooltip` หลายตัวเข้าด้วยกันให้แชร์จังหวะเวลา delay เปิด/ปิดร่วมกัน:
+เมื่อ tooltip ตัวหนึ่งในกลุ่มเปิดไปแล้ว ตัวที่อยู่ติดกันจะเปิดทันที (ข้าม
+`delay` ของตัวเอง) ถ้าถูกเปิดภายใน `timeout` ms หลังจากตัวก่อนหน้าปิดลง
+
+| Prop         | Type              | Default | Description                                                                                                                                   |
+| ------------ | ----------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `delay`      | `number`          | —       | ระยะเวลาที่ต้องรอก่อนเปิด tooltip ในกลุ่ม หน่วยเป็น ms ถ้าไม่ระบุจะ fallback ไปใช้ `delay` ของแต่ละ `Tooltip` เอง (ค่าเริ่มต้น `600`)                      |
+| `closeDelay` | `number`          | —       | ระยะเวลาที่ต้องรอก่อนปิด tooltip ในกลุ่ม หน่วยเป็น ms ถ้าไม่ระบุจะ fallback ไปใช้ `closeDelay` ของแต่ละ `Tooltip` เอง (ค่าเริ่มต้น `0`)                    |
+| `timeout`    | `number`          | `400`   | ถ้า tooltip อีกตัวในกลุ่มเปิดขึ้นภายในจำนวน ms นี้หลังจากตัวก่อนหน้าปิดลง มันจะเปิดทันทีแทนที่จะรอ `delay` จนครบ                                          |
+| `children`   | `React.ReactNode` | —       | tooltip ทั้งหมด (และเนื้อหาอื่น ๆ) ในกลุ่ม                                                                                                              |

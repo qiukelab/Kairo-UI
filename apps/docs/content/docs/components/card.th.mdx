@@ -1,0 +1,73 @@
+---
+title: Card
+description: คอนเทนเนอร์สำหรับจัดกลุ่มเนื้อหาที่เกี่ยวข้องกัน ประกอบจากส่วน Header, Title, Description, Content และ Footer
+icon: LayoutPanelTop
+---
+
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@kairo-ui/react';
+
+## การใช้งาน
+
+```tsx
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Project Alpha</CardTitle>
+        <CardDescription>A short summary of the project.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p>Card body content goes here.</p>
+      </CardContent>
+      <CardFooter>
+        <span>Updated 2 days ago</span>
+      </CardFooter>
+    </Card>
+  );
+}
+```
+
+## ตัวอย่าง
+
+<ComponentPreview code={`<Card>
+  <CardHeader>
+    <CardTitle>Project Alpha</CardTitle>
+    <CardDescription>สรุปสั้น ๆ ของโปรเจกต์</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>เนื้อหาส่วนตัวของการ์ดอยู่ตรงนี้</p>
+  </CardContent>
+  <CardFooter>
+    <span>อัปเดตล่าสุด 2 วันที่แล้ว</span>
+  </CardFooter>
+</Card>`}>
+  <Card className="w-full max-w-sm">
+    <CardHeader>
+      <CardTitle>Project Alpha</CardTitle>
+      <CardDescription>สรุปสั้น ๆ ของโปรเจกต์</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <p>เนื้อหาส่วนตัวของการ์ดอยู่ตรงนี้</p>
+    </CardContent>
+    <CardFooter>
+      <span>อัปเดตล่าสุด 2 วันที่แล้ว</span>
+    </CardFooter>
+  </Card>
+</ComponentPreview>
+
+## Props
+
+แต่ละส่วนจะส่งต่อ `ref` ไปยังอีลีเมนต์ดั้งเดิมของมัน รวม `className` ที่กำหนด
+เองเข้ากับคลาสพื้นฐาน `kairo-card-*` ของตัวเอง และส่งต่อ native props อื่น ๆ
+ทั้งหมดไปด้วย
+
+| Component          | Underlying element | Base class               |
+| ------------------- | -------------------- | --------------------------- |
+| `Card`              | `<div>`              | `kairo-card`                |
+| `CardHeader`        | `<div>`              | `kairo-card-header`         |
+| `CardTitle`         | `<h3>`               | `kairo-card-title`          |
+| `CardDescription`   | `<p>`                | `kairo-card-description`    |
+| `CardContent`       | `<div>`              | `kairo-card-content`        |
+| `CardFooter`        | `<div>`              | `kairo-card-footer`         |

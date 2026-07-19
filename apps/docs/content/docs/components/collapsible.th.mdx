@@ -1,0 +1,102 @@
+---
+title: Collapsible
+description: ตัว trigger เดียวที่แสดงและซ่อนพาเนลหนึ่งอัน พร้อมแอนิเมชันทรานซิชันความสูง สร้างบน Base UI
+icon: UnfoldVertical
+---
+
+import { CollapsibleDemo } from '@/components/demos/collapsible-demo';
+
+## การใช้งาน
+
+```tsx
+import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Collapsible>
+      <CollapsibleTrigger>What's included in the free plan?</CollapsibleTrigger>
+      <CollapsiblePanel>
+        Unlimited projects, up to 3 collaborators, and community support.
+      </CollapsiblePanel>
+    </Collapsible>
+  );
+}
+```
+
+`Collapsible` เป็นตัวรวมส่วนประกอบต่าง ๆ เข้าด้วยกัน โดย render เป็น `<div>`
+ส่วน `CollapsibleTrigger` render เป็น `<button>` ดั้งเดิม พร้อมเชื่อม
+`aria-expanded`/`aria-controls` เข้ากับพาเนลให้อัตโนมัติ ค่าเริ่มต้นของ
+`CollapsiblePanel` จะถูก unmount ออกจาก DOM ตอนที่ปิดอยู่ และเล่นแอนิเมชัน
+`height` ตอนเปิด/ปิดด้วย CSS custom property (`--collapsible-panel-height`)
+ที่ Base UI วัดค่าและเขียนแบบ inline ให้เอง — ทั้งหมดนี้มาจาก `@base-ui/react`
+
+## ค่าเริ่มต้น เปิดไว้ตั้งแต่แรก และปิดใช้งาน
+
+<ComponentPreview
+  code={`<Collapsible>
+  <CollapsibleTrigger>แพ็กเกจฟรีมีอะไรให้บ้าง</CollapsibleTrigger>
+  <CollapsiblePanel>
+    โปรเจกต์ไม่จำกัด ผู้ร่วมงานได้สูงสุด 3 คน และซัพพอร์ตจากคอมมูนิตี้ อัปเกรดได้ทุกเมื่อเพื่อปลดล็อกที่นั่งเพิ่มและซัพพอร์ตแบบเร่งด่วน
+  </CollapsiblePanel>
+</Collapsible>
+
+<Collapsible defaultOpen>
+  <CollapsibleTrigger>ยกเลิกได้ทุกเมื่อไหม</CollapsibleTrigger>
+  <CollapsiblePanel>
+    ได้ — ยกเลิกได้จากหน้าตั้งค่าบัญชี และคุณจะยังใช้งานได้จนถึงสิ้นสุดรอบบิลปัจจุบัน
+  </CollapsiblePanel>
+</Collapsible>
+
+<Collapsible disabled>
+  <CollapsibleTrigger>แพ็กเกจ Enterprise (เร็วๆ นี้)</CollapsibleTrigger>
+  <CollapsiblePanel>ยังไม่พร้อมให้บริการ</CollapsiblePanel>
+</Collapsible>`}
+>
+  <CollapsibleDemo />
+</ComponentPreview>
+
+<Callout title="Collapsible กับ Accordion" type="info">
+  ทั้งสองใช้โครงสร้าง Base UI แบบเดียวกัน แต่ตอบคำถามคนละแบบ **Collapsible**
+  เป็น primitive ที่ไม่ตีกรอบสไตล์ไว้ล่วงหน้า สำหรับคู่ trigger/พาเนล*เดียว*
+  — เหมาะเมื่อคุณกำลังสร้าง UI แบบเปิดปิดเนื้อหาแบบกำหนดเอง (ปุ่ม "แสดง
+  เพิ่มเติม" พาเนลตัวกรอง หรือ FAQ ข้อเดียว) และอยากคุมเลย์เอาต์กับ chrome
+  เอง **Accordion** คือ component ที่ตีกรอบสไตล์และมีเส้นขอบมาให้ สำหรับ
+  *ชุด*ของส่วนที่ยุบขยายได้หลายส่วนที่ใช้ container เดียวกัน โดยทั่วไปจะ
+  เปิดได้ทีละส่วน ถ้าคุณพบว่าตัวเอง render `Collapsible` หลายตัวเรียงต่อกัน
+  พร้อมเส้นขอบที่ต้องเข้าชุดกัน ให้เปลี่ยนไปใช้ `Accordion` แทน
+</Callout>
+
+## Props
+
+### `Collapsible`
+
+| Prop           | Type                                     | Default | Description                                                     |
+| -------------- | ------------------------------------------ | ------- | ----------------------------------------------------------------- |
+| `open`         | `boolean`                                  | —       | สถานะเปิดแบบ controlled ใช้คู่กับ `onOpenChange`                    |
+| `defaultOpen`  | `boolean`                                  | `false` | สถานะเปิดเริ่มต้นสำหรับ collapsible แบบ uncontrolled                 |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`    | —       | เรียกเมื่อพาเนลเปิดหรือปิด                                          |
+| `disabled`     | `boolean`                                  | `false` | ปิดกั้นการโต้ตอบของผู้ใช้ (รวมถึง trigger ด้วย เว้นแต่จะ override)   |
+| `className`    | `string`                                   | —       | รวมกับคลาสพื้นฐาน `kairo-collapsible`                               |
+| ...            | Additional props | — | props อื่น ๆ ที่เหลือทั้งหมดจะถูกส่งต่อไปยัง element ด้านล่าง |
+
+### `CollapsibleTrigger`
+
+Render เป็น `<button>` ดั้งเดิม โดยตั้งค่า `aria-expanded` ไว้เสมอ และตั้ง
+`aria-controls` เป็น id ของพาเนลเมื่อเปิดอยู่ มี `data-panel-open` อยู่บนตัว
+มันตลอดช่วงที่พาเนลเปิดอยู่
+
+| Prop        | Type      | Default | Description                                                        |
+| ----------- | --------- | ------- | ------------------------------------------------------------------ |
+| `disabled`  | `boolean` | —       | Override ค่า `disabled` ที่สืบทอดมาจาก `Collapsible`                 |
+| `className` | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-collapsible-trigger`                        |
+
+### `CollapsiblePanel`
+
+| Prop                | Type      | Default | Description                                                                          |
+| ------------------- | --------- | ------- | ------------------------------------------------------------------------------------- |
+| `keepMounted`       | `boolean` | `false` | คงพาเนลไว้ใน DOM (ซ่อนไว้) ตอนปิดอยู่ แทนที่จะ unmount ออก                              |
+| `hiddenUntilFound`  | `boolean` | `false` | ใช้ `hidden="until-found"` เพื่อให้การค้นหาในหน้าเว็บของเบราว์เซอร์เปิดพาเนลนี้ขึ้นมาได้ |
+| `className`         | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-collapsible-panel`                                            |
+
+props อื่น ๆ ที่เหลือทั้งหมดจะถูกส่งต่อไปยัง element ด้านล่างของแต่ละ Kairo
+component ที่เกี่ยวข้อง

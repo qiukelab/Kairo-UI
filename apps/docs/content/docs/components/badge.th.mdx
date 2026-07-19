@@ -1,0 +1,54 @@
+---
+title: Badge
+description: ป้ายเล็ก ๆ สำหรับแสดงสถานะ จำนวน และ metadata มีสามรูปแบบ solid, soft และ outline ครอบคลุมห้า intent
+icon: Tag
+---
+
+import { Badge } from '@kairo-ui/react';
+
+## การใช้งาน
+
+```tsx
+import { Badge } from '@kairo-ui/react';
+
+export function Example() {
+  return <Badge intent="success">Active</Badge>;
+}
+```
+
+## Variants
+
+<ComponentPreview code={`<Badge variant="solid">Solid</Badge>
+<Badge variant="soft">Soft</Badge>
+<Badge variant="outline">Outline</Badge>`}>
+  <div className="flex flex-wrap items-center gap-3">
+    <Badge variant="solid">Solid</Badge>
+    <Badge variant="soft">Soft</Badge>
+    <Badge variant="outline">Outline</Badge>
+  </div>
+</ComponentPreview>
+
+## Intents
+
+<ComponentPreview code={`<Badge intent="default">Default</Badge>
+<Badge intent="primary">Primary</Badge>
+<Badge intent="success">Success</Badge>
+<Badge intent="warning">Warning</Badge>
+<Badge intent="danger">Danger</Badge>`}>
+  <div className="flex flex-wrap items-center gap-3">
+    <Badge intent="default">Default</Badge>
+    <Badge intent="primary">Primary</Badge>
+    <Badge intent="success">Success</Badge>
+    <Badge intent="warning">Warning</Badge>
+    <Badge intent="danger">Danger</Badge>
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop        | Type                                                              | Default     | Description                             |
+| ----------- | -------------------------------------------------------------------- | ------------ | ------------------------------------------ |
+| `variant`   | `'solid' \| 'soft' \| 'outline'`                                    | `'solid'`    | รูปแบบการแสดงผลของ badge                   |
+| `intent`    | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger'`       | `'default'`  | สีเชิงความหมาย (intent) ของ badge          |
+| `className` | `string`                                                             | —            | รวมกับคลาสพื้นฐาน `kairo-badge`            |
+| ...         | `HTMLAttributes<HTMLSpanElement>`                                    | —            | props ดั้งเดิมอื่น ๆ ของ `<span>` ทั้งหมดจะถูกส่งผ่านไป |

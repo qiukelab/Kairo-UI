@@ -1,0 +1,111 @@
+---
+title: Motion
+description: แอดออนแอนิเมชันขับเคลื่อนด้วย Motion แบบไม่บังคับ — ติดตั้งเฉพาะตอนที่ต้องการ motion ที่ขับเคลื่อนด้วย JS
+icon: Sparkles
+---
+
+import { MotionDemo } from '@/components/demos/motion-demo';
+
+`@kairo-ui/motion-react` เป็น**แอดออนที่ไม่บังคับ**ตัวหนึ่ง `@kairo-ui/react`
+และ `@kairo-ui/theme` ไม่ยุ่งเกี่ยวกับ motion เลย — [Motion](https://motion.dev)
+(`motion`) เป็น peer dependency ของแอดออนตัวนี้เท่านั้น ไม่ใช่ของแพ็กเกจ
+หลักเลย ใช้แอดออนนี้เมื่อ interaction ต้องการแอนิเมชันที่ขับเคลื่อนด้วย JS
+จริง ๆ (สปริง, การเผยเนื้อหาเมื่อ scroll เข้ามาในมุมมอง, การ interpolate
+ตัวเลข) แทนที่จะใช้ CSS transition ที่ component ของ Kairo มีให้อยู่แล้ว
+
+## ติดตั้ง
+
+```bash tab="pnpm"
+pnpm add @kairo-ui/motion-react motion
+```
+
+```bash tab="npm"
+npm install @kairo-ui/motion-react motion
+```
+
+```bash tab="yarn"
+yarn add @kairo-ui/motion-react motion
+```
+
+```bash tab="bun"
+bun add @kairo-ui/motion-react motion
+```
+
+### Peer dependencies
+
+- `motion` `^12.0.0`
+- `react` `^18.0.0 || ^19.0.0`
+- `react-dom` `^18.0.0 || ^19.0.0`
+
+แพ็กเกจนี้ไม่ได้ re-export API ของ Motion เอง — ให้ import `motion`,
+`AnimatePresence` และตัวอื่น ๆ ที่เกี่ยวข้องโดยตรงจาก `motion/react` ควบคู่
+ไปด้วย
+
+## transitions
+
+พรีเซ็ต `Transition` ของ Motion ที่ทำงานสอดคล้องกับ CSS motion token ของ
+`@kairo-ui/theme` (`--kairo-duration-*` / `--kairo-ease-*`) เพื่อให้แอนิเมชัน
+ที่ขับเคลื่อนด้วย JS เดินไปพร้อมกับ component แบบ CSS-first ของ Kairo เสมอ
+
+```ts
+import { transitions } from '@kairo-ui/motion-react/transitions';
+
+transitions.fast; // { duration: 0.15, ease: [0.4, 0, 0.2, 1] }
+transitions.normal; // { duration: 0.25, ease: [0.4, 0, 0.2, 1] }
+transitions.slow; // { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
+transitions.emphasized; // สปริงที่ใช้แทน --kairo-ease-emphasized
+```
+
+## variants
+
+`Variants` ของ Motion ที่นำกลับมาใช้ซ้ำได้ มีสถานะ `hidden`/`visible` —
+`fade`, `slideUp`, `slideDown`, `scale` — แต่ละตัวใช้ `transitions.normal`
+เป็นค่าเริ่มต้น
+
+```tsx
+import { motion } from 'motion/react';
+import { variants } from '@kairo-ui/motion-react/variants';
+
+<motion.div initial="hidden" animate="visible" variants={variants.fade} />;
+```
+
+## AnimatedNumber & Reveal
+
+<ComponentPreview
+  code={`<AnimatedNumber value={value} />
+<Button onClick={() => setValue((current) => current + 137)}>เพิ่ม 137</Button>
+
+<Reveal variant="slideUp">
+  ฉันจะเคลื่อนไหวเข้ามาในครั้งแรกที่เลื่อนเข้ามาในมุมมอง
+</Reveal>`}
+>
+  <MotionDemo />
+</ComponentPreview>
+
+## Props
+
+### AnimatedNumber
+
+| Prop         | Type                         | Default                                | Description                                                          |
+| ------------ | ----------------------------- | ---------------------------------------- | ------------------------------------------------------------------------ |
+| `value`      | `number`                      | —                                         | ตัวเลขที่จะแสดง และ spring-animate เข้าหาเมื่อค่ามีการเปลี่ยนแปลง            |
+| `format`     | `(value: number) => string`   | locale integer (`Intl.NumberFormat`)     | ฟอร์แมตตัวเลข (ที่อาจอยู่กลางการ spring) สำหรับแสดงผล                       |
+| `transition` | `SpringOptions`                | Motion's default spring                 | ตัวเลือกของ spring ที่ควบคุมว่าตัวเลขจะเคลื่อนไหวระหว่างค่าต่าง ๆ อย่างไร      |
+| `className`  | `string`                      | —                                         | ส่งต่อไปยัง `<span>` ที่ render ออกมา                                     |
+| ...          | native `<span>` props          | —                                         | attribute อื่น ๆ ของ span ดั้งเดิมทั้งหมดจะถูกส่งต่อไป                     |
+
+### Reveal
+
+| Prop        | Type                                              | Default     | Description                                                       |
+| ----------- | ---------------------------------------------------| ------------ | ---------------------------------------------------------------------- |
+| `variant`   | `'fade' \| 'slideUp' \| 'slideDown' \| 'scale'`    | `'slideUp'`  | รูปแบบการเข้ามาที่จะเล่น                                                |
+| `delay`     | `number`                                            | `0`          | ดีเลย์ หน่วยเป็นวินาที ก่อนทรานซิชันการเข้ามาจะเริ่มเล่น                    |
+| `amount`    | `number`                                            | `0.3`        | สัดส่วนของ element ที่ต้องมองเห็นได้ก่อนที่มันจะเผยตัว                     |
+| `once`      | `boolean`                                            | `true`       | กำหนดว่าการเผยตัวจะเล่นแค่ครั้งเดียวตอนที่เข้ามาในมุมมองครั้งแรกหรือไม่        |
+| `className` | `string`                                             | —            | ส่งต่อไปยัง `<div>` ที่ render ออกมา                                     |
+| ...         | native `<div>` props                                 | —            | attribute อื่น ๆ ของ div ดั้งเดิมทั้งหมดจะถูกส่งต่อไป                     |
+
+ทั้งสอง component เคารพ `useReducedMotion()`: เมื่อผู้ใช้ต้องการลดการ
+เคลื่อนไหว `AnimatedNumber` จะกระโดดตรงไปที่ค่าที่ฟอร์แมตแล้วทันที และ
+`Reveal` จะ render children ของมันทันที มองเห็นได้เต็มที่โดยไม่มีการแปลง
+รูปใด ๆ

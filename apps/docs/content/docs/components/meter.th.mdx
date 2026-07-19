@@ -1,0 +1,109 @@
+---
+title: Meter
+description: เกจแบบสถิตสำหรับปริมาณที่รู้ค่าและมีขอบเขตแน่นอน — การใช้งานดิสก์ ความแข็งแรงของรหัสผ่าน โควตาพื้นที่จัดเก็บ — พร้อมเกณฑ์ low/high/optimum ที่ปรับสีของแถบเติมให้อัตโนมัติ
+icon: Gauge
+---
+
+import { Meter } from '@kairo-ui/react';
+
+## การใช้งาน
+
+```tsx
+import { Meter } from '@kairo-ui/react';
+
+export function Example() {
+  return <Meter value={72} aria-label="Disk usage" />;
+}
+```
+
+<Callout title="Meter กับ Progress" type="info">
+  สองตัวนี้หน้าตาคล้ายกัน แต่ตอบคำถามคนละแบบ **Progress** (`role="progressbar"`)
+  วัด *งานที่กำลังคืบหน้าไปสู่ความสำเร็จ* — เป็นแบบ indeterminate ได้ และ 100%
+  หมายถึง "เสร็จแล้ว" ส่วน **Meter** (`role="meter"`) วัด *ค่าคงที่ภายในช่วง
+  ที่รู้ขอบเขตแน่นอน* — ไม่มีแนวคิดเรื่อง "กำลังดำเนินการ" หรือ "เสร็จแล้ว"
+  มีแค่ตำแหน่งปัจจุบันของค่า และว่าค่านั้นอยู่ในเกณฑ์ดี ก้ำกึ่ง หรือแย่ ใช้
+  Progress สำหรับการอัปโหลด การติดตั้ง และ wizard หลายขั้นตอน ส่วน Meter
+  ให้ใช้กับการใช้งานดิสก์ ความแข็งแรงของรหัสผ่าน ระดับแบตเตอรี่ หรือโควตา
+  พื้นที่จัดเก็บ
+</Callout>
+
+## ไม่มีเกณฑ์
+
+เมื่อไม่มี `low`/`high`/`optimum` ทั้งช่วงจะถือว่า "ดี" ทั้งหมด — ตรงกับ
+ค่าเริ่มต้นของอีลีเมนต์ `<meter>` ดั้งเดิมของ HTML — แถบเติมจึงแสดงเป็นสี
+optimum (สำเร็จ)
+
+<ComponentPreview code={`<Meter value={42} aria-label="พื้นที่จัดเก็บที่ใช้ไป" />`}>
+  <div className="w-full max-w-xs">
+    <Meter value={42} aria-label="พื้นที่จัดเก็บที่ใช้ไป" />
+  </div>
+</ComponentPreview>
+
+## ยิ่งน้อยยิ่งดี — การใช้งานดิสก์
+
+ตั้งค่า `optimum` ให้ต่ำกว่า `low` เมื่อเป้าหมายคือค่าที่น้อยกว่า: ช่วง
+`[min, low]` จะอ่านเป็น optimum (เขียว), `(low, high]` เป็น suboptimum
+(เหลือง) และค่าที่เกิน `high` เป็น critical (แดง)
+
+<ComponentPreview
+  code={`<Meter value={35} low={60} high={90} optimum={0} aria-label="การใช้งานดิสก์" />
+<Meter value={75} low={60} high={90} optimum={0} aria-label="การใช้งานดิสก์" />
+<Meter value={95} low={60} high={90} optimum={0} aria-label="การใช้งานดิสก์" />`}
+>
+  <div className="flex w-full max-w-xs flex-col gap-3">
+    <Meter value={35} low={60} high={90} optimum={0} aria-label="การใช้งานดิสก์ 35%" />
+    <Meter value={75} low={60} high={90} optimum={0} aria-label="การใช้งานดิสก์ 75%" />
+    <Meter value={95} low={60} high={90} optimum={0} aria-label="การใช้งานดิสก์ 95%" />
+  </div>
+</ComponentPreview>
+
+## ยิ่งมากยิ่งดี — ความแข็งแรงของรหัสผ่าน
+
+ตั้งค่า `optimum` ให้สูงกว่า `high` เมื่อเป้าหมายคือค่าที่มากกว่า — ช่วงจะ
+เหมือนกับกรณีการใช้งานดิสก์ทุกประการ เพียงแต่โซน "ดี" อยู่ด้านบนของช่วงแทนที่
+จะเป็นด้านล่าง
+
+<ComponentPreview
+  code={`<Meter value={20} low={30} high={70} optimum={100} aria-label="ความแข็งแรงของรหัสผ่าน" />
+<Meter value={50} low={30} high={70} optimum={100} aria-label="ความแข็งแรงของรหัสผ่าน" />
+<Meter value={90} low={30} high={70} optimum={100} aria-label="ความแข็งแรงของรหัสผ่าน" />`}
+>
+  <div className="flex w-full max-w-xs flex-col gap-3">
+    <Meter value={20} low={30} high={70} optimum={100} aria-label="ความแข็งแรงของรหัสผ่าน อ่อน" />
+    <Meter value={50} low={30} high={70} optimum={100} aria-label="ความแข็งแรงของรหัสผ่าน ปานกลาง" />
+    <Meter value={90} low={30} high={70} optimum={100} aria-label="ความแข็งแรงของรหัสผ่าน แข็งแรง" />
+  </div>
+</ComponentPreview>
+
+## ค่าที่เหมาะสมที่สุดอยู่กึ่งกลางช่วง
+
+เมื่อ `optimum` อยู่ภายใน `[low, high]` ช่วงนั้นจะเป็นโซน "ดี" เพียงโซนเดียว —
+ค่าที่อยู่นอกช่วงทั้งสองด้านจะถือเป็น suboptimum (เหลือง) เท่ากัน และรูปแบบนี้
+จะไม่มีวันเกิดสถานะ critical/แดงเลย
+
+<ComponentPreview
+  code={`<Meter value={50} low={30} high={70} optimum={50} aria-label="ช่วงเป้าหมาย" />
+<Meter value={10} low={30} high={70} optimum={50} aria-label="ช่วงเป้าหมาย" />
+<Meter value={95} low={30} high={70} optimum={50} aria-label="ช่วงเป้าหมาย" />`}
+>
+  <div className="flex w-full max-w-xs flex-col gap-3">
+    <Meter value={50} low={30} high={70} optimum={50} aria-label="ช่วงเป้าหมาย ตรงเป้า" />
+    <Meter value={10} low={30} high={70} optimum={50} aria-label="ช่วงเป้าหมาย ต่ำกว่าเป้า" />
+    <Meter value={95} low={30} high={70} optimum={50} aria-label="ช่วงเป้าหมาย เกินเป้า" />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop         | Type                              | Default                       | Description                                                                                     |
+| ------------ | ---------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `value`      | `number`                           | —                               | ค่าปัจจุบันของ meter จะถูกจำกัดไว้ในช่วง `[min, max]`                                                |
+| `min`        | `number`                           | `0`                             | ค่าต่ำสุดของช่วง                                                                                     |
+| `max`        | `number`                           | `100`                           | ค่าสูงสุดของช่วง                                                                                      |
+| `low`        | `number`                           | `min`                           | ขอบเขตที่ต่ำกว่านี้จะถือว่า `value` ต่ำเกินไปจนไม่เหมาะสม                                            |
+| `high`       | `number`                           | `max`                           | ขอบเขตที่สูงกว่านี้จะถือว่า `value` สูงเกินไปจนไม่เหมาะสม                                            |
+| `optimum`    | `number`                           | midpoint of `min`/`max`         | ค่าที่เหมาะสมที่สุด ตำแหน่งของมันเทียบกับ `low`/`high` จะเป็นตัวกำหนดว่าฝั่งไหนถือว่า "ดี"          |
+| `aria-label` | `string`                           | —                               | ชื่อสำหรับ accessibility ของ meter จำเป็นต้องระบุ — เหมือนกับอีลีเมนต์ `<meter>` ดั้งเดิม Meter ไม่มี label ที่มองเห็นได้ในตัวเอง |
+| `aria-valuetext` | `string`                       | rounded `%` of the range        | ข้อความที่อ่านเข้าใจง่ายซึ่งประกาศแทนตัวเลขดิบ เช่น `"42 GB of 100 GB"`               |
+| `className`  | `string`                           | —                               | รวมกับคลาสพื้นฐาน `kairo-meter`                                                                       |
+| ...          | `HTMLAttributes<HTMLDivElement>`   | —                               | props ดั้งเดิมของ `<div>` ที่เหลือทั้งหมดถูกส่งต่อไปตามปกติ                                          |

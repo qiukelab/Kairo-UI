@@ -1,0 +1,189 @@
+---
+title: ContextMenu
+description: เมนูที่เปิดขึ้นที่ตำแหน่งเคอร์เซอร์เมื่อคลิกขวาหรือกดค้าง สร้างบน Base UI
+icon: SquareMousePointer
+---
+
+import { ContextMenuDemo } from '@/components/demos/context-menu-demo';
+
+## การใช้งาน
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger>Right-click this area</ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem>Copy</ContextMenuItem>
+        <ContextMenuItem>Paste</ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}
+```
+
+`ContextMenu` เป็นตัวรวม parts ต่าง ๆ เข้าด้วยกัน (ไม่ render DOM element ของ
+ตัวเอง เหมือนกับ `ContextMenu.Root` ของ Base UI) ส่วน `ContextMenuTrigger`
+คือบริเวณที่คลิกขวาได้ (หรือกดค้างได้บนหน้าจอสัมผัส) — ครอบเนื้อหาที่ต้องการ
+ให้เป็นเจ้าของเมนูไว้ในนี้ โดยตัวมันเองไม่มีสไตล์ใด ๆ นอกจาก cursor hint แบบ
+`context-menu` เพราะมันครอบเนื้อหาที่ผู้ใช้กำหนดเองได้อิสระ (แถวหนึ่งแถว,
+การ์ดหนึ่งใบ, รูปภาพหนึ่งรูป) ที่ Kairo ไม่ควรใส่พื้นหลังหรือเส้นขอบให้
+`ContextMenuContent` รวม `ContextMenu.Portal` > `ContextMenu.Positioner` +
+`ContextMenu.Popup` ของ Base UI ไว้ในการเรียกครั้งเดียว การซ่อนเมนูดั้งเดิม
+ของเบราว์เซอร์ การเปิดเมนูด้วยคลิกขวาหรือการสัมผัส/กดค้าง,
+`role="menu"`/`"menuitem"`, การนำทางด้วยคีย์บอร์ดแบบ roving-focus และการ
+ปิดเมนูด้วย Escape หรือคลิกนอกเมนู ทั้งหมดนี้มาจาก `@base-ui/react`
+
+<Callout title="จัดตำแหน่งตามเคอร์เซอร์ ไม่ใช่ตามตัว trigger" type="info">
+  ต่างจาก `Select`/`Popover` ตรงที่ context menu ไม่มีอีลีเมนต์ให้ popup
+  ชี้ไปหา — มันเปิดขึ้นตรงตำแหน่งที่เคอร์เซอร์อยู่ตอนที่ผู้ใช้คลิกขวา (หรือ
+  ตำแหน่งที่นิ้วอยู่ตอนกดค้าง) ด้วยเหตุนี้ `side`/`align`/`sideOffset` ของ
+  `ContextMenuContent` จึง**ไม่ถูกกำหนดค่าเริ่มต้นไว้เลย** ต่างจาก
+  `SelectContent` เพราะ Base UI มีค่าเริ่มต้นที่เหมาะกับ context menu อยู่แล้ว
+  (`align: 'start'`, `sideOffset: -5`) ที่ทำให้มุมของ popup ชิดกับเคอร์เซอร์
+  แทนที่จะลอยห่างออกไปเป็นช่องว่างที่มองเห็นได้ ส่ง props เหล่านี้ก็ต่อเมื่อ
+  ต้องการ override พฤติกรรมนี้เท่านั้น และไม่มี `ContextMenuArrow` ด้วย
+  เพราะ context menu ไม่มีอีลีเมนต์ trigger เหลือให้ชี้กลับไปหาเมื่อเปิดขึ้น
+  มาแล้ว
+</Callout>
+
+<Callout title="trigger ที่ปิดใช้งานก็ต้องดูปิดใช้งานด้วย" type="info">
+  `ContextMenu.Trigger` ของ Base UI เคารพค่า `disabled` ที่ตั้งบน
+  `ContextMenu` จริง ๆ — คลิกขวาหรือกดค้างแล้วจะไม่มีอะไรเกิดขึ้น — แต่กลับ
+  ไม่มี attribute ใดบอกสถานะนี้เลย state ของ trigger มีแค่
+  `{ open: boolean }` เท่านั้น ถ้าปล่อยไว้เฉย ๆ trigger ที่ปิดใช้งานจะยัง
+  แสดง cursor แบบ `context-menu` อยู่ดี และคลิกขวาก็จะเด้งเมนูดั้งเดิมของ
+  *เบราว์เซอร์* ขึ้นมาแทนที่จะไม่ทำอะไรเลย — แย่กว่าการไม่แก้ปัญหานี้เสียอีก
+  ตอนนี้ `ContextMenuTrigger` จึงประทับ `data-disabled`/`aria-disabled`
+  ของตัวเอง ซึ่งเป็นสิ่งที่ Kairo เพิ่มเข้ามาเองทั้งหมด ไม่ใช่ของ Base UI
+  prop `disabled` ของมัน ถ้าไม่ได้ตั้งค่าไว้ จะสะท้อนค่า `disabled` ของ
+  `ContextMenu` ที่ใกล้ที่สุดโดยอัตโนมัติ ดังนั้นแค่ตั้ง `disabled` บน
+  `ContextMenu` ตัวเดียวก็เพียงพอทั้งพฤติกรรมและหน้าตา — ดูเพิ่มเติมที่
+  **Props** ด้านล่าง
+</Callout>
+
+## ไอคอน คำใบ้คีย์ลัด รายการที่ปิดใช้งาน และกลุ่ม
+
+คลิกขวา (หรือกดค้างบนหน้าจอสัมผัส) ที่กล่องเส้นประด้านล่างเพื่อเปิดเมนู
+
+<ComponentPreview
+  code={`<ContextMenu>
+  <ContextMenuTrigger className="flex h-32 w-full items-center justify-center rounded-md border border-dashed">
+    คลิกขวา (หรือกดค้างบนหน้าจอสัมผัส) บริเวณนี้เพื่อเปิดเมนู
+  </ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem>
+      <span className="flex items-center gap-2">
+        <Copy className="h-4 w-4" />
+        คัดลอก
+      </span>
+      <span className="text-xs">Ctrl+C</span>
+    </ContextMenuItem>
+    <ContextMenuItem>
+      <span className="flex items-center gap-2">
+        <Clipboard className="h-4 w-4" />
+        วาง
+      </span>
+      <span className="text-xs">Ctrl+V</span>
+    </ContextMenuItem>
+    <ContextMenuItem disabled>
+      <span className="flex items-center gap-2">
+        <Trash2 className="h-4 w-4" />
+        ลบ
+      </span>
+    </ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuGroup>
+      <ContextMenuGroupLabel>เพิ่มเติม</ContextMenuGroupLabel>
+      <ContextMenuItem>
+        <span className="flex items-center gap-2">
+          <Pencil className="h-4 w-4" />
+          เปลี่ยนชื่อ
+        </span>
+      </ContextMenuItem>
+    </ContextMenuGroup>
+  </ContextMenuContent>
+</ContextMenu>`}
+>
+  <ContextMenuDemo />
+</ComponentPreview>
+
+`ContextMenuItem` render `children` ตรง ๆ (ไม่มีตัวบ่งชี้ในตัวเอง ต่างจาก
+เครื่องหมายถูกของ `SelectItem` — คำสั่งในเมนูไม่มีสถานะถูกเลือก) อยู่ภายใน
+`ContextMenu.Item` ของ Base UI จัดวางไอคอนและ/หรือคำใบ้คีย์ลัดเป็น flex
+children ของมัน แบบเดียวกับ demo ด้านบน — `.kairo-context-menu-item` เป็น
+flex row ที่ตั้ง `justify-content: space-between` ไว้เพื่อสิ่งนี้โดยเฉพาะ
+
+## Props
+
+### `ContextMenu`
+
+| Prop           | Type                                     | Default | Description                                                                                                                                          |
+| -------------- | ------------------------------------------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `open`         | `boolean`                                  | —       | สถานะเปิด/ปิดแบบควบคุมด้วยสถานะ (controlled) ใช้คู่กับ `onOpenChange` |
+| `defaultOpen`  | `boolean`                                  | `false` | สถานะเปิดเริ่มต้นสำหรับ context menu แบบไม่ควบคุม (uncontrolled) |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`    | —       | เรียกเมื่อเมนูเปิดหรือปิด |
+| `disabled`     | `boolean`                                  | `false` | ป้องกันไม่ให้ trigger เปิดเมนู — คลิกขวาที่ trigger จะปล่อยผ่านไปเป็นเมนูดั้งเดิมของเบราว์เซอร์แทนที่จะถูกระงับ และยังส่งต่อไปยัง `disabled` ของ `ContextMenuTrigger` เอง (ดูด้านล่าง) ทำให้ trigger ดูปิดใช้งาน (`data-disabled`/`aria-disabled` และจางลงด้วย cursor แบบ `not-allowed`) โดยไม่ต้องตั้งค่าซ้ำที่นั่น |
+| ...            | Additional props | — | props อื่น ๆ ทั้งหมดจะถูกส่งต่อไปตามปกติ ต่างจาก `Menu` แบบ dropdown ตรงที่ `modal`, `openOnHover`, `delay` และ `closeDelay` ไม่ถูกเปิดให้ใช้งาน — ถูกตัดออกเพราะไม่เกี่ยวข้องกับเมนูที่เปิดจากตำแหน่งเคอร์เซอร์แทนที่จะเป็นการ hover/กดที่ trigger |
+
+### `ContextMenuTrigger`
+
+Render `ContextMenu.Trigger` ของ Base UI ซึ่งเป็น `<div>` ต่างจาก
+`SelectTrigger`/`PopoverTrigger` ตรงที่ตัวนี้**ไม่ใช่ control ที่เปิดด้วย
+การคลิก** — มันตอบสนองเฉพาะ native event `contextmenu` (คลิกขวา) หรือการ
+กดค้างบนหน้าจอสัมผัสเท่านั้น
+
+| Prop        | Type      | Default | Description                                                        |
+| ----------- | --------- | ------- | -------------------------------------------------------------------------- |
+| `disabled`  | `boolean` | —       | ทำให้ trigger จางลงและเปลี่ยน cursor เป็น `not-allowed` ผ่าน `data-disabled`/`aria-disabled` — เป็นสิ่งที่ Kairo เพิ่มเข้ามาเองทั้งหมด Base UI ไม่มี attribute แบบนี้ให้ ถ้าไม่ได้ตั้งค่าไว้ จะสะท้อนค่า `disabled` ของ `ContextMenu` ที่ใกล้ที่สุดโดยอัตโนมัติ ดังนั้นกรณีทั่วไปแค่ตั้ง `disabled` บน `ContextMenu` ก็พอ ส่ง prop นี้ตรงนี้อย่างชัดเจนเฉพาะตอนที่ต้องการแยกสถานะที่มองเห็นออกจาก `disabled` จริงของ root เท่านั้น — ถ้าทำแบบนี้โดยไม่ปิดใช้งาน root ด้วย จะทำให้เกิดความไม่ตรงกันแบบเดียวกับที่ prop นี้ถูกสร้างขึ้นมาเพื่อแก้ไข |
+| `className` | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-context-menu-trigger`                             |
+| ...         | Additional props | — | props อื่น ๆ ทั้งหมดจะถูกส่งต่อไปยัง trigger element ต้นทาง |
+
+### `ContextMenuContent`
+
+รวม `ContextMenu.Portal` > `ContextMenu.Positioner` + `ContextMenu.Popup`
+ของ Base UI ไว้ในการเรียกครั้งเดียว ref ที่ส่งต่อจะแนบไปกับ popup element
+ไม่มีการ render ลูกศร (arrow) — ดู callout ด้านบน
+
+| Prop         | Type                                                                       | Default | Description                                                                          |
+| ------------ | ----------------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------- |
+| `side`       | `'top' \| 'bottom' \| 'left' \| 'right' \| 'inline-end' \| 'inline-start'`     | —       | ด้านไหนของเคอร์เซอร์ที่จะ render popup ไว้ ถ้าไม่กำหนดไว้ Base UI จะเลือกด้านที่มีที่ว่างพอในวิวพอร์ตให้เอง |
+| `align`      | `'start' \| 'center' \| 'end'`                                                 | —       | วิธีจัดตำแหน่ง popup เทียบกับ `side` Base UI ตั้งค่าเริ่มต้นเป็น `'start'` สำหรับ context menu ส่ง prop นี้ก็ต่อเมื่อต้องการ override ค่าเริ่มต้นนี้ |
+| `sideOffset` | `number`                                                                       | —       | ระยะห่างเป็นพิกเซลระหว่างเคอร์เซอร์กับ popup ตามแนว `side` Base UI ตั้งค่าเริ่มต้นเป็นค่า offset ติดลบเล็กน้อยเพื่อให้ popup ซ้อนทับกับเคอร์เซอร์เล็กน้อย ส่ง prop นี้ก็ต่อเมื่อต้องการ override ค่าเริ่มต้นนี้ |
+| `finalFocus` | `boolean \| RefObject \| function`                                             | —       | อีลีเมนต์ที่จะรับโฟกัสเมื่อเมนูปิดลง ค่าเริ่มต้นคือ trigger หรืออีลีเมนต์ที่มีโฟกัสอยู่ก่อนเมนูจะเปิด รับค่าได้ทั้ง `false` (ไม่ยุ่งกับโฟกัสเลย), `true` (ใช้ค่าเริ่มต้น), `RefObject` (โฟกัสอีลีเมนต์นั้น) หรือฟังก์ชัน — ที่ถูกเรียกพร้อม interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — ซึ่งคืนค่าเป็นอีลีเมนต์, `true`/`null` สำหรับใช้ค่าเริ่มต้น หรือ `false`/`undefined` เพื่อไม่ทำอะไรเลย |
+| `className`  | `string`                                                                       | —       | รวมกับคลาสพื้นฐาน `kairo-context-menu-popup` บน popup element                  |
+| ...          | Additional props | — | props อื่น ๆ ทั้งหมดจะถูกส่งต่อไปยัง popup element ต้นทาง |
+
+### `ContextMenuItem`
+
+| Prop           | Type                                     | Default | Description                                                        |
+| -------------- | ------------------------------------------ | ------- | -------------------------------------------------------------------------- |
+| `disabled`     | `boolean`                                   | `false` | ป้องกันไม่ให้เลือกรายการนี้ได้                                     |
+| `closeOnClick` | `boolean`                                   | `true`  | กำหนดว่าการเลือกรายการนี้จะปิดเมนูหรือไม่                          |
+| `onClick`      | `(event) => void`                           | —       | เรียกเมื่อรายการถูกเลือก (คลิก หรือกด Enter/Space ขณะไฮไลต์อยู่) |
+| `className`    | `string`                                    | —       | รวมกับคลาสพื้นฐาน `kairo-context-menu-item`                        |
+| ...            | Additional props | — | props อื่น ๆ ทั้งหมดจะถูกส่งต่อไปยัง item element ต้นทาง |
+
+### `ContextMenuGroup` / `ContextMenuGroupLabel`
+
+`ContextMenuGroup` ใช้จัดกลุ่มรายการที่เกี่ยวข้องกัน ส่วน
+`ContextMenuGroupLabel` เป็น label ที่เข้าถึงได้ (accessible) ซึ่งเชื่อมโยง
+กับ `ContextMenuGroup` ที่เป็น parent ของมันโดยอัตโนมัติ
+
+### `ContextMenuSeparator`
+
+เส้นแบ่งที่มองเห็นได้ระหว่างรายการ/กลุ่ม ต่างจาก `SelectSeparator` ตรงที่
+ตัวนี้**ไม่ได้**ถูกซ่อนจาก accessibility tree เป็นค่าเริ่มต้น เพราะ role
+`menu` (ต่างจาก `listbox`) อนุญาตให้มี child เป็น `separator` ได้อย่าง
+ชัดเจน การเปิดเผย `role="separator"` ตามค่าเริ่มต้นของ Base UI ที่นี่จึง
+ถูกต้องตามหลัก ARIA ส่ง `aria-hidden` เข้าไปถ้าต้องการปิดพฤติกรรมนี้
+
+props อื่น ๆ ทั้งหมดจะถูกส่งต่อไปยัง element ต้นทางของแต่ละ component ของ
+Kairo ที่เกี่ยวข้อง

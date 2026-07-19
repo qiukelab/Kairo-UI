@@ -1,0 +1,77 @@
+---
+title: Separator
+description: เส้นบาง ๆ ที่แบ่งเนื้อหาทั้งในเชิงภาพและเชิงความหมาย รองรับทั้งแนวนอนและแนวตั้ง
+icon: SeparatorHorizontal
+---
+
+import { Separator } from '@kairo-ui/react';
+
+## การใช้งาน
+
+```tsx
+import { Separator } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <div>
+      <p>Section one</p>
+      <Separator />
+      <p>Section two</p>
+    </div>
+  );
+}
+```
+
+## ทิศทาง
+
+<ComponentPreview code={`<div>
+  <p>ส่วนที่หนึ่ง</p>
+  <Separator />
+  <p>ส่วนที่สอง</p>
+</div>
+<div className="flex h-5 items-center gap-3">
+  <span>ซ้าย</span>
+  <Separator orientation="vertical" />
+  <span>ขวา</span>
+</div>`}>
+  <div className="flex w-full flex-col gap-4">
+    <div>
+      <p>ส่วนที่หนึ่ง</p>
+      <Separator />
+      <p>ส่วนที่สอง</p>
+    </div>
+    <div className="flex h-5 items-center gap-3">
+      <span>ซ้าย</span>
+      <Separator orientation="vertical" />
+      <span>ขวา</span>
+    </div>
+  </div>
+</ComponentPreview>
+
+## ตกแต่ง
+
+โดยค่าเริ่มต้น `Separator` จะเปิด `role="separator"` ให้ assistive technology
+รับรู้ ประกาศว่าเป็นขอบเขตที่มีความหมายระหว่างส่วนต่าง ๆ ของเนื้อหา แต่เมื่อ
+เส้นนั้นเป็นแค่ภาพล้วน ๆ — เช่น คั่นระหว่างไอคอนสองตัวใน toolbar — ให้ส่ง
+`decorative` เข้าไปแทน เพื่อซ่อนมันออกจาก accessibility tree
+
+<ComponentPreview code={`<div className="flex items-center gap-3">
+  <span>ตัวหนา</span>
+  <Separator orientation="vertical" decorative />
+  <span>ตัวเอียง</span>
+</div>`}>
+  <div className="flex h-5 items-center gap-3">
+    <span>ตัวหนา</span>
+    <Separator orientation="vertical" decorative />
+    <span>ตัวเอียง</span>
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop          | Type                             | Default        | Description                                                                 |
+| ------------- | ---------------------------------- | ---------------- | ------------------------------------------------------------------------------ |
+| `orientation` | `'horizontal' \| 'vertical'`       | `'horizontal'`   | แกนที่ separator ใช้แบ่งเนื้อหา                                                |
+| `decorative`  | `boolean`                          | `false`          | ซ่อน separator ออกจาก accessibility tree แทนที่จะเปิด `role="separator"`     |
+| `className`   | `string`                           | —                | รวมกับคลาสพื้นฐาน `kairo-separator`                                            |
+| ...           | `HTMLAttributes<HTMLDivElement>`   | —                | props ดั้งเดิมของ `<div>` ที่เหลือทั้งหมดถูกส่งต่อไปตามปกติ                    |

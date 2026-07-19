@@ -1,0 +1,51 @@
+---
+title: Input
+description: text input ดั้งเดิมที่จัดสไตล์ด้วยธีมของ Kairo รองรับสถานะปิดใช้งานและไม่ถูกต้อง
+icon: TextCursorInput
+---
+
+import { Input } from '@kairo-ui/react';
+
+## การใช้งาน
+
+```tsx
+import { Input } from '@kairo-ui/react';
+
+export function Example() {
+  return <Input placeholder="Email address" aria-label="Email address" />;
+}
+```
+
+## ค่าเริ่มต้น
+
+<ComponentPreview code={`<Input placeholder="ที่อยู่อีเมล" aria-label="ที่อยู่อีเมล" />`}>
+  <div className="flex w-full max-w-sm flex-wrap items-center gap-3">
+    <Input placeholder="ที่อยู่อีเมล" aria-label="ที่อยู่อีเมล" />
+  </div>
+</ComponentPreview>
+
+## ปิดใช้งาน
+
+<ComponentPreview code={`<Input placeholder="ปิดใช้งาน" aria-label="อินพุตปิดใช้งาน" disabled />`}>
+  <div className="flex w-full max-w-sm flex-wrap items-center gap-3">
+    <Input placeholder="ปิดใช้งาน" aria-label="อินพุตปิดใช้งาน" disabled />
+  </div>
+</ComponentPreview>
+
+## ไม่ถูกต้อง
+
+<ComponentPreview code={`<Input aria-label="ที่อยู่อีเมล" aria-invalid="true" defaultValue="not-an-email" />`}>
+  <div className="flex w-full max-w-sm flex-wrap items-center gap-3">
+    <Input aria-label="ที่อยู่อีเมล" aria-invalid="true" defaultValue="not-an-email" />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop           | Type                                     | Default   | Description                                                       |
+| -------------- | ------------------------------------------ | ---------- | --------------------------------------------------------------------- |
+| `type`         | `string`                                   | `'text'`   | attribute `type` ของ `<input>` ดั้งเดิม (เช่น `'email'`, `'password'`) |
+| `aria-invalid` | `boolean \| 'true' \| 'false'`             | —          | ทำเครื่องหมายว่า input ไม่ถูกต้อง จัดสไตล์ด้วยเส้นขอบสีแจ้งเตือน (danger) |
+| `disabled`     | `boolean`                                   | —          | ป้องกันการโต้ตอบของผู้ใช้ จัดสไตล์ด้วยความทึบที่ลดลง                   |
+| `className`    | `string`                                    | —          | รวมกับคลาสพื้นฐาน `kairo-input`                                       |
+| ...            | `InputHTMLAttributes<HTMLInputElement>`     | —          | รับ props ดั้งเดิมของ `<input>` ที่เหลือทั้งหมด (เช่น `value`, `onChange`, `placeholder`) |

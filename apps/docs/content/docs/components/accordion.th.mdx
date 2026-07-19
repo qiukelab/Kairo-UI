@@ -1,0 +1,142 @@
+---
+title: Accordion
+description: ชุดของหัวข้อที่ขยาย/ยุบได้ ทีละหัวข้อหรือพร้อมกันหลายหัวข้อ สร้างบน Base UI
+icon: ListCollapse
+---
+
+import { AccordionDemo } from '@/components/demos/accordion-demo';
+
+## การใช้งาน
+
+```tsx
+import {
+  Accordion,
+  AccordionItem,
+  AccordionHeader,
+  AccordionTrigger,
+  AccordionPanel,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Accordion defaultValue={['item-1']}>
+      <AccordionItem value="item-1">
+        <AccordionHeader>
+          <AccordionTrigger>Is it accessible?</AccordionTrigger>
+        </AccordionHeader>
+        <AccordionPanel>Yes. It adheres to the WAI-ARIA accordion pattern.</AccordionPanel>
+      </AccordionItem>
+      <AccordionItem value="item-2">
+        <AccordionHeader>
+          <AccordionTrigger>Is it styled?</AccordionTrigger>
+        </AccordionHeader>
+        <AccordionPanel>Yes, it comes with default styles from `@kairo-ui/theme`.</AccordionPanel>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+```
+
+`Accordion` รวม part ต่าง ๆ เข้าด้วยกันและ render `Accordion.Root` ของ Base UI
+`AccordionItem` render `Accordion.Item` ซึ่งครอบ `AccordionHeader` (เป็น `<h3>`)
+ที่บรรจุปุ่ม `AccordionTrigger` ไว้ พร้อมกับ `AccordionPanel` ที่มันควบคุม การเชื่อม
+`aria-expanded`/`aria-controls`, `role="region"` บน panel และ animation การ
+ขยาย/ยุบความสูงของ panel ทั้งหมดมาจาก `@base-ui/react`
+
+ค่าเริ่มต้นจะเปิดได้ทีละรายการเท่านั้น — ส่ง `multiple` ให้ `Accordion` เพื่อให้เปิดได้
+หลายรายการพร้อมกัน
+
+## รายการที่ปิดใช้งาน เปิดได้ทีละรายการ
+
+กด <kbd>Tab</kbd> ไปที่ trigger แล้วกด <kbd>Enter</kbd> หรือ <kbd>Space</kbd>
+เพื่อขยายหรือยุบมัน trigger ของ "ซัพพอร์ตแบบเร่งด่วน" ที่ปิดใช้งานอยู่จะยังมองเห็นได้
+แต่จะไม่ตอบสนองต่อการเปิดใช้งาน
+
+<ComponentPreview
+  code={`<Accordion defaultValue={['shipping']}>
+  <AccordionItem value="shipping">
+    <AccordionHeader>
+      <AccordionTrigger>ตัวเลือกการจัดส่งมีอะไรบ้าง</AccordionTrigger>
+    </AccordionHeader>
+    <AccordionPanel>
+      จัดส่งแบบมาตรฐานถึงภายใน 3-5 วันทำการ ส่วนจัดส่งด่วนถึงในวันทำการถัดไป
+    </AccordionPanel>
+  </AccordionItem>
+  <AccordionItem value="returns">
+    <AccordionHeader>
+      <AccordionTrigger>นโยบายการคืนสินค้าเป็นอย่างไร</AccordionTrigger>
+    </AccordionHeader>
+    <AccordionPanel>
+      สินค้าที่ยังไม่ได้ใช้งานสามารถคืนได้ภายใน 30 วันหลังจัดส่ง รับเงินคืนเต็มจำนวน
+    </AccordionPanel>
+  </AccordionItem>
+  <AccordionItem value="support" disabled>
+    <AccordionHeader>
+      <AccordionTrigger>ซัพพอร์ตแบบเร่งด่วน (ไม่พร้อมใช้งานในแพ็กเกจนี้)</AccordionTrigger>
+    </AccordionHeader>
+    <AccordionPanel>อัปเกรดเป็นแพ็กเกจเสียเงินเพื่อปลดล็อกซัพพอร์ตแบบเร่งด่วน</AccordionPanel>
+  </AccordionItem>
+</Accordion>`}
+>
+  <AccordionDemo />
+</ComponentPreview>
+
+## Props
+
+### `Accordion`
+
+| Prop            | Type                                    | Default | Description                                                            |
+| --------------- | ---------------------------------------- | ------- | ------------------------------------------------------------------------------ |
+| `value`         | `any[]`                                   | —       | ค่าที่ควบคุมของรายการที่เปิดอยู่ (ควบคุมด้วยสถานะ) ใช้คู่กับ `onValueChange`   |
+| `defaultValue`  | `any[]`                                   | `[]`    | ค่าเริ่มต้นของรายการที่เปิดไว้สำหรับ `Accordion` แบบไม่ควบคุม                  |
+| `multiple`      | `boolean`                                 | `false` | กำหนดว่าเปิดได้มากกว่าหนึ่งรายการพร้อมกันหรือไม่                              |
+| `disabled`      | `boolean`                                 | `false` | ปิดการโต้ตอบกับทุกรายการ                                                       |
+| `onValueChange` | `(value: any[], eventDetails) => void`    | —       | เรียกเมื่อมีรายการถูกขยายหรือยุบ                                               |
+| `className`     | `string`                                  | —       | รวมกับคลาสพื้นฐาน `kairo-accordion`                                            |
+| ...             | Additional props | — | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยังอีลีเมนต์ด้านใน      |
+
+### `AccordionItem`
+
+| Prop           | Type                                     | Default | Description                                                       |
+| -------------- | ------------------------------------------ | ------- | --------------------------------------------------------------------- |
+| `value`        | `any`                                       | —       | ค่าที่ไม่ซ้ำกันสำหรับระบุรายการนี้ สร้างให้อัตโนมัติถ้าไม่ระบุ         |
+| `disabled`     | `boolean`                                   | `false` | ปิดไม่ให้ trigger ของรายการนี้ขยาย/ยุบได้                              |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`     | —       | เรียกเมื่อ panel ของรายการนี้เปิดหรือปิด                               |
+| `className`    | `string`                                    | —       | รวมกับคลาสพื้นฐาน `kairo-accordion-item`                               |
+| ...            | Additional props | — | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยังอีลีเมนต์รายการด้านใน |
+
+### `AccordionHeader`
+
+render `Accordion.Header` ของ Base UI ซึ่งเป็น `<h3>` ที่ครอบ `AccordionTrigger` ไว้
+
+| Prop        | Type     | Default | Description                                                       |
+| ----------- | -------- | ------- | ----------------------------------------------------------------------- |
+| `className` | `string` | —       | รวมกับคลาสพื้นฐาน `kairo-accordion-header`                              |
+| ...         | Additional props | — | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยังอีลีเมนต์ header ด้านใน |
+
+### `AccordionTrigger`
+
+render `<button>` แบบดั้งเดิมที่มี `children` ตามด้วยไอคอน chevron เริ่มต้นที่จะหมุน
+เมื่อ panel ของมันเปิดอยู่
+
+| Prop        | Type      | Default | Description                                                            |
+| ----------- | --------- | ------- | -------------------------------------------------------------------------- |
+| `disabled`  | `boolean` | `false` | ปิดไม่ให้ trigger นี้ขยาย/ยุบ panel ของมันได้                              |
+| `className` | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-accordion-trigger`                                |
+| ...         | Additional props | — | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยังอีลีเมนต์ trigger ด้านใน |
+
+### `AccordionPanel`
+
+| Prop               | Type      | Default | Description                                                            |
+| ------------------ | --------- | ------- | --------------------------------------------------------------------------- |
+| `keepMounted`      | `boolean` | `false` | คง panel ไว้ใน DOM (ซ่อนอยู่) ขณะที่รายการของมันถูกยุบ                       |
+| `hiddenUntilFound` | `boolean` | `false` | ซ่อนด้วย `hidden="until-found"` เพื่อให้ฟีเจอร์ find-in-page ของเบราว์เซอร์เปิดมันขึ้นมาได้ |
+| `className`        | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-accordion-panel`                                   |
+| ...                | Additional props | — | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยังอีลีเมนต์ panel ด้านใน |
+
+`children` ที่ส่งให้ `AccordionPanel` จะถูกครอบด้วย `<div>` ภายในชื่อ
+`kairo-accordion-panel-content` ซึ่งเป็นตัวที่ใส่ padding ของ panel — ดู
+`accordion.css` เพื่อดูเหตุผลว่าทำไม padding ถึงอยู่บน panel เองไม่ได้
+
+props อื่น ๆ ที่เหลือทั้งหมดจะถูกส่งต่อไปยังอีลีเมนต์ด้านในของแต่ละ component ของ
+Kairo ที่เกี่ยวข้อง

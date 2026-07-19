@@ -1,0 +1,135 @@
+---
+title: Toggle
+description: ปุ่มสองสถานะที่ค้างการกดไว้ได้ ใช้เดี่ยว ๆ หรือจัดกลุ่มเป็น ToggleGroup แบบเลือกได้ทีละรายการหรือหลายรายการ สร้างบน Base UI
+icon: ToggleRight
+---
+
+import {
+  ToggleDemo,
+  ToggleGroupSingleDemo,
+  ToggleGroupMultipleDemo,
+  ToggleIconDemo,
+} from '@/components/demos/toggle-group-demo';
+
+## การใช้งาน
+
+```tsx
+import { Toggle } from '@kairo-ui/react';
+
+export function Example() {
+  return <Toggle aria-label="Bold">Bold</Toggle>;
+}
+```
+
+`Toggle` render `Toggle` ของ Base UI — เป็น `<button>` แบบดั้งเดิมที่มี `aria-pressed`
+และ `data-pressed` สะท้อนสถานะของมัน — ตรรกะการโต้ตอบและ accessibility ทั้งหมด
+(`pressed` แบบควบคุม/ไม่ควบคุม การเปิดใช้งานด้วยคีย์บอร์ด) มาจาก `@base-ui/react`
+
+## ค่าเริ่มต้น ควบคุมด้วยสถานะ และปิดใช้งาน
+
+<ComponentPreview
+  code={`<Toggle defaultPressed aria-label="ค่าเริ่มต้น (ไม่ควบคุม)">ตัวหนา</Toggle>
+<Toggle pressed={pressed} onPressedChange={setPressed} aria-label="ควบคุมด้วยสถานะ">
+  {pressed ? 'เปิด' : 'ปิด'}
+</Toggle>
+<Toggle disabled defaultPressed aria-label="ปิดใช้งาน">ปิดใช้งาน</Toggle>`}
+>
+  <ToggleDemo />
+</ComponentPreview>
+
+## กลุ่มแบบเลือกได้ทีละรายการ
+
+ครอบ `Toggle` หลายตัวด้วย `ToggleGroup` เพื่อให้แยกกันแบบ mutually exclusive —
+กดตัวหนึ่งแล้วตัวอื่นจะถูกยกเลิกการกดโดยอัตโนมัติ เหมือนกับการทำงานของ segmented
+control Base UI ยังคงให้มันเป็น `role="group"` ธรรมดาของปุ่มที่มี `aria-pressed`
+ไม่ใช่คู่ `radiogroup`/`radio` — ดูหมายเหตุใต้หัวข้อ **Props** ด้านล่าง
+
+<ComponentPreview
+  code={`<ToggleGroup defaultValue={['center']} aria-label="การจัดตำแหน่งข้อความ">
+  <Toggle value="left" aria-label="จัดชิดซ้าย"><AlignLeft /></Toggle>
+  <Toggle value="center" aria-label="จัดกึ่งกลาง"><AlignCenter /></Toggle>
+  <Toggle value="right" aria-label="จัดชิดขวา"><AlignRight /></Toggle>
+</ToggleGroup>`}
+>
+  <ToggleGroupSingleDemo />
+</ComponentPreview>
+
+ใช้ <kbd>Arrow Left</kbd>/<kbd>Arrow Right</kbd> (หรือ <kbd>Arrow Up</kbd>/
+<kbd>Arrow Down</kbd> เมื่อ `orientation="vertical"`) เพื่อย้ายโฟกัสระหว่างรายการ
+และ <kbd>Home</kbd>/<kbd>End</kbd> เพื่อกระโดดไปยังรายการแรก/สุดท้าย
+
+## กลุ่มแบบเลือกได้หลายรายการ
+
+ส่ง `multiple` เพื่อให้กดค้างไว้ได้พร้อมกันหลายรายการตามต้องการ
+
+<ComponentPreview
+  code={`<ToggleGroup multiple defaultValue={['bold']} aria-label="การจัดรูปแบบข้อความ">
+  <Toggle value="bold" aria-label="ตัวหนา"><Bold /></Toggle>
+  <Toggle value="italic" aria-label="ตัวเอียง"><Italic /></Toggle>
+  <Toggle value="underline" aria-label="ขีดเส้นใต้"><Underline /></Toggle>
+</ToggleGroup>`}
+>
+  <ToggleGroupMultipleDemo />
+</ComponentPreview>
+
+## Toggle แบบไอคอนอย่างเดียว
+
+`Toggle` ไม่มีป้ายกำกับที่มองเห็นได้ในตัวเอง ดังนั้นตัวที่มีแค่ไอคอนอย่างเดียว —
+ไม่ว่าจะใช้เดี่ยว ๆ หรืออยู่ในกลุ่ม — จำเป็นต้องมี `aria-label` เสมอ
+
+<ComponentPreview
+  code={`<Toggle aria-label="บันทึกลงรายการโปรด">
+  <Star />
+</Toggle>`}
+>
+  <ToggleIconDemo />
+</ComponentPreview>
+
+<Callout title="Toggle vs Switch vs Checkbox" type="info">
+  ทั้งสามอย่างนี้แทนสถานะแบบ binary เหมือนกัน ซึ่งเป็นเหตุผลว่าทำไมถึงหยิบผิดตัวได้ง่าย
+  ในจังหวะที่ไม่เหมาะสม **Checkbox** ใช้กับฟิลด์ในฟอร์มที่ผู้ใช้กรอก — เป็นหนึ่งใน
+  ตัวเลือกอิสระที่อาจมีหลายตัว หรือใช้แบบเดี่ยว ๆ อย่าง "ฉันยอมรับข้อตกลง" — และเป็น
+  ตัวเดียวที่สามารถอยู่ในสถานะ `indeterminate` ได้ **Switch** ใช้กับการตั้งค่าที่มีผล
+  ทันที ไม่ต้อง submit ฟอร์ม (โหมดมืด, Wi-Fi, การแจ้งเตือน) — สื่อความหมายแบบ
+  "เปิด/ปิด" มากกว่า "เลือกอยู่/ไม่ได้เลือก" **Toggle** เป็น *ปุ่ม* ที่จำสถานะการกด
+  ล่าสุดของตัวเองไว้ — เหมาะกับ action ใน UI ที่ต้องคงลักษณะการกดค้างไว้ (ปุ่ม "ตัวหนา"
+  ในทูลบาร์ ปุ่ม "ปิดเสียง" หรือ filter chip) โดยเฉพาะเมื่อต้องมีหลายตัวอยู่รวมกันใน
+  `ToggleGroup` ถ้าสิ่งที่คุณกำลังสร้างสามารถ submit ใน `<form>` ได้ นั่นควรเป็น
+  `Checkbox` หรือ `Switch` ไม่ใช่ `Toggle`
+</Callout>
+
+## Props
+
+### `Toggle`
+
+| Prop              | Type                                        | Default     | Description                                                                 |
+| ----------------- | -------------------------------------------- | ----------- | ---------------------------------------------------------------------------------- |
+| `pressed`         | `boolean`                                     | —           | สถานะการกดแบบควบคุม ใช้คู่กับ `onPressedChange`                                     |
+| `defaultPressed`  | `boolean`                                     | `false`     | สถานะการกดเริ่มต้นสำหรับ toggle แบบไม่ควบคุม                                        |
+| `onPressedChange` | `(pressed: boolean, eventDetails) => void`    | —           | เรียกเมื่อ toggle ถูกกดหรือถูกยกเลิกการกด                                           |
+| `value`           | `string`                                      | —           | ใช้ระบุ toggle นี้ภายใน `ToggleGroup` จำเป็นต้องมีเมื่ออยู่ในกลุ่ม แต่ไม่ใช้เมื่อใช้เดี่ยว ๆ |
+| `disabled`        | `boolean`                                     | `false`     | ปิดการโต้ตอบจากผู้ใช้                                                               |
+| `variant`         | `'solid' \| 'outline' \| 'ghost'`             | `'outline'` | รูปแบบตอนไม่ถูกกด อยู่บนสเกลเดียวกับ `variant` ของ `Button`                          |
+| `size`            | `'sm' \| 'md' \| 'lg'`                        | `'md'`      | ขนาด อยู่บนสเกลเดียวกับ `size` ของ `Button`                                         |
+| `className`       | `string`                                      | —           | รวมกับคลาสพื้นฐาน `kairo-toggle`                                                    |
+| ...               | Additional props | —           | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยังอีลีเมนต์ด้านใน                                   |
+
+### `ToggleGroup`
+
+| Prop            | Type                              | Default        | Description                                                                 |
+| --------------- | ------------------------------------ | -------------- | ------------------------------------------------------------------------------ |
+| `value`         | `readonly string[]`                  | —              | array ที่ควบคุมของค่ารายการที่ถูกกดอยู่ ใช้คู่กับ `onValueChange`               |
+| `defaultValue`  | `readonly string[]`                  | `[]`           | ค่าที่ถูกกดไว้เริ่มต้นสำหรับกลุ่มแบบไม่ควบคุม                                   |
+| `onValueChange` | `(value: string[], eventDetails) => void` | —         | เรียกเมื่อชุดของรายการที่ถูกกดเปลี่ยนแปลง                                       |
+| `multiple`      | `boolean`                             | `false`        | อนุญาตให้กดค้างไว้ได้หลายรายการพร้อมกัน แทนที่จะได้แค่รายการเดียว               |
+| `disabled`      | `boolean`                             | `false`        | ปิดการโต้ตอบกับทุกรายการในกลุ่ม                                                 |
+| `orientation`   | `'horizontal' \| 'vertical'`         | `'horizontal'` | ทิศทางการจัดวางและแกนที่ปุ่มลูกศรใช้เลื่อนโฟกัส                                 |
+| `loopFocus`     | `boolean`                             | `true`         | วนโฟกัสด้วยคีย์บอร์ดกลับไปยังรายการแรกเมื่อถึงท้ายรายการ                        |
+| `className`     | `string`                              | —              | รวมกับคลาสพื้นฐาน `kairo-toggle-group`                                          |
+| ...             | Additional props | — | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยังอีลีเมนต์ด้านใน                              |
+
+render `ToggleGroup` ของ Base UI — เป็น `<div role="group">` ไม่ใช่ `radiogroup`
+แม้ว่า `multiple` จะเป็น `false` ก็ตาม — และให้ `Toggle` ลูกของมันมีการโฟกัสด้วย
+คีย์บอร์ดแบบ roving `Arrow`/`Home`/`End` พร้อมติดตามสถานะการกดร่วมกันผ่าน context
+(Base UI ไม่มี part แยกสำหรับ "Item" ตรงนี้ — `Toggle` ตัวเดียวกับที่ใช้เดี่ยว ๆ จะ
+ทำงานต่างออกไปทันทีที่ตรวจพบว่ามี `ToggleGroup` เป็น ancestor)

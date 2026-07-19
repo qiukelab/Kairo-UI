@@ -1,0 +1,147 @@
+---
+title: NumberField
+description: อินพุตตัวเลขที่รองรับ locale พร้อมปุ่ม stepper สำหรับเพิ่ม/ลดค่า สร้างบน Base UI
+icon: Hash
+---
+
+import { NumberFieldDemo } from '@/components/demos/number-field-demo';
+
+## การใช้งาน
+
+```tsx
+import {
+  NumberField,
+  NumberFieldGroup,
+  NumberFieldInput,
+  NumberFieldIncrement,
+  NumberFieldDecrement,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <NumberField defaultValue={1} min={0} max={10}>
+      <NumberFieldGroup>
+        <NumberFieldDecrement aria-label="Decrease quantity" />
+        <NumberFieldInput aria-label="Quantity" />
+        <NumberFieldIncrement aria-label="Increase quantity" />
+      </NumberFieldGroup>
+    </NumberField>
+  );
+}
+```
+
+`NumberField` รวม part ต่าง ๆ เข้าด้วยกันและ render `NumberField.Root` ของ Base UI
+(เป็น `<div>` ที่ดูแลแค่ state เท่านั้น — เส้นขอบอยู่ที่ `NumberFieldGroup`)
+`NumberFieldGroup` render `NumberField.Group` ซึ่งเป็นกล่องมีเส้นขอบที่บรรจุปุ่มลดค่า
+อินพุต และปุ่มเพิ่มค่าเรียงตามลำดับนี้ การ clamp ค่าให้อยู่ในช่วง `min`/`max`,
+การ stepping ด้วยคีย์บอร์ดและปุ่มตาม `step`/`smallStep`/`largeStep` รวมถึงการ
+parse/format ข้อความที่พิมพ์ตาม locale ผ่าน `Intl.NumberFormat` ทั้งหมดมาจาก
+`@base-ui/react`
+
+`NumberFieldInput` render `<input type="text">` ธรรมดาที่มี
+`aria-roledescription="Number field"` ไม่ใช่ `role="spinbutton"` — เพราะข้อความที่
+มองเห็นถูก format ตาม locale (เช่น `"1,234"`) ซึ่งจะขัดกับความหมายเชิงตัวเลขดิบของ
+role spinbutton ดั้งเดิม ตั้งชื่อที่เข้าถึงได้ให้มันด้วย `aria-label` หรือครอบด้วย
+`<label>` เหมือนกับ `Input` ทั่วไป
+
+`NumberFieldIncrement`/`NumberFieldDecrement` จะ render ไอคอนบวก/ลบเริ่มต้นเมื่อไม่ได้
+ส่ง `children` มา และไม่สามารถโฟกัสถึงด้วย <kbd>Tab</kbd> ได้ — อินพุตเป็นจุดเข้าถึง
+เดียวทางคีย์บอร์ด ส่วนปุ่มทั้งสองจะปรับค่าโดยที่โฟกัสยังอยู่ที่อินพุตเหมือนเดิม Base UI
+ให้ `aria-label` มาในตัวสำหรับแต่ละปุ่ม (`"Increase"`/`"Decrease"`) แต่ข้อความนั้น
+hardcode เป็นภาษาอังกฤษไว้ในตัว Base UI เอง ไม่ได้อ่านจาก `KairoMessages` ของ Kairo —
+ให้ส่ง `aria-label` เองอย่างชัดเจน (ตามตัวอย่างด้านบน) เพื่อแปลเป็นภาษาอื่น
+
+`NumberField` รับ prop `locale` (`Intl.LocalesArgument`) ที่กำหนดทั้งการ parse และ
+format เมื่อไม่ได้ระบุ จะอ่านค่าจาก `KairoLocaleProvider` ที่ใกล้ที่สุดแทน ดังนั้น
+`<NumberField>` ที่ mount อยู่ภายใต้ `<KairoLocaleProvider locale="th">` จะ
+format/parse ตามรูปแบบตัวเลขของภาษาไทยให้อัตโนมัติ
+
+## ไม่ควบคุม ควบคุมด้วยสถานะ และปิดใช้งาน
+
+<ComponentPreview
+  code={`<NumberField defaultValue={1} min={0} max={10}>
+  <NumberFieldGroup>
+    <NumberFieldDecrement aria-label="ลดจำนวน" />
+    <NumberFieldInput aria-label="จำนวน" />
+    <NumberFieldIncrement aria-label="เพิ่มจำนวน" />
+  </NumberFieldGroup>
+</NumberField>
+
+<NumberField value={quantity} onValueChange={setQuantity} min={0} max={10}>
+  <NumberFieldGroup>
+    <NumberFieldDecrement aria-label="ลดจำนวน" />
+    <NumberFieldInput aria-label="จำนวน" />
+    <NumberFieldIncrement aria-label="เพิ่มจำนวน" />
+  </NumberFieldGroup>
+</NumberField>
+
+<NumberField defaultValue={5} disabled>
+  <NumberFieldGroup>
+    <NumberFieldDecrement aria-label="ลดจำนวน" />
+    <NumberFieldInput aria-label="จำนวน" />
+    <NumberFieldIncrement aria-label="เพิ่มจำนวน" />
+  </NumberFieldGroup>
+</NumberField>`}
+>
+  <NumberFieldDemo />
+</ComponentPreview>
+
+## Props
+
+### `NumberField`
+
+| Prop               | Type                                                | Default              | Description                                                                                          |
+| ------------------- | ----------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `value`             | `number \| null`                                       | —                       | ค่าตัวเลขดิบของฟิลด์ ใช้คู่กับ `onValueChange`                                                                |
+| `defaultValue`      | `number`                                               | —                       | ค่าเริ่มต้นแบบไม่ควบคุมของฟิลด์ตอน render ครั้งแรก                                                            |
+| `onValueChange`     | `(value: number \| null, eventDetails) => void`        | —                       | เรียกเมื่อค่าตัวเลขเปลี่ยนแปลง                                                                                 |
+| `onValueCommitted`  | `(value: number \| null, eventDetails) => void`        | —                       | เรียกหลังจากค่าถูก commit แล้ว (ตอน blur หรือเมื่อการโต้ตอบผ่านปุ่ม stepper/scrub สิ้นสุดลง)                  |
+| `min`               | `number`                                               | —                       | ค่าต่ำสุดของอีลีเมนต์อินพุต                                                                                    |
+| `max`               | `number`                                               | —                       | ค่าสูงสุดของอีลีเมนต์อินพุต                                                                                    |
+| `step`              | `number \| 'any'`                                      | `1`                     | จำนวนที่เพิ่ม/ลดต่อครั้งเมื่อใช้ปุ่มหรือปุ่มลูกศร                                                              |
+| `smallStep`         | `number`                                               | `0.1`                   | ค่าที่ใช้เพิ่ม/ลดเมื่อกดปุ่ม Alt ค้างไว้                                                                       |
+| `largeStep`         | `number`                                               | `10`                    | ค่าที่ใช้เพิ่ม/ลดเมื่อกดปุ่ม Shift ค้างไว้                                                                     |
+| `allowOutOfRange`   | `boolean`                                              | `false`                 | อนุญาตให้พิมพ์ค่าที่อยู่นอกช่วง `min`/`max` ได้โดยตรง (แต่การโต้ตอบผ่าน step ยังคง clamp ค่าอยู่)              |
+| `allowWheelScrub`   | `boolean`                                              | `false`                 | กำหนดว่าล้อเมาส์จะปรับค่าได้หรือไม่ขณะอินพุตถูกโฟกัสและมีเมาส์ชี้อยู่                                          |
+| `snapOnStep`        | `boolean`                                              | `false`                 | กำหนดว่าค่าจะ snap ไปยัง step ที่ใกล้ที่สุดหรือไม่เมื่อเพิ่ม/ลดค่า                                             |
+| `format`            | `Intl.NumberFormatOptions`                             | —                       | ตัวเลือกที่ใช้ format ค่าที่แสดงผล                                                                             |
+| `locale`            | `Intl.LocalesArgument`                                 | nearest locale provider | locale ที่ใช้ parse/format ค่า ค่าเริ่มต้นมาจาก `locale` ของ `KairoLocaleProvider` ที่ใกล้ที่สุด              |
+| `disabled`          | `boolean`                                              | `false`                 | ปิดการโต้ตอบกับฟิลด์                                                                                          |
+| `readOnly`          | `boolean`                                              | `false`                 | ป้องกันไม่ให้ผู้ใช้เปลี่ยนค่าของฟิลด์                                                                          |
+| `required`          | `boolean`                                              | `false`                 | กำหนดว่าต้องกรอกค่าก่อน submit ฟอร์มหรือไม่                                                                   |
+| `name`              | `string`                                               | —                       | ใช้ระบุฟิลด์นี้เมื่อ submit ฟอร์ม                                                                              |
+| `form`              | `string`                                               | —                       | ระบุฟอร์มที่เป็นเจ้าของ `<input>` ที่ซ่อนอยู่                                                                  |
+| `className`         | `string`                                               | —                       | รวมกับคลาสพื้นฐาน `kairo-number-field`                                                                        |
+| ...                 | Additional props | —                 | props อื่น ๆ ที่เหลือ (เช่น `id`, `inputRef`) จะถูกส่งต่อไปยังอีลีเมนต์ด้านใน                            |
+
+### `NumberFieldGroup`
+
+กล่องมีเส้นขอบที่มีลักษณะตรงกับ `.kairo-input` (min-height เท่ากัน เส้นขอบและ
+focus ring เหมือนกัน — ring จะแสดงผ่าน `:focus-within` เพราะอินพุตด้านในเป็นส่วน
+เดียวในกลุ่มที่โฟกัสได้)
+
+| Prop        | Type     | Default | Description                                                    |
+| ----------- | -------- | ------- | ---------------------------------------------------------------- |
+| `className` | `string` | —       | รวมกับคลาสพื้นฐาน `kairo-number-field-group`                     |
+| ...         | Additional props | — | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยังอีลีเมนต์ด้านใน |
+
+### `NumberFieldInput`
+
+| Prop                   | Type      | Default          | Description                                                                                       |
+| ----------------------- | --------- | ------------------ | ----------------------------------------------------------------------------------------------------- |
+| `aria-roledescription`  | `string`  | `'Number field'`   | คำอธิบาย role ที่ประกาศให้ assistive tech ฟัง (ไม่ใช่ชื่อที่เข้าถึงได้ — ให้ส่ง `aria-label` แยกต่างหากสำหรับสิ่งนั้น) |
+| `className`             | `string`  | —                  | รวมกับคลาสพื้นฐาน `kairo-number-field-input`                                                          |
+| ...                     | Additional props | — | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยังอีลีเมนต์ input ด้านใน                                       |
+
+### `NumberFieldIncrement` / `NumberFieldDecrement`
+
+Render `<button>` (ที่ไม่สามารถโฟกัสถึงด้วย <kbd>Tab</kbd>) พร้อม `children` —
+หรือไอคอนบวก/ลบเริ่มต้นเมื่อไม่ได้ส่ง `children` มา
+
+| Prop        | Type     | Default | Description                                                                          |
+| ----------- | -------- | ------- | --------------------------------------------------------------------------------------- |
+| `className` | `string` | —       | รวมกับคลาสพื้นฐาน `kairo-number-field-increment`/`kairo-number-field-decrement`         |
+| ...         | Additional props | — | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยังอีลีเมนต์ button ด้านใน |
+
+props อื่น ๆ ที่เหลือทั้งหมดจะถูกส่งต่อไปยังอีลีเมนต์ด้านในของแต่ละ component ของ
+Kairo ที่เกี่ยวข้อง

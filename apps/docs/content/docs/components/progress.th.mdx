@@ -1,0 +1,65 @@
+---
+title: Progress
+description: แถบแสดงความคืบหน้าแบบ static ที่มีสถานะทั้งแบบทราบค่าและไม่ทราบค่า สร้างตามรูปแบบ WAI-ARIA progressbar
+icon: SquarePercent
+---
+
+import { Progress } from '@kairo-ui/react';
+
+## การใช้งาน
+
+```tsx
+import { Progress } from '@kairo-ui/react';
+
+export function Example() {
+  return <Progress value={40} label="Uploading files" showValueLabel />;
+}
+```
+
+## ทราบค่าความคืบหน้า
+
+<ComponentPreview code={`<Progress value={20} aria-label="กำลังโหลด" />
+<Progress value={60} aria-label="กำลังโหลด" />
+<Progress value={100} aria-label="กำลังโหลด" />`}>
+  <div className="flex w-full max-w-sm flex-col gap-3">
+    <Progress value={20} aria-label="กำลังโหลด" />
+    <Progress value={60} aria-label="กำลังโหลด" />
+    <Progress value={100} aria-label="กำลังโหลด" />
+  </div>
+</ComponentPreview>
+
+## ไม่ทราบค่าความคืบหน้า
+
+ส่ง `value={null}` (หรือไม่ต้องระบุ `value` เลยก็ได้) เมื่อยังไม่รู้เปอร์เซ็นต์ความ
+คืบหน้า — แถบจะวนลูปแทนการค่อย ๆ เติมเต็ม และจะไม่ใส่ `aria-valuenow` ไว้บน
+อีลีเมนต์เลย แทนที่จะตั้งเป็น `0`
+
+<ComponentPreview code={`<Progress aria-label="กำลังโหลด" />`}>
+  <div className="flex w-full max-w-sm flex-col gap-3">
+    <Progress aria-label="กำลังโหลด" />
+  </div>
+</ComponentPreview>
+
+## มีป้ายกำกับและตัวเลขแสดงค่า
+
+`label` ที่เป็น string จะทำหน้าที่เป็นชื่อที่เข้าถึงได้ของแถบไปในตัว เว้นแต่จะส่ง
+`aria-label`/`aria-labelledby` มาโดยตรง `showValueLabel` จะเพิ่มตัวเลขแสดงค่าไว้
+ข้าง ๆ (ซ่อนจาก assistive tech ด้วย `aria-hidden` เพราะค่าถูกเปิดเผยผ่าน
+`aria-valuenow` อยู่แล้ว)
+
+<ComponentPreview code={`<Progress value={72} label="กำลังอัปโหลดไฟล์" showValueLabel />`}>
+  <div className="flex w-full max-w-sm flex-col gap-3">
+    <Progress value={72} label="กำลังอัปโหลดไฟล์" showValueLabel />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop             | Type                              | Default | Description                                                                                       |
+| ---------------- | ----------------------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| `value`          | `number \| null`                    | `null`  | ค่าความคืบหน้าปัจจุบัน `null` จะ render เป็นแถบแบบไม่ทราบค่า                                          |
+| `max`            | `number`                            | `100`   | ค่าที่แทนความคืบหน้า 100%                                                                             |
+| `label`          | `ReactNode`                         | —       | คำอธิบายที่มองเห็นได้ (ไม่บังคับ) ถ้าเป็น string และไม่ได้ตั้ง `aria-label`/`aria-labelledby` ไว้ มันจะกลายเป็นชื่อที่เข้าถึงได้ด้วย |
+| `showValueLabel` | `boolean`                           | `false` | render ตัวเลขแสดงค่า (เช่น `"40%"`) ไว้ข้าง label จะถูกข้ามไปขณะอยู่ในสถานะไม่ทราบค่า                  |
+| `className`      | `string`                            | —       | รวมกับคลาสพื้นฐาน `kairo-progress`                                                                    |
+| ...              | `HTMLAttributes<HTMLDivElement>`    | —       | props ดั้งเดิมอื่น ๆ ของ `<div>` ทั้งหมด รวมถึง `aria-label`/`aria-labelledby` จะถูกส่งผ่านไป           |

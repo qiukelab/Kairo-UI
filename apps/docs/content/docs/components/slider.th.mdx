@@ -1,0 +1,183 @@
+---
+title: Slider
+description: ตัวควบคุมแบบลากที่ใช้เลือกค่าตัวเลข หรือช่วงค่าสองค่า ไปตามแทร็ก สร้างบน Base UI
+icon: SlidersHorizontal
+---
+
+import { SliderDemo } from '@/components/demos/slider-demo';
+
+## การใช้งาน
+
+```tsx
+import {
+  Slider,
+  SliderLabel,
+  SliderValue,
+  SliderControl,
+  SliderTrack,
+  SliderIndicator,
+  SliderThumb,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Slider defaultValue={30}>
+      <SliderLabel>Brightness</SliderLabel>
+      <SliderValue />
+      <SliderControl>
+        <SliderTrack>
+          <SliderIndicator />
+          <SliderThumb />
+        </SliderTrack>
+      </SliderControl>
+    </Slider>
+  );
+}
+```
+
+`Slider` เป็นตัวรวม parts เข้าด้วยกัน และ render `Slider.Root` ของ Base UI (`<div
+role="group">`) `SliderControl` เป็นตัวจัดการ pointer/touch drag และการกด track (jump-to-click)
+ให้กับทุก `SliderThumb` ที่อยู่ข้างใน `SliderTrack` คือ positioning context ที่ `SliderThumb` ใช้วัด
+ระยะห่างของตัวเองเทียบด้วย — `SliderThumb` ต้อง render อยู่ภายใน `SliderTrack` ไม่ใช่อยู่ตรงใน
+`SliderControl` โดยตรง แต่ละ `SliderThumb` render `<input type="range">` แบบ `role="slider"`
+จริง ๆ ดังนั้น `aria-valuenow`, การกดคีย์บอร์ด Arrow/Home/End/Page-Up/Page-Down และการจัดการค่า
+แบบควบคุม/ไม่ควบคุม ล้วนมาจาก `@base-ui/react`
+
+ส่ง array ของตัวเลขสองค่าเป็น `value`/`defaultValue` สำหรับ slider แบบช่วง โดยมี `SliderThumb`
+หนึ่งตัวต่อหนึ่งค่า — ดูตัวอย่างแบบช่วงด้านล่าง
+
+## ค่าเริ่มต้น, ควบคุมด้วยสถานะ, ช่วงค่า และปิดใช้งาน
+
+<ComponentPreview
+  code={`<Slider defaultValue={30}>
+  <SliderLabel>ความสว่าง</SliderLabel>
+  <SliderValue />
+  <SliderControl>
+    <SliderTrack>
+      <SliderIndicator />
+      <SliderThumb />
+    </SliderTrack>
+  </SliderControl>
+</Slider>
+
+<Slider value={volume} onValueChange={setVolume}>
+  <SliderLabel>ระดับเสียง (ควบคุมด้วยสถานะ)</SliderLabel>
+  <SliderValue />
+  <SliderControl>
+    <SliderTrack>
+      <SliderIndicator />
+      <SliderThumb />
+    </SliderTrack>
+  </SliderControl>
+</Slider>
+
+<Slider defaultValue={[20, 80]}>
+  <SliderLabel>ช่วงราคา</SliderLabel>
+  <SliderValue />
+  <SliderControl>
+    <SliderTrack>
+      <SliderIndicator />
+      <SliderThumb index={0} aria-label="ราคาต่ำสุด" />
+      <SliderThumb index={1} aria-label="ราคาสูงสุด" />
+    </SliderTrack>
+  </SliderControl>
+</Slider>
+
+<Slider defaultValue={60} disabled>
+  <SliderLabel>ปิดใช้งาน</SliderLabel>
+  <SliderValue />
+  <SliderControl>
+    <SliderTrack>
+      <SliderIndicator />
+      <SliderThumb />
+    </SliderTrack>
+  </SliderControl>
+</Slider>`}
+>
+  <SliderDemo />
+</ComponentPreview>
+
+## Props
+
+### `Slider`
+
+| Prop                    | Type                                                       | Default        | Description                                                                                   |
+| ----------------------- | ------------------------------------------------------------ | -------------- | ----------------------------------------------------------------------------------------------- |
+| `value`                 | `number \| readonly number[]`                                | —              | ค่าที่ควบคุมด้วยสถานะ ใช้คู่กับ `onValueChange` ส่ง array สองค่าเพื่อทำ slider แบบช่วง             |
+| `defaultValue`          | `number \| readonly number[]`                                | —              | ค่าเริ่มต้นสำหรับ `Slider` แบบไม่ควบคุม                                                          |
+| `onValueChange`         | `(value, eventDetails) => void`                               | —              | เรียกขณะที่ค่ากำลังเปลี่ยน (จากการลาก คีย์บอร์ด หรือกด track)                                     |
+| `onValueCommitted`      | `(value, eventDetails) => void`                               | —              | เรียกเมื่อการเปลี่ยนค่าถูก commit แล้ว (เช่น ตอนปล่อย pointer)                                    |
+| `min`                   | `number`                                                      | `0`            | ค่าต่ำสุดที่อนุญาต                                                                                |
+| `max`                   | `number`                                                      | `100`          | ค่าสูงสุดที่อนุญาต                                                                                |
+| `step`                  | `number`                                                      | `1`            | ความละเอียดที่ค่าจะ snap ไปเมื่อขยับทีละสเต็ป                                                     |
+| `largeStep`             | `number`                                                      | `10`           | สเต็ปที่ใช้เมื่อกด Page Up/Page Down หรือ Shift + Arrow                                          |
+| `minStepsBetweenValues` | `number`                                                      | `0`            | จำนวนสเต็ปขั้นต่ำที่คงไว้ระหว่าง thumb ทั้งสองของ slider แบบช่วง                                  |
+| `orientation`           | `'horizontal' \| 'vertical'`                                  | `'horizontal'` | แกนที่ slider วางตัวอยู่                                                                          |
+| `disabled`               | `boolean`                                                    | `false`        | ป้องกันการโต้ตอบกับทุก thumb                                                                     |
+| `name`                  | `string`                                                      | —              | ระบุชื่อฟิลด์เมื่อฟอร์มถูกส่ง                                                                     |
+| `form`                  | `string`                                                      | —              | ระบุฟอร์มที่เป็นเจ้าของ input ของ thumb                                                          |
+| `className`             | `string`                                                      | —              | รวมกับคลาสพื้นฐาน `kairo-slider`                                                                 |
+| ...                     | Additional props | —              | props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ที่อยู่ข้างใต้                                        |
+
+### `SliderLabel`
+
+label ที่เข้าถึงได้ ซึ่งเชื่อมโยงกับ `<input>` ของทุก `SliderThumb` ใน `Slider` เดียวกันโดย
+อัตโนมัติ (ผ่าน `aria-labelledby`) เว้นแต่ thumb นั้นตั้ง `aria-label`/`aria-labelledby` ของตัวเอง
+ไว้
+
+| Prop        | Type     | Default | Description                                              |
+| ----------- | -------- | ------- | ------------------------------------------------------------ |
+| `className` | `string` | —       | รวมกับคลาสพื้นฐาน `kairo-slider-label`                          |
+| ...         | Additional props | — | props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ label ที่อยู่ข้างใต้ |
+
+### `SliderValue`
+
+แสดงค่าปัจจุบันเป็นข้อความ; render `<output>` ของ Base UI
+
+| Prop        | Type                                                             | Default | Description                                                              |
+| ----------- | ------------------------------------------------------------------ | ------- | ------------------------------------------------------------------------------ |
+| `children`  | `(formattedValues: readonly string[], values: readonly number[]) => ReactNode` | —       | render การแสดงผลแบบกำหนดเองแทนการรวมค่าสไตล์ `"20 – 80"` เริ่มต้น         |
+| `className` | `string`                                                            | —       | รวมกับคลาสพื้นฐาน `kairo-slider-value`                                        |
+| ...         | Additional props | —       | props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ที่อยู่ข้างใต้                     |
+
+### `SliderControl`
+
+พื้นผิวที่คลิก/ลากได้: จัดการ pointer capture, การกด track (jump-to-click) และการลากให้กับทุก
+`SliderThumb` ที่อยู่ข้างใน
+
+| Prop        | Type     | Default | Description                                                  |
+| ----------- | -------- | ------- | ------------------------------------------------------------------ |
+| `className` | `string` | —       | รวมกับคลาสพื้นฐาน `kairo-slider-control`                              |
+| ...         | Additional props | — | props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ที่อยู่ข้างใต้ |
+
+### `SliderTrack`
+
+รางเต็มช่วง และเป็น positioning context ที่ `SliderThumb` ใช้วัดระยะห่างของตัวเองเทียบด้วย
+
+| Prop        | Type     | Default | Description                                                |
+| ----------- | -------- | ------- | ---------------------------------------------------------------- |
+| `className` | `string` | —       | รวมกับคลาสพื้นฐาน `kairo-slider-track`                                |
+| ...         | Additional props | — | props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ที่อยู่ข้างใต้ |
+
+### `SliderIndicator`
+
+ส่วนที่เติมเต็มของ track ตั้งแต่ `min` (หรือ thumb ที่ค่าต่ำกว่า) ไปจนถึงค่าปัจจุบัน
+
+| Prop        | Type     | Default | Description                                                    |
+| ----------- | -------- | ------- | ---------------------------------------------------------------------- |
+| `className` | `string` | —       | รวมกับคลาสพื้นฐาน `kairo-slider-indicator`                                |
+| ...         | Additional props | — | props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ที่อยู่ข้างใต้ |
+
+### `SliderThumb`
+
+แฮนเดิลที่ลากได้ render `<div>` ที่ห่อ `<input type="range">` แบบ visually-hidden ของ Base UI
+ซึ่งเป็นอีลีเมนต์ `role="slider"` ตัวจริง
+
+| Prop        | Type      | Default | Description                                                                          |
+| ----------- | --------- | ------- | ------------------------------------------------------------------------------------------ |
+| `index`     | `number`  | —       | index ของ thumb ใน slider แบบช่วง อนุมานจากลำดับการ mount ถ้าไม่ระบุ                          |
+| `disabled`  | `boolean` | `false` | ป้องกันไม่ให้ thumb นี้ถูกขยับ                                                                |
+| `className` | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-slider-thumb`                                                       |
+| ...         | Additional props | — | props ที่เหลือทั้งหมด รวมถึง `aria-label` ถูกส่งต่อไปยังอีลีเมนต์ที่อยู่ข้างใต้ |
+
+props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ที่อยู่ข้างใต้ของแต่ละ Kairo component ที่สอดคล้องกัน

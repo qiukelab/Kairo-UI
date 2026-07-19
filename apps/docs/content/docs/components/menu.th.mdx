@@ -1,0 +1,167 @@
+---
+title: Menu
+description: เมนู dropdown สำหรับการทำงานต่าง ๆ ที่เปิดจาก trigger รองรับ checkbox item, radio item และเมนูย่อย สร้างบน Base UI
+icon: Menu
+---
+
+import { MenuDemo } from '@/components/demos/menu-demo';
+
+## การใช้งาน
+
+```tsx
+import { Menu, MenuTrigger, MenuContent, MenuItem } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Menu>
+      <MenuTrigger>Options</MenuTrigger>
+      <MenuContent>
+        <MenuItem onClick={() => console.log('Copy')}>Copy</MenuItem>
+        <MenuItem onClick={() => console.log('Paste')}>Paste</MenuItem>
+      </MenuContent>
+    </Menu>
+  );
+}
+```
+
+`Menu` เป็นตัวรวม parts ต่าง ๆ เข้าด้วยกัน (ไม่ render DOM element ของตัวเอง
+เหมือนกับ `Menu.Root` ของ Base UI) `MenuTrigger` render `<button>` ดั้งเดิม
+โดยไม่มีไอคอนหรือสไตล์ใด ๆ นอกจาก focus/disabled affordance เริ่มต้น —
+จับคู่กับ `Button` ของ Kairo ผ่าน `render` เมื่อต้องการให้มันดูเหมือนปุ่ม
+จริง ๆ `MenuContent` รวม `Menu.Portal` > `Menu.Positioner` + `Menu.Popup`
+ของ Base UI ไว้ในการเรียกครั้งเดียว พร้อมลูกศรชี้กลับไปที่ trigger
+`role="menu"`/`"menuitem"`, การนำทางด้วยคีย์บอร์ดและ typeahead และการ
+ปิดเมนูเมื่อเลือกรายการ ทั้งหมดนี้มาจาก `@base-ui/react`
+
+## ไอคอน รายการ checkbox กลุ่ม radio และเมนูย่อย
+
+<ComponentPreview
+  code={`<Menu>
+  <MenuTrigger render={<Button variant="outline">ไฟล์</Button>} />
+  <MenuContent>
+    <MenuItem>สร้างไฟล์ใหม่</MenuItem>
+    <MenuItem>เปลี่ยนชื่อ</MenuItem>
+    <MenuItem disabled>ลบ</MenuItem>
+    <MenuSeparator />
+    <MenuCheckboxItem checked={wordWrap} onCheckedChange={setWordWrap}>
+      ตัดคำอัตโนมัติ
+    </MenuCheckboxItem>
+    <MenuGroup>
+      <MenuGroupLabel>ธีม</MenuGroupLabel>
+      <MenuRadioGroup value={theme} onValueChange={setTheme}>
+        <MenuRadioItem value="light">สว่าง</MenuRadioItem>
+        <MenuRadioItem value="dark">มืด</MenuRadioItem>
+        <MenuRadioItem value="system">ตามระบบ</MenuRadioItem>
+      </MenuRadioGroup>
+    </MenuGroup>
+    <MenuSeparator />
+    <MenuSub>
+      <MenuSubmenuTrigger>แชร์</MenuSubmenuTrigger>
+      <MenuContent>
+        <MenuItem>อีเมล</MenuItem>
+        <MenuItem>คัดลอกลิงก์</MenuItem>
+      </MenuContent>
+    </MenuSub>
+  </MenuContent>
+</Menu>
+
+<Menu open={open} onOpenChange={setOpen}>
+  <MenuTrigger render={<Button variant="outline">{open ? 'ปิดเมนู' : 'เปิดเมนู'}</Button>} />
+  <MenuContent>
+    <MenuItem>โปรไฟล์</MenuItem>
+    <MenuItem>ตั้งค่า</MenuItem>
+    <MenuItem>ออกจากระบบ</MenuItem>
+  </MenuContent>
+</Menu>`}
+>
+  <MenuDemo />
+</ComponentPreview>
+
+## Props
+
+### `Menu`
+
+| Prop           | Type                                     | Default | Description                                                     |
+| -------------- | ------------------------------------------ | ------- | ----------------------------------------------------------------- |
+| `open`         | `boolean`                                  | —       | สถานะเปิด/ปิดแบบควบคุมด้วยสถานะ (controlled) ใช้คู่กับ `onOpenChange` |
+| `defaultOpen`  | `boolean`                                  | `false` | สถานะเปิดเริ่มต้นสำหรับเมนูแบบไม่ควบคุม (uncontrolled)              |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`    | —       | เรียกเมื่อเมนูเปิดหรือปิด                                          |
+| `modal`        | `boolean`                                  | `true`  | กำหนดว่าเมนูเป็นแบบ modal หรือไม่ (ดักโฟกัสไว้ภายใน และบล็อกการโต้ตอบภายนอก) |
+| `disabled`     | `boolean`                                  | `false` | ป้องกันการโต้ตอบของผู้ใช้กับเมนูทั้งหมด                            |
+| ...            | Additional props                             | —     | props อื่น ๆ ทั้งหมดจะถูกส่งต่อไปตามปกติ                           |
+
+### `MenuTrigger`
+
+Render `<button>` ดั้งเดิม (หรือรวมกับอีลีเมนต์อื่นผ่าน prop `render` เช่น
+`Button` ของ Kairo) มี `[data-popup-open]` ติดอยู่ขณะเมนูเปิดอยู่ และ
+`[data-pressed]` ขณะถูกกด ใช้ `:disabled` (native attribute เพราะนี่คือ
+ปุ่มจริง) เพื่อจัดสไตล์สถานะปิดใช้งาน
+
+### `MenuContent`
+
+| Prop         | Type                                              | Default | Description                                                            |
+| ------------ | ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------ |
+| `side`       | `'top' \| 'bottom' \| 'left' \| 'right'`             | —       | ด้านไหนของ trigger ที่จะ render popup ไว้                                       |
+| `align`      | `'start' \| 'center' \| 'end'`                       | `'start'` | วิธีจัดตำแหน่ง popup เทียบกับ `side`                                          |
+| `sideOffset` | `number`                                             | `8`     | ระยะห่างเป็นพิกเซลระหว่าง trigger กับ popup                                    |
+| `className`  | `string`                                             | —       | รวมกับคลาสพื้นฐาน `kairo-menu-popup` บน popup element                          |
+| ...          | Additional props                                     | —       | props อื่น ๆ ทั้งหมด (เช่น `finalFocus`) จะถูกส่งต่อไปยัง popup element ต้นทาง |
+
+ใช้ซ้ำแบบเดิมสำหรับ popup ของเมนูย่อย — render มันเป็น child ตัวที่สองของ
+`MenuSub` ต่อจาก `MenuSubmenuTrigger`
+
+### `MenuItem`
+
+| Prop        | Type      | Default | Description                                                    |
+| ----------- | --------- | ------- | -------------------------------------------------------------------- |
+| `disabled`  | `boolean` | `false` | ป้องกันไม่ให้เลือกรายการนี้ได้                                        |
+| `closeOnClick` | `boolean` | `true` | กำหนดว่าจะปิดเมนูเมื่อคลิกรายการนี้หรือไม่                          |
+| `className` | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-menu-item`                                    |
+
+### `MenuCheckboxItem`
+
+| Prop              | Type                                          | Default | Description                                              |
+| ----------------- | ------------------------------------------------ | ------- | ---------------------------------------------------------------- |
+| `checked`         | `boolean`                                        | —       | สถานะติ๊กถูกแบบควบคุมด้วยสถานะ (controlled) ใช้คู่กับ `onCheckedChange` |
+| `defaultChecked`  | `boolean`                                        | `false` | สถานะติ๊กถูกเริ่มต้นสำหรับ checkbox item แบบไม่ควบคุม (uncontrolled)   |
+| `onCheckedChange` | `(checked: boolean, eventDetails) => void`       | —       | เรียกเมื่อรายการถูกติ๊กหรือเอาติ๊กออก                              |
+| `disabled`        | `boolean`                                        | `false` | ป้องกันไม่ให้สลับสถานะรายการนี้ได้                                  |
+
+Render `children` ควบคู่กับเครื่องหมายถูก (มีอยู่ใน DOM เฉพาะตอนที่ติ๊กอยู่)
+ไม่ปิดเมนูเมื่อคลิกโดยค่าเริ่มต้น
+
+### `MenuRadioGroup` / `MenuRadioItem`
+
+`MenuRadioGroup` ใช้จัดกลุ่ม `MenuRadioItem` ที่เกี่ยวข้องกัน เพื่อให้เลือก
+ได้ทีละหนึ่งรายการเท่านั้น
+
+| Prop            | Type                                | Default | Description                                                    |
+| --------------- | -------------------------------------- | ------- | ---------------------------------------------------------------------- |
+| `value`         | `any`                                   | —       | ค่าที่เลือกแบบควบคุมด้วยสถานะ (controlled) ใช้คู่กับ `onValueChange`     |
+| `defaultValue`  | `any`                                   | —       | ค่าที่เลือกเริ่มต้นสำหรับ radio group แบบไม่ควบคุม (uncontrolled)        |
+| `onValueChange` | `(value: any, eventDetails) => void`   | —       | เรียกเมื่อค่าที่เลือกเปลี่ยนไป                                          |
+
+`MenuRadioItem` ต้องมี prop `value` และ render `children` ควบคู่กับจุดบอก
+สถานะ (มีอยู่ใน DOM เฉพาะรายการที่ถูกเลือก) ไม่ปิดเมนูเมื่อคลิกโดยค่าเริ่มต้น
+
+### `MenuGroup` / `MenuGroupLabel`
+
+`MenuGroup` ใช้จัดกลุ่มรายการที่เกี่ยวข้องกัน ส่วน `MenuGroupLabel` เป็น
+label ที่เข้าถึงได้ (accessible) ซึ่งเชื่อมโยงกับ `MenuGroup` ที่เป็น
+parent ของมันโดยอัตโนมัติ
+
+### `MenuSeparator`
+
+เส้นแบ่งที่มองเห็นได้ระหว่างรายการ/กลุ่ม ถูกซ่อนจาก accessibility tree
+(`aria-hidden="true"`) เป็นค่าเริ่มต้น เพราะ role `menu` อนุญาตเฉพาะ child
+ที่เป็น `menuitem`/`menuitemcheckbox`/`menuitemradio`/`group` เท่านั้น
+
+### `MenuSub` / `MenuSubmenuTrigger`
+
+`MenuSub` ใช้รวม parts ทั้งหมดของเมนูย่อยเข้าด้วยกัน — จับคู่กับ
+`MenuSubmenuTrigger` และ `MenuContent` `MenuSubmenuTrigger` render
+`children` ตามด้วยลูกศรชี้ (chevron) เริ่มต้น และเปิดเมนูย่อยเมื่อ hover,
+focus หรือถูกกระตุ้น (`ArrowRight` ขณะไฮไลต์อยู่ในเมนูแนวตั้ง)
+
+props อื่น ๆ ทั้งหมดจะถูกส่งต่อไปยัง element ต้นทางของแต่ละ component ของ
+Kairo ที่เกี่ยวข้อง

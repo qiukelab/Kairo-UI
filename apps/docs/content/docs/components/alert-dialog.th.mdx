@@ -1,0 +1,111 @@
+---
+title: AlertDialog
+description: ไดอะล็อกที่ขัดจังหวะผู้ใช้เพื่อเรียกร้องการตัดสินใจที่ชัดเจน — คลิกที่ backdrop จะไม่มีวันปิดมันได้ สร้างบน Base UI
+icon: TriangleAlert
+---
+
+import { AlertDialogDemo } from '@/components/demos/alert-dialog-demo';
+
+## การใช้งาน
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogClose,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger>Delete account</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogTitle>Delete account?</AlertDialogTitle>
+        <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+        <AlertDialogClose>Cancel</AlertDialogClose>
+        <AlertDialogClose>Delete</AlertDialogClose>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+```
+
+`AlertDialog` รวบรวมส่วนประกอบต่าง ๆ เข้าด้วยกัน (มันไม่ render DOM element
+ของตัวเองเลย — เหมือนกับ `AlertDialog.Root` ของ Base UI) `AlertDialogContent`
+ประกอบ `AlertDialog.Portal` > `AlertDialog.Backdrop` + `AlertDialog.Popup`
+ของ Base UI ไว้ในคำเรียกเดียว คุณจึงไม่ต้องไปเรียกใช้ส่วนเหล่านั้นเอง เรื่อง
+focus trapping, scroll locking และ `role="alertdialog"` ล้วนมาจาก
+`@base-ui/react` — เช่นเดียวกับพฤติกรรมหลักของมัน: การคลิกที่ backdrop
+(หรือที่ไหนก็ตามนอก popup) จะ**ไม่มีวัน**ปิด alert dialog ได้ ต่างจาก
+`Dialog` ส่วน Escape ยังคงปิดมันได้อยู่ เพราะ Base UI มองว่าเป็นการกดคีย์บอร์ด
+ที่ตั้งใจ เทียบเท่ากับการกด Cancel ไม่ใช่การปิดโดยไม่ตั้งใจ
+
+## Trigger, title, description และ close
+
+<ComponentPreview
+  code={`<AlertDialog>
+  <AlertDialogTrigger render={<Button variant="outline">ลบบัญชี</Button>} />
+  <AlertDialogContent>
+    <AlertDialogTitle>ลบบัญชีใช่ไหม</AlertDialogTitle>
+    <AlertDialogDescription>
+      การดำเนินการนี้จะลบบัญชีของคุณและข้อมูลทั้งหมดอย่างถาวร ไม่สามารถย้อนกลับได้
+    </AlertDialogDescription>
+    <div className="mt-6 flex justify-end gap-3">
+      <AlertDialogClose render={<Button variant="ghost">ยกเลิก</Button>} />
+      <AlertDialogClose render={<Button>ลบ</Button>} />
+    </div>
+  </AlertDialogContent>
+</AlertDialog>`}
+>
+  <AlertDialogDemo />
+</ComponentPreview>
+
+<Callout title="AlertDialog กับ Dialog" type="info">
+  ทั้งสองใช้โครงสร้าง Base UI แบบเดียวกัน — จริง ๆ แล้ว `AlertDialog.Backdrop`,
+  `Portal`, `Popup`, `Title`, `Description` และ `Close` ก็คือ component
+  ตัวเดียวกันกับของ `Dialog` เป๊ะ ๆ เพียงแต่ทำงานคนละโหมด — แต่ทั้งสองตอบคำถาม
+  ต่างกัน **Dialog** เป็น modal ทั่วไป: ผู้ใช้จะคลิกออกไปที่อื่นก็ไม่เป็นไร
+  เพราะไม่มีอะไรที่ย้อนกลับไม่ได้เกิดขึ้น **AlertDialog** ขัดจังหวะผู้ใช้เพื่อ
+  เรียกร้องให้ตัดสินใจอย่างใดอย่างหนึ่งจากตัวเลือกเล็ก ๆ ที่ชัดเจน (ยืนยัน
+  ยกเลิก หรือรับทราบ) ก่อนจะไปต่อได้ — ใช้มันกับ action ที่ทำลายข้อมูลหรือ
+  ส่งผลกระทบตามมา ("ลบโปรเจกต์นี้ใช่ไหม", "ทิ้งการเปลี่ยนแปลงที่ยังไม่ได้บันทึก
+  ใช่ไหม") ซึ่งการปิดตัวเลือกไปเงียบ ๆ ด้วยการคลิกนอกพื้นที่จะถือเป็น
+  ความผิดพลาด ไม่ใช่คำตอบที่ใช้ได้ ถ้าคุณแค่ต้องการแสดงเนื้อหาหรือฟอร์มที่ไม่มี
+  การตัดสินใจแบบไม่มีทางย้อนกลับ ให้ใช้ `Dialog` แทน
+</Callout>
+
+## Props
+
+### `AlertDialog`
+
+| Prop           | Type                                                        | Default | Description                                                                                                                                            |
+| -------------- | -------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `open`         | `boolean`                                                       | —       | สถานะเปิดแบบควบคุม ใช้คู่กับ `onOpenChange`                                                                                                              |
+| `defaultOpen`  | `boolean`                                                       | `false` | สถานะเปิดเริ่มต้นสำหรับ alert dialog แบบไม่ควบคุม                                                                                                         |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`                         | —       | เรียกเมื่อ alert dialog เปิดหรือปิด `eventDetails.reason` เป็นได้ `'escapeKey'`, `'closePress'`, `'triggerPress'`, `'focusOut'`, หรือ `'imperativeAction'` — ไม่มีทางเป็น `'outsidePress'` เพราะช่องทางปิดแบบนั้นถูกปิดไปทั้งหมดแล้ว |
+| ...            | Additional props | — | props อื่น ๆ ทั้งหมดถูกส่งต่อไปตามปกติ ต่างจาก `Dialog` ตรงที่ `modal` และ `disablePointerDismissal` ไม่ได้เปิดให้ใช้ — ถูกกำหนดตายตัวเป็น `true` ไว้ภายใน  |
+
+### `AlertDialogTrigger` / `AlertDialogClose`
+
+โดยค่าเริ่มต้นจะ render เป็น `<button>` ดั้งเดิม หรือจะ compose กับอีลีเมนต์
+อื่นผ่าน `render` ก็ได้ (เช่น `<AlertDialogClose render={<Button>Delete</Button>} />`)
+ไม่มีส่วน "action" แยกต่างหาก — ให้ใช้ `AlertDialogClose` สองตัว (ตัวหนึ่ง
+สำหรับ Cancel อีกตัวสำหรับ action ที่ยืนยัน) แล้วแนบ `onClick` ของคุณเองไว้ที่
+ตัวที่ยืนยัน สำหรับ side effect ใด ๆ ที่ต้องรันก่อนที่มันจะปิด
+
+### `AlertDialogContent`
+
+| Prop           | Type                                                    | Default | Description                                                                             |
+| -------------- | ---------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------- |
+| `className`    | `string`                                                    | —       | รวมกับคลาสพื้นฐาน `kairo-alert-dialog-popup` บนอีลีเมนต์ popup                              |
+| `initialFocus` | `boolean \| RefObject \| function`                          | —       | อีลีเมนต์ที่จะโฟกัสเมื่อ alert dialog เปิด ค่าเริ่มต้นคืออีลีเมนต์แรกที่ tab ไปถึงได้ภายใน popup หรือตัว popup เองเมื่อเปิดผ่านการสัมผัส (เพื่อเลี่ยงไม่ให้ on-screen keyboard เด้งขึ้นมา) รับค่า `false` (ไม่ยุ่งกับโฟกัสเลย), `true` (ใช้ค่าเริ่มต้น), `RefObject` (โฟกัสอีลีเมนต์นั้น) หรือฟังก์ชัน — ที่ถูกเรียกพร้อม interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — ซึ่งคืนค่าเป็นอีลีเมนต์, `true`/`null` สำหรับค่าเริ่มต้น หรือ `false`/`undefined` เพื่อไม่ทำอะไรเลย |
+| `finalFocus`   | `boolean \| RefObject \| function`                          | —       | อีลีเมนต์ที่จะโฟกัสเมื่อ alert dialog ปิด ค่าเริ่มต้นคือ trigger หรืออีลีเมนต์ที่มีโฟกัสอยู่ก่อนเปิด รับค่า `false` (ไม่ยุ่งกับโฟกัสเลย), `true` (ใช้ค่าเริ่มต้น), `RefObject` (โฟกัสอีลีเมนต์นั้น) หรือฟังก์ชัน — ที่ถูกเรียกพร้อม interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — ซึ่งคืนค่าเป็นอีลีเมนต์, `true`/`null` สำหรับค่าเริ่มต้น หรือ `false`/`undefined` เพื่อไม่ทำอะไรเลย |
+| ...            | Additional props | — | props อื่น ๆ ทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ popup ด้านใน |
+
+### `AlertDialogTitle` / `AlertDialogDescription`
+
+render เป็น `<h2>`/`<p>` ตามลำดับ และเชื่อมกับ popup ผ่าน
+`aria-labelledby`/`aria-describedby` ให้โดยอัตโนมัติ

@@ -1,0 +1,249 @@
+---
+title: Combobox
+description: ช่องข้อความที่จับคู่กับ listbox แบบกรองได้ สำหรับเลือกค่าจากรายการที่ค้นหาได้ สร้างบน Base UI
+icon: TextSearch
+---
+
+import { ComboboxDemo } from '@/components/demos/combobox-demo';
+
+## การใช้งาน
+
+```tsx
+import {
+  Combobox,
+  ComboboxControl,
+  ComboboxInput,
+  ComboboxTrigger,
+  ComboboxClear,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+} from '@kairo-ui/react';
+
+const fruits = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'orange', label: 'Orange' },
+];
+
+export function Example() {
+  return (
+    <Combobox items={fruits} defaultValue={fruits[0]}>
+      <ComboboxControl>
+        <ComboboxInput aria-label="Fruit" placeholder="Search fruit…" />
+        <ComboboxClear />
+        <ComboboxTrigger />
+      </ComboboxControl>
+      <ComboboxContent>
+        <ComboboxEmpty />
+        <ComboboxList>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  );
+}
+```
+
+`Combobox` เป็นตัวรวม parts เข้าด้วยกัน (ไม่ render DOM element ของตัวเอง — เหมือนกับ
+`Combobox.Root` ของ Base UI) `ComboboxControl` คือกล่องมีเส้นขอบที่มองเห็นเป็นตัวควบคุมจริง ๆ —
+มัน render `Combobox.InputGroup` ของ Base UI และเป็นอีลีเมนต์ที่ popup ใช้ anchor ด้วย
+`ComboboxInput` เป็น `<input>` แบบไม่มีเส้นขอบและโปร่งใสที่วางอยู่ข้างใน; การนำทางด้วยคีย์บอร์ดที่
+ขับเคลื่อนด้วย `role="combobox"`, `aria-expanded`, `aria-controls` และ `aria-activedescendant`
+(โฟกัสไม่เคยออกจาก input เลย — combobox ของ Base UI ไฮไลต์ตัวเลือกแบบ virtual ต่างจาก roving
+focus ของ `Select`) ทั้งหมดนี้มาจาก `@base-ui/react`
+
+**การกรองเป็นหน้าที่ของ Base UI ไม่ใช่ของคุณ** ส่งข้อมูลผ่าน prop `items` บน `Combobox` แล้ว
+render ผ่าน *function child* บน `ComboboxList` ตามตัวอย่างด้านบน — Base UI จะกรอง `items` เทียบกับ
+query ที่พิมพ์ในช่องด้วย matcher ที่อิงจาก `Intl.Collator` แล้วส่งรายการที่เหลือให้ function นั้น
+ส่ง `filter` ให้ `Combobox` เพื่อแทนที่ matcher เดิม หรือใช้ `filter={null}` เพื่อปิดการกรอง
+children แบบ `ComboboxItem` ที่เป็น static (ไม่มี function child) จะไม่ถูกกรองเลย — ดูตัวอย่างแบบ
+จัดกลุ่มด้านล่างที่ใช้รูปแบบนี้สำหรับ listbox ธรรมดาที่ไม่มีพฤติกรรมค้นหา
+
+`ComboboxContent` ประกอบ `Combobox.Portal` > `Combobox.Positioner` + `Combobox.Arrow` +
+`Combobox.Popup` ของ Base UI ไว้ในการเรียกครั้งเดียว ตัวมันเองมี `role="presentation"` — ส่วน
+`role="listbox"` อยู่ที่ `ComboboxList` แทน ซึ่งเป็น sibling ของ `ComboboxEmpty` ภายในนั้น
+(`Combobox.Popup` ของ Base UI ใส่ `listbox` เองไม่ได้ เพราะต้องโฮสต์ live region แบบ
+`role="status"` ของ `ComboboxEmpty` ด้วย ซึ่งเป็น ARIA ที่ไม่ถูกต้องหากเป็น direct child ของ
+`listbox`)
+
+## กรองได้, ควบคุมด้วยสถานะ และจัดกลุ่ม
+
+<ComponentPreview
+  code={`<Combobox items={fruits} defaultValue={fruits[0]}>
+  <ComboboxControl className="w-56">
+    <ComboboxInput aria-label="ผลไม้" placeholder="ค้นหาผลไม้…" />
+    <ComboboxClear />
+    <ComboboxTrigger />
+  </ComboboxControl>
+  <ComboboxContent>
+    <ComboboxEmpty />
+    <ComboboxList>
+      {(item) => (
+        <ComboboxItem key={item.value} value={item}>
+          {item.label}
+        </ComboboxItem>
+      )}
+    </ComboboxList>
+  </ComboboxContent>
+</Combobox>
+
+<Combobox items={fruits} value={fruit} onValueChange={setFruit}>
+  <ComboboxControl className="w-56">
+    <ComboboxInput aria-label="ผลไม้ (ควบคุมด้วยสถานะ)" placeholder="ค้นหาผลไม้…" />
+    <ComboboxClear />
+    <ComboboxTrigger />
+  </ComboboxControl>
+  <ComboboxContent>
+    <ComboboxEmpty />
+    <ComboboxList>
+      {(item) => (
+        <ComboboxItem key={item.value} value={item}>
+          {item.label}
+        </ComboboxItem>
+      )}
+    </ComboboxList>
+  </ComboboxContent>
+</Combobox>
+
+<Combobox>
+  <ComboboxControl className="w-56">
+    <ComboboxInput aria-label="ผลไม้ (จัดกลุ่ม)" placeholder="เลือกผลไม้" />
+  </ComboboxControl>
+  <ComboboxContent>
+    <ComboboxList>
+      <ComboboxItem value="apple">แอปเปิล</ComboboxItem>
+      <ComboboxItem value="banana">กล้วย</ComboboxItem>
+      <ComboboxSeparator />
+      <ComboboxGroup>
+        <ComboboxGroupLabel>ตระกูลส้ม</ComboboxGroupLabel>
+        <ComboboxItem value="orange">ส้ม</ComboboxItem>
+      </ComboboxGroup>
+    </ComboboxList>
+  </ComboboxContent>
+</Combobox>`}
+>
+  <ComboboxDemo />
+</ComponentPreview>
+
+`label` ของ item ที่เลือก (จาก entry ที่ตรงกันใน `items`) จะเติมลงใน input ให้อัตโนมัติทันทีที่
+เลือก — ส่ง `itemToStringLabel` ให้ `Combobox` เพื่อกำหนดเองเมื่อ item ไม่ได้อยู่ในรูป
+`{ value, label }`
+
+## Props
+
+### `Combobox`
+
+| Prop                | Type                                          | Default  | Description                                                                          |
+| -------------------- | ------------------------------------------------ | ---------- | ------------------------------------------------------------------------------------------ |
+| `value`              | `any`                                             | —          | ค่าที่เลือกแบบควบคุมด้วยสถานะ ใช้คู่กับ `onValueChange`                                       |
+| `defaultValue`       | `any`                                             | —          | ค่าเริ่มต้นสำหรับ combobox แบบไม่ควบคุม                                                       |
+| `onValueChange`      | `(value: any, eventDetails) => void`              | —          | เรียกเมื่อค่าที่เลือกเปลี่ยนแปลง                                                              |
+| `open`               | `boolean`                                         | —          | สถานะเปิด/ปิดแบบควบคุมด้วยสถานะ ใช้คู่กับ `onOpenChange`                                       |
+| `defaultOpen`        | `boolean`                                         | `false`    | สถานะเปิด/ปิดเริ่มต้นสำหรับ combobox แบบไม่ควบคุม                                             |
+| `onOpenChange`       | `(open: boolean, eventDetails) => void`           | —          | เรียกเมื่อ popup เปิดหรือปิด                                                                  |
+| `items`              | `readonly any[]`                                  | —          | ข้อมูลที่จะถูกกรองเทียบกับ query ของ input แล้วส่งให้ function child ของ `ComboboxList`        |
+| `filter`             | `(item, query, itemToString?) => boolean \| null` | built-in   | แทนที่ matcher เริ่มต้นที่อิงจาก `Intl.Collator` `null` ปิดการกรอง                            |
+| `multiple`           | `boolean`                                         | `false`    | กำหนดว่าเลือกได้หลายรายการหรือไม่                                                              |
+| `disabled`           | `boolean`                                         | `false`    | ป้องกันการโต้ตอบจากผู้ใช้                                                                     |
+| `readOnly`           | `boolean`                                         | `false`    | ป้องกันการเลือกค่าอื่นจาก popup                                                               |
+| `autoHighlight`      | `boolean \| 'always'`                             | `false`    | กำหนดว่าไฮไลต์รายการแรกที่ตรงกันโดยอัตโนมัติหรือไม่                                            |
+| `name`               | `string`                                          | —          | ระบุชื่อฟิลด์เมื่อฟอร์มถูกส่ง                                                                  |
+| `itemToStringLabel`  | `(item) => string`                                | —          | จัดรูปแบบ item ที่เป็น object เพื่อแสดงผล ใช้อัตโนมัติสำหรับรูปแบบ `{ value, label }`          |
+| ...                  | Additional props | — | props ที่เหลือทั้งหมดถูกส่งต่อไปตรง ๆ                                |
+
+### `ComboboxControl`
+
+กล่องมีเส้นขอบที่มองเห็นเป็นตัวควบคุมจริง ๆ (เส้นขอบและ focus ring อยู่ตรงนี้ ไม่ใช่ที่ input)
+และเป็นอีลีเมนต์ที่ popup ใช้ anchor ด้วย
+
+| Prop        | Type     | Default | Description                                                     |
+| ----------- | -------- | ------- | ------------------------------------------------------------------- |
+| `className` | `string` | —       | รวมกับคลาสพื้นฐาน `kairo-combobox-control`                            |
+| ...         | Additional props | — | props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ control ที่อยู่ข้างใต้ |
+
+### `ComboboxInput`
+
+render `<input>` ธรรมดาที่ไม่มีเส้นขอบ ตั้งชื่อที่เข้าถึงได้ด้วย `aria-label` หรือครอบด้วย
+`<label>`
+
+| Prop        | Type     | Default | Description                                          |
+| ----------- | -------- | ------- | ----------------------------------------------------- |
+| `className` | `string` | —       | รวมกับคลาสพื้นฐาน `kairo-combobox-input`                |
+| ...         | Additional props | — | props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ input ที่อยู่ข้างใต้ |
+
+### `ComboboxTrigger`
+
+ปุ่มที่เปิด popup โดยไม่ต้องพิมพ์ render ไอคอน chevron เริ่มต้น (ห่อด้วย `Combobox.Icon`) เมื่อไม่
+ได้ระบุ `children`
+
+| Prop          | Type      | Default | Description                                                                                        |
+| -------------- | --------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| `aria-hidden`  | `boolean` | `true`  | ซ่อนจาก accessibility tree — input เปิดเผย `role="combobox"` พร้อม `aria-expanded` อยู่แล้ว           |
+| `tabIndex`     | `number`  | `-1`    | ไม่อยู่ใน tab order เพราะ input เป็นจุดเข้าใช้งานคีย์บอร์ดเพียงจุดเดียว                                |
+| `className`    | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-combobox-trigger`                                                            |
+| ...            | Additional props | — | props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ trigger ที่อยู่ข้างใต้                     |
+
+### `ComboboxClear`
+
+รีเซ็ตค่าที่เลือกและ query ที่พิมพ์ไว้ mount เฉพาะตอนที่มีอะไรให้ clear (เว้นแต่ตั้ง
+`keepMounted`) render ไอคอน X เริ่มต้นเมื่อไม่ได้ระบุ `children`
+
+| Prop          | Type     | Default            | Description                              |
+| -------------- | -------- | -------------------- | --------------------------------------------- |
+| `aria-label`   | `string` | `'Clear selection'`  | ชื่อที่เข้าถึงได้ของปุ่ม                        |
+| `className`    | `string` | —                    | รวมกับคลาสพื้นฐาน `kairo-combobox-clear`         |
+| ...            | Additional props | — | props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ปุ่ม clear ที่อยู่ข้างใต้ |
+
+### `ComboboxContent`
+
+| Prop         | Type                                     | Default | Description                                                             |
+| ------------- | ------------------------------------------- | ------- | ------------------------------------------------------------------------------ |
+| `side`        | `'top' \| 'bottom' \| 'left' \| 'right'`    | —       | ด้านของ control ที่จะ render popup อิงไว้                                       |
+| `align`       | `'start' \| 'center' \| 'end'`              | `'start'` | การจัดตำแหน่ง popup เทียบกับ `side`                                            |
+| `sideOffset`  | `number`                                    | `8`     | ระยะห่างเป็นพิกเซลระหว่าง control กับ popup                                     |
+| `className`   | `string`                                    | —       | รวมกับคลาสพื้นฐาน `kairo-combobox-popup` บนอีลีเมนต์ popup                       |
+| ...           | Additional props | — | props ที่เหลือทั้งหมด (เช่น `finalFocus`) ถูกส่งต่อไปยังอีลีเมนต์ popup ที่อยู่ข้างใต้ |
+
+### `ComboboxList`
+
+คอนเทนเนอร์ `role="listbox"` ที่ render อยู่ภายใน `ComboboxContent` ส่ง function child เพื่อ
+render ผลลัพธ์ที่กรองแล้วของ Base UI (ดูหัวข้อ **การใช้งาน** ด้านบน) ส่วน static element children
+จะถูก render ตรง ๆ และไม่ถูกกรอง
+
+### `ComboboxItem`
+
+| Prop        | Type      | Default | Description                                                    |
+| ----------- | --------- | ------- | ---------------------------------------------------------------- |
+| `value`     | `any`     | —       | ค่าของ item นี้                                                    |
+| `disabled`  | `boolean` | `false` | ป้องกันไม่ให้เลือก item นี้                                        |
+| `className` | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-combobox-item`                             |
+
+render `children` ตรง ๆ (Combobox ไม่มีส่วน `ItemText` ต่างจาก Select) นำหน้าด้วยเครื่องหมายถูก
+`Combobox.ItemIndicator` ที่อยู่ใน DOM เฉพาะ item ที่เลือกอยู่เท่านั้น
+
+### `ComboboxEmpty`
+
+ข้อความแจ้งไม่พบผลลัพธ์ render เป็น sibling ของ `ComboboxList` ภายใน `ComboboxContent` มี
+ความหมายเฉพาะตอนที่ `Combobox` มี prop `items` เท่านั้น
+
+| Prop        | Type        | Default              | Description                                |
+| ----------- | ----------- | ---------------------- | ------------------------------------------------ |
+| `children`  | `ReactNode` | `'No results found'`   | ข้อความที่แสดงเมื่อ query ไม่ตรงกับอะไรเลย          |
+
+### `ComboboxGroup` / `ComboboxGroupLabel`
+
+`ComboboxGroup` จัดกลุ่ม item ที่เกี่ยวข้องกัน ส่วน `ComboboxGroupLabel` เป็น label ที่เข้าถึงได้
+ซึ่งเชื่อมโยงกับ `ComboboxGroup` ที่เป็น parent ให้อัตโนมัติ
+
+### `ComboboxSeparator`
+
+เส้นแบ่งที่มองเห็นได้ระหว่าง items/groups ถูกซ่อนจาก accessibility tree (`aria-hidden="true"`)
+เป็นค่าเริ่มต้น เพราะ role listbox อนุญาตเฉพาะ children แบบ `option`/`group` เท่านั้น
+
+props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ที่อยู่ข้างใต้ของแต่ละ Kairo component ที่สอดคล้องกัน

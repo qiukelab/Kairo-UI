@@ -1,0 +1,94 @@
+---
+title: Popover
+description: popup แบบยึดตำแหน่ง สำหรับเนื้อหาเสริม เปิดด้วยการคลิก สร้างบน Base UI
+icon: MessageSquare
+---
+
+import { PopoverDemo } from '@/components/demos/popover-demo';
+
+## การใช้งาน
+
+```tsx
+import { Popover, PopoverTrigger, PopoverContent, PopoverTitle, PopoverDescription, PopoverClose } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Popover>
+      <PopoverTrigger>Share</PopoverTrigger>
+      <PopoverContent>
+        <PopoverTitle>Share this document</PopoverTitle>
+        <PopoverDescription>Anyone with the link will be able to view this.</PopoverDescription>
+        <PopoverClose>Done</PopoverClose>
+      </PopoverContent>
+    </Popover>
+  );
+}
+```
+
+`Popover` เป็นตัวรวมส่วนประกอบต่าง ๆ เข้าด้วยกัน (ไม่ render DOM element ของ
+ตัวเองเลย เหมือนกับ `Popover.Root` ของ Base UI) ส่วน `PopoverContent` รวม
+`Popover.Portal` > `Popover.Positioner` + `Popover.Popup` ของ Base UI ไว้ใน
+การเรียกเดียว ทำให้คุณไม่ต้องไปประกอบส่วนเหล่านั้นเอง การจัดตำแหน่งแบบ
+anchored, การปิดด้วย Escape/การคลิกนอกพื้นที่ และ `role="dialog"` ทั้งหมด
+มาจาก `@base-ui/react`
+
+## Trigger ลูกศร หัวข้อ คำอธิบาย และปุ่มปิด
+
+<ComponentPreview
+  code={`<Popover>
+  <PopoverTrigger render={<Button variant="outline">แชร์</Button>} />
+  <PopoverContent>
+    <PopoverArrow />
+    <PopoverTitle>แชร์เอกสารนี้</PopoverTitle>
+    <PopoverDescription>
+      ทุกคนที่มีลิงก์นี้จะสามารถดูเอกสารนี้ได้
+    </PopoverDescription>
+    <div className="mt-4 flex justify-end">
+      <PopoverClose render={<Button variant="ghost">เสร็จสิ้น</Button>} />
+    </div>
+  </PopoverContent>
+</Popover>`}
+>
+  <PopoverDemo />
+</ComponentPreview>
+
+## Props
+
+### `Popover`
+
+| Prop           | Type                                     | Default | Description                                                                                    |
+| -------------- | ------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------ |
+| `open`         | `boolean`                                  | —       | สถานะเปิดแบบ controlled ใช้คู่กับ `onOpenChange`                                                    |
+| `defaultOpen`  | `boolean`                                  | `false` | สถานะเปิดเริ่มต้นสำหรับ popover แบบ uncontrolled                                                     |
+| `modal`        | `boolean \| 'trap-focus'`                  | `false` | กำหนดว่า popover จะ trap focus และล็อกการ scroll (`true`), trap focus อย่างเดียว (`'trap-focus'`) หรือไม่ทำทั้งสองอย่างเลย (`false`) |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`    | —       | เรียกเมื่อ popover เปิดหรือปิด                                                                       |
+| ...            | Additional props | — | props อื่น ๆ ที่เหลือทั้งหมดจะถูกส่งต่อไป                                       |
+
+### `PopoverTrigger` / `PopoverClose`
+
+ค่าเริ่มต้น render เป็น `<button>` ดั้งเดิม หรือจะ compose กับ element อื่น
+ผ่าน `render` ก็ได้ (เช่น `<PopoverTrigger render={<Button>Open</Button>} />`)
+
+### `PopoverContent`
+
+| Prop         | Type                                                          | Default    | Description                                                                    |
+| ------------ | -------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------- |
+| `side`       | `'top' \| 'bottom' \| 'left' \| 'right' \| 'inline-end' \| 'inline-start'` | `'bottom'` | ด้านของ trigger ที่จะ render popup ให้ชิด                                          |
+| `align`      | `'start' \| 'center' \| 'end'`                                  | `'center'` | วิธีจัดตำแหน่ง popup โดยอ้างอิงกับ `side`                                            |
+| `sideOffset` | `number`                                                        | `8`        | ระยะห่างเป็นพิกเซลระหว่าง trigger กับ popup                                          |
+| `className`  | `string`                                                        | —          | รวมกับคลาสพื้นฐาน `kairo-popover-popup` บน element ของ popup                        |
+| `initialFocus` | `boolean \| RefObject \| function`                            | —          | Element ที่จะโฟกัสเมื่อ popover เปิดขึ้น ค่าเริ่มต้นคือ element แรกที่ tab ไปถึงได้ภายใน popup หรือตัว popup เองถ้าเปิดผ่านการสัมผัส (touch) (เพื่อไม่ให้ไปเรียก on-screen keyboard) รับค่า `false` (ไม่ยุ่งกับโฟกัสเลย), `true` (ใช้ค่าเริ่มต้น), `RefObject` (โฟกัส element นั้น) หรือฟังก์ชัน — ที่ถูกเรียกพร้อม interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — ที่คืนค่า element, `true`/`null` สำหรับค่าเริ่มต้น หรือ `false`/`undefined` เพื่อไม่ทำอะไรเลย |
+| `finalFocus` | `boolean \| RefObject \| function`                              | —          | Element ที่จะโฟกัสเมื่อ popover ปิดลง ค่าเริ่มต้นคือ trigger หรือ element ที่โฟกัสอยู่ก่อนเปิด รับค่า `false` (ไม่ยุ่งกับโฟกัสเลย), `true` (ใช้ค่าเริ่มต้น), `RefObject` (โฟกัส element นั้น) หรือฟังก์ชัน — ที่ถูกเรียกพร้อม interaction type (`'mouse'`, `'touch'`, `'pen'`, `'keyboard'`) — ที่คืนค่า element, `true`/`null` สำหรับค่าเริ่มต้น หรือ `false`/`undefined` เพื่อไม่ทำอะไรเลย |
+| ...          | Additional props | — | props อื่น ๆ ที่เหลือทั้งหมดจะถูกส่งต่อไปยัง element ของ popup ด้านล่าง |
+
+### `PopoverTitle` / `PopoverDescription`
+
+Render เป็น `<h2>`/`<p>` ตามลำดับ และเชื่อมกับ popup ผ่าน
+`aria-labelledby`/`aria-describedby` ให้อัตโนมัติ
+
+### `PopoverArrow`
+
+ตัวชี้ (pointer) ที่ไม่บังคับ render อยู่ระหว่าง popup กับ trigger ของมัน
+วางไว้ในบรรดา children ของ `PopoverContent`; Base UI จะจัดตำแหน่งให้อัตโนมัติ
+และ `@kairo-ui/theme` จะวาดรูปทรงลูกศรตาม attribute `data-side` ที่ Base UI
+ตั้งไว้ให้

@@ -1,0 +1,39 @@
+---
+title: Avatar
+description: แสดงรูปโปรไฟล์ของผู้ใช้ โดยตกกลับไปแสดงอักษรย่อหรือข้อความโดยอัตโนมัติ สร้างบน Base UI
+icon: CircleUser
+---
+
+import { AvatarDemo } from '@/components/demos/avatar-demo';
+
+## การใช้งาน
+
+```tsx
+import { Avatar } from '@kairo-ui/react';
+
+export function Example() {
+  return <Avatar src="/jane.png" alt="Jane Doe" fallback="JD" />;
+}
+```
+
+## ขนาด, เนื้อหาสำรอง และรูปภาพที่เสีย
+
+<ComponentPreview
+  code={`<Avatar src="/jane.png" alt="Jane Doe" fallback="JD" />
+<Avatar fallback="AK" />
+<Avatar size="sm" fallback="SM" />
+<Avatar size="lg" fallback="LG" />`}
+>
+  <AvatarDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop        | Type                       | Default | Description                                                                             |
+| ----------- | -------------------------- | ------- | ----------------------------------------------------------------------------------------- |
+| `src`       | `string`                   | —       | URL ต้นฉบับของรูปภาพ                                                                        |
+| `alt`       | `string`                   | —       | ข้อความ alt ที่เข้าถึงได้ อธิบายรูปภาพ                                                       |
+| `fallback`  | `ReactNode`                | —       | render เมื่อไม่มี `src` หรือรูปภาพโหลดไม่สำเร็จ/โหลดยังไม่เสร็จ (เช่น อักษรย่อ)                |
+| `size`      | `'sm' \| 'md' \| 'lg'`     | `'md'`  | ขนาดของ avatar                                                                              |
+| `className` | `string`                   | —       | รวมกับคลาสพื้นฐาน `kairo-avatar`                                                             |
+| ...         | Additional props | — | props ที่เหลือทั้งหมดถูกส่งต่อไปยังอีลีเมนต์ที่อยู่ข้างใต้ |

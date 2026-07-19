@@ -1,0 +1,40 @@
+---
+title: Switch
+description: ตัวควบคุมแบบสลับสำหรับสถานะเปิด/ปิด สร้างบน Base UI
+icon: ToggleLeft
+---
+
+import { SwitchDemo } from '@/components/demos/switch-demo';
+
+## การใช้งาน
+
+```tsx
+import { Switch } from '@kairo-ui/react';
+
+export function Example() {
+  return <Switch defaultChecked aria-label="Airplane mode" />;
+}
+```
+
+## ค่าเริ่มต้น, ควบคุมด้วยสถานะ และปิดใช้งาน
+
+<ComponentPreview
+  code={`<Switch defaultChecked aria-label="ค่าเริ่มต้น (ไม่ควบคุม)" />
+<Switch checked={checked} onCheckedChange={setChecked} aria-label="ควบคุมด้วยสถานะ" />
+<Switch disabled defaultChecked aria-label="ปิดใช้งาน" />`}
+>
+  <SwitchDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop              | Type                                                    | Default | Description                                                      |
+| ----------------- | ---------------------------------------------------------- | ------- | ------------------------------------------------------------------ |
+| `checked`         | `boolean`                                                 | —       | สถานะ checked แบบควบคุมด้วยสถานะ ใช้คู่กับ `onCheckedChange`            |
+| `defaultChecked`  | `boolean`                                                  | `false` | สถานะ checked เริ่มต้นสำหรับ switch แบบไม่ควบคุม                       |
+| `onCheckedChange` | `(checked: boolean, eventDetails) => void`                | —       | เรียกเมื่อ switch ถูกเปิดหรือปิดใช้งาน                                 |
+| `disabled`        | `boolean`                                                  | `false` | ป้องกันการโต้ตอบจากผู้ใช้                                              |
+| `name`            | `string`                                                   | —       | ระบุชื่อฟิลด์เมื่อฟอร์มถูกส่ง                                           |
+| `value`           | `string`                                                   | —       | ค่าที่ส่งไปพร้อมฟอร์มเมื่อ switch เปิดอยู่                              |
+| `className`       | `string`                                                    | —       | รวมกับคลาสพื้นฐาน `kairo-switch`                                       |
+| ...               | Additional props | — | props ที่เหลือทั้งหมด (เช่น `required`, `readOnly`) ถูกส่งต่อไปยังอีลีเมนต์ที่อยู่ข้างใต้ |

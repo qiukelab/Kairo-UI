@@ -1,0 +1,149 @@
+---
+title: Select
+description: listbox แบบ dropdown สำหรับเลือกค่าจากรายการที่กำหนดไว้ล่วงหน้า สร้างบน Base UI
+icon: ChevronsUpDown
+---
+
+import { SelectDemo } from '@/components/demos/select-demo';
+
+## การใช้งาน
+
+```tsx
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Select defaultValue="apple">
+      <SelectTrigger aria-label="Fruit">
+        <SelectValue placeholder="Select a fruit" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="apple">Apple</SelectItem>
+        <SelectItem value="banana">Banana</SelectItem>
+        <SelectItem value="orange">Orange</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+}
+```
+
+`Select` เป็นตัวรวม parts ต่าง ๆ เข้าด้วยกัน (ไม่ render DOM element ของ
+ตัวเอง เหมือนกับ `Select.Root` ของ Base UI) `SelectTrigger` render
+`Select.Trigger` ของ Base UI พร้อมไอคอนลูกศร (chevron) เริ่มต้นให้แล้ว
+จึงแค่วาง `SelectValue` ไว้ข้างในก็พอ `SelectContent` รวม `Select.Portal`
+> `Select.Positioner` + `Select.Popup` ของ Base UI ไว้ในการเรียกครั้งเดียว
+`role="combobox"`/`"listbox"`/`"option"`, การนำทางด้วยคีย์บอร์ดและ
+typeahead และ `<input>` ที่ซ่อนไว้สำหรับส่งฟอร์ม ทั้งหมดนี้มาจาก
+`@base-ui/react`
+
+## ตัวเลือกแบบจัดกลุ่ม เส้นแบ่ง และ select แบบควบคุมด้วยสถานะ
+
+<ComponentPreview
+  code={`<Select items={fruits} defaultValue="apple">
+  <SelectTrigger aria-label="ผลไม้" className="w-40">
+    <SelectValue placeholder="เลือกผลไม้" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="apple">แอปเปิล</SelectItem>
+    <SelectItem value="banana">กล้วย</SelectItem>
+    <SelectSeparator />
+    <SelectGroup>
+      <SelectGroupLabel>ตระกูลส้ม</SelectGroupLabel>
+      <SelectItem value="orange">ส้ม</SelectItem>
+    </SelectGroup>
+  </SelectContent>
+</Select>
+
+<Select items={fruits} value={value} onValueChange={setValue}>
+  <SelectTrigger aria-label="ผลไม้ (ควบคุมด้วยสถานะ)" className="w-40">
+    <SelectValue placeholder="เลือกผลไม้" />
+  </SelectTrigger>
+  <SelectContent>
+    {fruits.map((fruit) => (
+      <SelectItem key={fruit.value} value={fruit.value}>
+        {fruit.label}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>`}
+>
+  <SelectDemo />
+</ComponentPreview>
+
+การส่ง prop `items` ให้ `Select` จะ render label ที่ตรงกันไว้ใน trigger
+(ผ่าน `SelectValue`) แทนที่จะเป็น `value` ดิบ ๆ ถ้าต้องการควบคุม output
+ที่จัดรูปแบบเองแบบเต็มที่ ให้ส่งฟังก์ชันเข้าไปที่ `children` ของ
+`SelectValue` — ดู **Props** ด้านล่าง
+
+## Props
+
+### `Select`
+
+| Prop              | Type                                     | Default | Description                                                              |
+| ----------------- | ------------------------------------------ | ------- | ------------------------------------------------------------------------------ |
+| `value`           | `any`                                       | —       | ค่าที่เลือกแบบควบคุมด้วยสถานะ (controlled) ใช้คู่กับ `onValueChange`             |
+| `defaultValue`    | `any`                                       | —       | ค่าเริ่มต้นสำหรับ select แบบไม่ควบคุม (uncontrolled)                             |
+| `onValueChange`   | `(value: any, eventDetails) => void`        | —       | เรียกเมื่อค่าที่เลือกเปลี่ยนไป                                                   |
+| `open`            | `boolean`                                   | —       | สถานะเปิด/ปิดแบบควบคุมด้วยสถานะ (controlled) ใช้คู่กับ `onOpenChange`            |
+| `defaultOpen`     | `boolean`                                   | `false` | สถานะเปิดเริ่มต้นสำหรับ select แบบไม่ควบคุม (uncontrolled)                       |
+| `onOpenChange`    | `(open: boolean, eventDetails) => void`     | —       | เรียกเมื่อ popup เปิดหรือปิด                                                     |
+| `items`           | `Record<string, ReactNode> \| Array<{ value, label }>` | — | ข้อมูลที่ใช้ render label ที่ตรงกับค่าปัจจุบันใน `SelectValue` |
+| `multiple`        | `boolean`                                   | `false` | กำหนดว่าเลือกได้หลายรายการพร้อมกันหรือไม่                                        |
+| `disabled`        | `boolean`                                   | `false` | ป้องกันการโต้ตอบของผู้ใช้                                                        |
+| `name`            | `string`                                    | —       | ระบุชื่อฟิลด์เมื่อฟอร์มถูกส่ง                                                    |
+| ...               | Additional props | — | props อื่น ๆ ทั้งหมดจะถูกส่งต่อไปตามปกติ                       |
+
+### `SelectTrigger`
+
+Render `<button>` ดั้งเดิมที่มี `role="combobox"`, `children` (โดยทั่วไป
+คือ `SelectValue`) และไอคอนลูกศร (chevron) เริ่มต้นต่อท้ายให้
+
+### `SelectValue`
+
+| Prop          | Type                            | Default | Description                                                    |
+| ------------- | ---------------------------------- | ------- | -------------------------------------------------------------------- |
+| `placeholder` | `ReactNode`                        | —       | แสดงเมื่อยังไม่มีค่าที่ถูกเลือก                                       |
+| `children`    | `ReactNode \| (value: any) => ReactNode` | — | ฟังก์ชัน render กำหนดเองสำหรับจัดรูปแบบค่าที่เลือก                  |
+
+### `SelectContent`
+
+| Prop                   | Type                                  | Default | Description                                                                       |
+| ---------------------- | ---------------------------------------- | ------- | ---------------------------------------------------------------------------------------- |
+| `side`                 | `'top' \| 'bottom' \| 'left' \| 'right'` | —       | ด้านไหนของ trigger ที่จะ render popup ไว้                                                 |
+| `align`                | `'start' \| 'center' \| 'end'`           | —       | วิธีจัดตำแหน่ง popup เทียบกับ `side`                                                     |
+| `sideOffset`           | `number`                                 | `4`     | ระยะห่างเป็นพิกเซลระหว่าง trigger กับ popup                                               |
+| `alignItemWithTrigger` | `boolean`                                | `true`  | กำหนดว่า popup จะซ้อนทับกับ trigger เพื่อให้ข้อความของรายการที่เลือกอยู่ในตำแหน่งเดียวกันหรือไม่ |
+| `className`            | `string`                                 | —       | รวมกับคลาสพื้นฐาน `kairo-select-popup` บน popup element                                  |
+| ...                    | Additional props | — | props อื่น ๆ ทั้งหมด (เช่น `finalFocus`) จะถูกส่งต่อไปยัง popup element ต้นทาง             |
+
+### `SelectItem`
+
+| Prop        | Type      | Default | Description                                                    |
+| ----------- | --------- | ------- | -------------------------------------------------------------------- |
+| `value`     | `any`     | —       | ค่าของรายการนี้ (จำเป็นต้องระบุ)                                       |
+| `disabled`  | `boolean` | `false` | ป้องกันไม่ให้เลือกรายการนี้ได้                                        |
+| `className` | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-select-item`                                  |
+
+Render `children` ไว้ภายใน `Select.ItemText` ของ Base UI โดยมีเครื่องหมาย
+ถูก `Select.ItemIndicator` นำหน้า (มีอยู่ใน DOM เฉพาะรายการที่ถูกเลือก)
+
+### `SelectGroup` / `SelectGroupLabel`
+
+`SelectGroup` ใช้จัดกลุ่มรายการที่เกี่ยวข้องกัน ส่วน `SelectGroupLabel`
+เป็น label ที่เข้าถึงได้ (accessible) ซึ่งเชื่อมโยงกับ `SelectGroup` ที่เป็น
+parent ของมันโดยอัตโนมัติ
+
+### `SelectSeparator`
+
+เส้นแบ่งที่มองเห็นได้ระหว่างรายการ/กลุ่ม ถูกซ่อนจาก accessibility tree
+(`aria-hidden="true"`) เป็นค่าเริ่มต้น เพราะ role listbox อนุญาตเฉพาะ
+child ที่เป็น `option`/`group` เท่านั้น
+
+props อื่น ๆ ทั้งหมดจะถูกส่งต่อไปยัง element ต้นทางของแต่ละ component ของ
+Kairo ที่เกี่ยวข้อง

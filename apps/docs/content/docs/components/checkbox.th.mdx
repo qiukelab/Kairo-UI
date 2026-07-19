@@ -1,0 +1,42 @@
+---
+title: Checkbox
+description: ตัวควบคุมสามสถานะ (checked/unchecked/indeterminate) สร้างบน Base UI
+icon: SquareCheck
+---
+
+import { CheckboxDemo } from '@/components/demos/checkbox-demo';
+
+## การใช้งาน
+
+```tsx
+import { Checkbox } from '@kairo-ui/react';
+
+export function Example() {
+  return <Checkbox defaultChecked aria-label="Accept terms" />;
+}
+```
+
+## ค่าเริ่มต้น, ควบคุมด้วยสถานะ, ไม่ระบุสถานะ และปิดใช้งาน
+
+<ComponentPreview
+  code={`<Checkbox defaultChecked aria-label="ค่าเริ่มต้น (ไม่ควบคุม)" />
+<Checkbox checked={checked} onCheckedChange={setChecked} aria-label="ควบคุมด้วยสถานะ" />
+<Checkbox indeterminate aria-label="ไม่ระบุสถานะ" />
+<Checkbox disabled defaultChecked aria-label="ปิดใช้งาน" />`}
+>
+  <CheckboxDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop              | Type                                                                                 | Default | Description                                                       |
+| ----------------- | ------------------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------- |
+| `checked`         | `boolean`                                                                              | —       | สถานะ checked แบบควบคุมด้วยสถานะ ใช้คู่กับ `onCheckedChange`             |
+| `defaultChecked`  | `boolean`                                                                               | `false` | สถานะ checked เริ่มต้นสำหรับ checkbox แบบไม่ควบคุม                      |
+| `indeterminate`   | `boolean`                                                                               | `false` | กำหนดว่า checkbox อยู่ในสถานะผสมหรือไม่ (ไม่ใช่ทั้ง checked และ unchecked) |
+| `onCheckedChange` | `(checked: boolean, eventDetails) => void`                                             | —       | เรียกเมื่อ checkbox ถูกติ๊กหรือเอาติ๊กออก                                |
+| `disabled`        | `boolean`                                                                               | `false` | ป้องกันการโต้ตอบจากผู้ใช้                                               |
+| `name`            | `string`                                                                                | —       | ระบุชื่อฟิลด์เมื่อฟอร์มถูกส่ง                                            |
+| `value`           | `string`                                                                                | —       | ค่าที่ส่งไปพร้อมฟอร์มเมื่อ checkbox ถูก checked                          |
+| `className`       | `string`                                                                                | —       | รวมกับคลาสพื้นฐาน `kairo-checkbox`                                      |
+| ...               | Additional props | —       | props ที่เหลือทั้งหมด (เช่น `required`, `readOnly`) ถูกส่งต่อไปยังอีลีเมนต์ที่อยู่ข้างใต้ |
