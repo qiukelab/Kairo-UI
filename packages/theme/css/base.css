@@ -10,131 +10,152 @@
  *   3. A reusable focus-ring convention components can opt into.
  *   4. Thai-language typography overrides, applied only under `:lang(th)`.
  *   5. A `prefers-reduced-motion` override scoped to Kairo's own classes.
- */
-
-@keyframes kairo-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes kairo-fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes kairo-zoom-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes kairo-zoom-out {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-}
-
-@keyframes kairo-slide-in-top {
-  from {
-    opacity: 0;
-    transform: translateY(-0.5rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes kairo-slide-in-bottom {
-  from {
-    opacity: 0;
-    transform: translateY(0.5rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes kairo-slide-in-left {
-  from {
-    opacity: 0;
-    transform: translateX(-0.5rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes kairo-slide-in-right {
-  from {
-    opacity: 0;
-    transform: translateX(0.5rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes kairo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/**
- * Box sizing, scoped to Kairo's own elements.
  *
- * Kairo controls size themselves with `min-height` + padding + a 1px border,
- * which only adds up predictably under `border-box`. Since this package ships
- * no reset, box-sizing would otherwise be whatever the host page happens to
- * set. `:where()` keeps specificity at zero, and the selector matches only
- * elements carrying a `kairo-*` class — the consumer's own markup, including
- * children placed inside a Card or Dialog, is left alone.
- */
-:where([class*='kairo-']) {
-  box-sizing: border-box;
-}
-
-/**
- * Shared focus-ring convention.
+ * ⚠️ This is the ONE stylesheet in the package that spans TWO cascade layers,
+ * and the split is load-bearing — see the block comments below before moving
+ * anything across the boundary:
  *
- * Components opt in by adding the `kairo-focus-ring` class to a focusable
- * element instead of hand-rolling `:focus-visible` styles. This is scoped
- * with `:where()` so it carries zero specificity and can always be
- * overridden by a component's own styles.
+ *   - Items 1–3 are *defaults* a component is free to overrule, so they go in
+ *     `kairo.base`, which sits BEFORE `kairo.components`.
+ *   - Items 4–5 are *overrides* that must beat the component that they
+ *     correct, so they go in `kairo.overrides`, the LAST layer.
+ *
+ * Putting items 4–5 in `kairo.base` compiles, ships, and silently breaks Thai
+ * text: layer order outranks specificity, so `.kairo-btn:lang(th)` (0,2,0) in
+ * an earlier layer loses to `.kairo-btn` (0,1,0) in `kairo.components`.
  */
-:where(.kairo-focus-ring) {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  transition: outline-color var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
 
-:where(.kairo-focus-ring):focus-visible {
-  outline-color: var(--kairo-ring);
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
+
+@layer kairo.base {
+  @keyframes kairo-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes kairo-fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes kairo-zoom-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes kairo-zoom-out {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+
+  @keyframes kairo-slide-in-top {
+    from {
+      opacity: 0;
+      transform: translateY(-0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes kairo-slide-in-bottom {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes kairo-slide-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(-0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes kairo-slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes kairo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /**
+   * Box sizing, scoped to Kairo's own elements.
+   *
+   * Kairo controls size themselves with `min-height` + padding + a 1px border,
+   * which only adds up predictably under `border-box`. Since this package ships
+   * no reset, box-sizing would otherwise be whatever the host page happens to
+   * set. `:where()` keeps specificity at zero, and the selector matches only
+   * elements carrying a `kairo-*` class — the consumer's own markup, including
+   * children placed inside a Card or Dialog, is left alone.
+   */
+  :where([class*='kairo-']) {
+    box-sizing: border-box;
+  }
+
+  /**
+   * Shared focus-ring convention.
+   *
+   * Components opt in by adding the `kairo-focus-ring` class to a focusable
+   * element instead of hand-rolling `:focus-visible` styles. This is scoped
+   * with `:where()` so it carries zero specificity and can always be
+   * overridden by a component's own styles.
+   */
+  :where(.kairo-focus-ring) {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    transition: outline-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
+
+  :where(.kairo-focus-ring):focus-visible {
+    outline-color: var(--kairo-ring);
+  }
 }
 
 /**
@@ -149,43 +170,66 @@
  * `document.body`, so a `lang` on a nested element does NOT reach them.
  * `<KairoLocaleProvider locale="th">` forwards `lang` onto those popup roots;
  * setting `lang` on `<html>` covers it for single-language apps.
+ *
+ * 🔴 THIS BLOCK MUST STAY IN `kairo.overrides` — NOT in `kairo.base`.
+ * These rules exist to correct component defaults (`.kairo-btn`'s `nowrap`,
+ * `:root`'s leading), and layer order outranks specificity entirely: from an
+ * earlier layer they cannot win no matter how they are written. `kairo.overrides`
+ * is the last layer, so they win over every component rule, present and future.
+ * The bug this guards against is silent — nothing fails to build, long Thai
+ * button labels simply start overflowing again (it has happened once already).
  */
-/* SPECIFICITY IS DELIBERATE HERE — do not wrap these in `:where()`.
-   These rules must OUT-RANK the base tokens and the component defaults:
-     - `:root` (0,1,0) declares the base leading, so a zero-specificity
-       `:where(:lang(th))` loses on `<html lang="th">` — which is exactly the
-       setup we tell consumers to use. `:root:lang(th)` (0,2,0) wins.
-     - `.kairo-btn` (0,1,0) sets `white-space: nowrap`, and `base.css` is
-       imported BEFORE the component stylesheets, so an equal-specificity
-       override would lose on source order. `.kairo-btn:lang(th)` (0,2,0) wins
-       regardless of import order.
-   `:lang()` matches on the *computed* language, so these apply to descendants
-   of a `lang="th"` element too, not just the element carrying the attribute. */
-:lang(th),
-:root:lang(th) {
-  --kairo-leading-tight: 1.5;
-  --kairo-leading-normal: 1.6;
-  --kairo-leading-relaxed: 1.75;
-}
+@layer kairo.overrides {
+  /* SPECIFICITY IS ALSO DELIBERATE HERE — do not "simplify" these to `:where()`.
+     The cascade layer above is now the primary mechanism, which makes the
+     specificity look redundant. It is not: it is the FALLBACK for any pipeline
+     that flattens or strips `@layer` (older processors, a consumer inlining the
+     raw CSS, a copy-paste into a playground). With layers gone, only
+     specificity + source order decide, and these must still win:
+       - `:root` (0,1,0) declares the base leading, so a zero-specificity
+         `:where(:lang(th))` loses on `<html lang="th">` — which is exactly the
+         setup we tell consumers to use. `:root:lang(th)` (0,2,0) wins.
+       - `.kairo-btn` (0,1,0) sets `white-space: nowrap`, and `base.css` is
+         imported BEFORE the component stylesheets, so an equal-specificity
+         override would lose on source order. `.kairo-btn:lang(th)` (0,2,0) wins
+         regardless of import order.
+     Belt and braces on purpose: the layer wins normally, the specificity wins
+     if the layer is ever lost.
+     `:lang()` matches on the *computed* language, so these apply to descendants
+     of a `lang="th"` element too, not just the element carrying the attribute. */
+  :lang(th),
+  :root:lang(th) {
+    --kairo-leading-tight: 1.5;
+    --kairo-leading-normal: 1.6;
+    --kairo-leading-relaxed: 1.75;
+  }
 
-/* Thai has no inter-word spaces, so a label is one unbreakable token and
-   `nowrap` would guarantee overflow rather than wrapping. Relaxed for Thai
-   only — English consumers keep the single-line default. */
-.kairo-btn:lang(th),
-.kairo-badge:lang(th) {
-  white-space: normal;
-}
+  /* Thai has no inter-word spaces, so a label is one unbreakable token and
+     `nowrap` would guarantee overflow rather than wrapping. Relaxed for Thai
+     only — English consumers keep the single-line default. */
+  .kairo-btn:lang(th),
+  .kairo-badge:lang(th) {
+    white-space: normal;
+  }
 
-/* Negative tracking collides Thai consonant clusters with their marks. */
-:lang(th) [class*='kairo-'] {
-  letter-spacing: normal;
-}
+  /* Negative tracking collides Thai consonant clusters with their marks. */
+  :lang(th) [class*='kairo-'] {
+    letter-spacing: normal;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  [class*='kairo-'] {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  /* `!important` INVERTS layer order: an important declaration in an earlier
+     layer beats one in a later layer, and important beats unlayered CSS
+     outright. That inversion is why these keep `!important` rather than
+     relying on `kairo.overrides` being last — the point is to beat the
+     *consumer's* own unlayered animations and transitions on Kairo elements,
+     which no layer position can do. Nothing else in this package uses
+     `!important`, so the inversion has no effect inside Kairo itself. */
+  @media (prefers-reduced-motion: reduce) {
+    [class*='kairo-'] {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }

@@ -10,109 +10,117 @@
  *     color/intent.
  */
 
-.kairo-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25em;
-  min-height: 1.25rem;
-  padding: 0.1875rem 0.5rem;
-  border: var(--kairo-border-width) solid transparent;
-  border-radius: var(--kairo-radius-sm);
-  font-family: var(--kairo-font-sans);
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: var(--kairo-leading-tight);
-  white-space: nowrap;
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-/* ---------------------------------------------------------------------- */
-/* Solid                                                                   */
-/* ---------------------------------------------------------------------- */
+@layer kairo.components {
+  .kairo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    min-height: 1.25rem;
+    padding: 0.1875rem 0.5rem;
+    border: var(--kairo-border-width) solid transparent;
+    border-radius: var(--kairo-radius-sm);
+    font-family: var(--kairo-font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: var(--kairo-leading-tight);
+    white-space: nowrap;
+  }
 
-.kairo-badge[data-variant='solid'][data-intent='default'] {
-  background-color: var(--kairo-secondary);
-  color: var(--kairo-secondary-foreground);
-}
+  /* ---------------------------------------------------------------------- */
+  /* Solid                                                                   */
+  /* ---------------------------------------------------------------------- */
 
-.kairo-badge[data-variant='solid'][data-intent='primary'] {
-  background-color: var(--kairo-primary);
-  color: var(--kairo-primary-foreground);
-}
+  .kairo-badge[data-variant='solid'][data-intent='default'] {
+    background-color: var(--kairo-secondary);
+    color: var(--kairo-secondary-foreground);
+  }
 
-.kairo-badge[data-variant='solid'][data-intent='success'] {
-  background-color: var(--kairo-success);
-  color: var(--kairo-success-foreground);
-}
+  .kairo-badge[data-variant='solid'][data-intent='primary'] {
+    background-color: var(--kairo-primary);
+    color: var(--kairo-primary-foreground);
+  }
 
-.kairo-badge[data-variant='solid'][data-intent='warning'] {
-  background-color: var(--kairo-warning);
-  color: var(--kairo-warning-foreground);
-}
+  .kairo-badge[data-variant='solid'][data-intent='success'] {
+    background-color: var(--kairo-success);
+    color: var(--kairo-success-foreground);
+  }
 
-.kairo-badge[data-variant='solid'][data-intent='danger'] {
-  background-color: var(--kairo-danger);
-  color: var(--kairo-danger-foreground);
-}
+  .kairo-badge[data-variant='solid'][data-intent='warning'] {
+    background-color: var(--kairo-warning);
+    color: var(--kairo-warning-foreground);
+  }
 
-/* ---------------------------------------------------------------------- */
-/* Soft                                                                    */
-/* ---------------------------------------------------------------------- */
+  .kairo-badge[data-variant='solid'][data-intent='danger'] {
+    background-color: var(--kairo-danger);
+    color: var(--kairo-danger-foreground);
+  }
 
-.kairo-badge[data-variant='soft'][data-intent='default'] {
-  background-color: var(--kairo-muted);
-  color: var(--kairo-foreground);
-}
+  /* ---------------------------------------------------------------------- */
+  /* Soft                                                                    */
+  /* ---------------------------------------------------------------------- */
 
-.kairo-badge[data-variant='soft'][data-intent='primary'] {
-  background-color: color-mix(in oklab, var(--kairo-primary) 15%, transparent);
-  color: var(--kairo-primary);
-}
+  .kairo-badge[data-variant='soft'][data-intent='default'] {
+    background-color: var(--kairo-muted);
+    color: var(--kairo-foreground);
+  }
 
-.kairo-badge[data-variant='soft'][data-intent='success'] {
-  background-color: color-mix(in oklab, var(--kairo-success) 15%, transparent);
-  color: var(--kairo-success);
-}
+  .kairo-badge[data-variant='soft'][data-intent='primary'] {
+    background-color: color-mix(in oklab, var(--kairo-primary) 15%, transparent);
+    color: var(--kairo-primary);
+  }
 
-.kairo-badge[data-variant='soft'][data-intent='warning'] {
-  background-color: color-mix(in oklab, var(--kairo-warning) 15%, transparent);
-  color: var(--kairo-warning);
-}
+  .kairo-badge[data-variant='soft'][data-intent='success'] {
+    background-color: color-mix(in oklab, var(--kairo-success) 15%, transparent);
+    color: var(--kairo-success);
+  }
 
-.kairo-badge[data-variant='soft'][data-intent='danger'] {
-  background-color: color-mix(in oklab, var(--kairo-danger) 15%, transparent);
-  color: var(--kairo-danger);
-}
+  .kairo-badge[data-variant='soft'][data-intent='warning'] {
+    background-color: color-mix(in oklab, var(--kairo-warning) 15%, transparent);
+    color: var(--kairo-warning);
+  }
 
-/* ---------------------------------------------------------------------- */
-/* Outline                                                                  */
-/* ---------------------------------------------------------------------- */
+  .kairo-badge[data-variant='soft'][data-intent='danger'] {
+    background-color: color-mix(in oklab, var(--kairo-danger) 15%, transparent);
+    color: var(--kairo-danger);
+  }
 
-.kairo-badge[data-variant='outline'][data-intent='default'] {
-  background-color: transparent;
-  border-color: var(--kairo-border);
-  color: var(--kairo-foreground);
-}
+  /* ---------------------------------------------------------------------- */
+  /* Outline                                                                  */
+  /* ---------------------------------------------------------------------- */
 
-.kairo-badge[data-variant='outline'][data-intent='primary'] {
-  background-color: transparent;
-  border-color: var(--kairo-primary);
-  color: var(--kairo-primary);
-}
+  .kairo-badge[data-variant='outline'][data-intent='default'] {
+    background-color: transparent;
+    border-color: var(--kairo-border);
+    color: var(--kairo-foreground);
+  }
 
-.kairo-badge[data-variant='outline'][data-intent='success'] {
-  background-color: transparent;
-  border-color: var(--kairo-success);
-  color: var(--kairo-success);
-}
+  .kairo-badge[data-variant='outline'][data-intent='primary'] {
+    background-color: transparent;
+    border-color: var(--kairo-primary);
+    color: var(--kairo-primary);
+  }
 
-.kairo-badge[data-variant='outline'][data-intent='warning'] {
-  background-color: transparent;
-  border-color: var(--kairo-warning);
-  color: var(--kairo-warning);
-}
+  .kairo-badge[data-variant='outline'][data-intent='success'] {
+    background-color: transparent;
+    border-color: var(--kairo-success);
+    color: var(--kairo-success);
+  }
 
-.kairo-badge[data-variant='outline'][data-intent='danger'] {
-  background-color: transparent;
-  border-color: var(--kairo-danger);
-  color: var(--kairo-danger);
+  .kairo-badge[data-variant='outline'][data-intent='warning'] {
+    background-color: transparent;
+    border-color: var(--kairo-warning);
+    color: var(--kairo-warning);
+  }
+
+  .kairo-badge[data-variant='outline'][data-intent='danger'] {
+    background-color: transparent;
+    border-color: var(--kairo-danger);
+    color: var(--kairo-danger);
+  }
 }

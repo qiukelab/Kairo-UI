@@ -36,60 +36,68 @@
  * selectors when porting.
  */
 
-.kairo-radio-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-radio-group[data-disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+@layer kairo.components {
+  .kairo-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 
-.kairo-radio {
-  box-sizing: border-box;
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 1.15rem;
-  height: 1.15rem;
-  border: var(--kairo-border-width) solid var(--kairo-border);
-  border-radius: var(--kairo-radius-full);
-  cursor: pointer;
-  background-color: var(--kairo-background);
-  transition: border-color var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-radio-group[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-.kairo-radio:focus-visible {
-  outline: var(--kairo-ring-width) solid var(--kairo-ring);
-  outline-offset: var(--kairo-ring-offset);
-}
+  .kairo-radio {
+    box-sizing: border-box;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.15rem;
+    height: 1.15rem;
+    border: var(--kairo-border-width) solid var(--kairo-border);
+    border-radius: var(--kairo-radius-full);
+    cursor: pointer;
+    background-color: var(--kairo-background);
+    transition: border-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-.kairo-radio[data-checked] {
-  border-color: var(--kairo-primary);
-}
+  .kairo-radio:focus-visible {
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: var(--kairo-ring-offset);
+  }
 
-.kairo-radio[data-disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+  .kairo-radio[data-checked] {
+    border-color: var(--kairo-primary);
+  }
 
-.kairo-radio-indicator {
-  width: 0.55rem;
-  height: 0.55rem;
-  border-radius: var(--kairo-radius-full);
-  background-color: var(--kairo-primary);
-  opacity: 0;
-  transform: scale(0.5);
-  transition:
-    opacity var(--kairo-duration-fast) var(--kairo-ease-standard),
-    transform var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-radio[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-.kairo-radio-indicator[data-checked] {
-  opacity: 1;
-  transform: scale(1);
+  .kairo-radio-indicator {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: var(--kairo-radius-full);
+    background-color: var(--kairo-primary);
+    opacity: 0;
+    transform: scale(0.5);
+    transition:
+      opacity var(--kairo-duration-fast) var(--kairo-ease-standard),
+      transform var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
+
+  .kairo-radio-indicator[data-checked] {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

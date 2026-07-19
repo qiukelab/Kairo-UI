@@ -1,9 +1,36 @@
 /*
- * Import order matters: @kairo-ui/theme's tokens/resets must load before
- * Tailwind + Fumadocs' presets so `--kairo-*` variables are already defined
- * when Fumadocs' `fd-*` utility classes and our own component styles
- * reference them.
+ * Cascade order, pinned.
+ *
+ * `@kairo-ui/theme` ships everything inside `kairo.*`; Tailwind ships
+ * everything inside `theme`/`base`/`components`/`utilities`. Each declares its
+ * own order, so without this line the winner would be decided by whichever
+ * `@import` happens to come first — a silent flip if someone reorders them.
+ *
+ * `kairo` sits AFTER `base` and BEFORE `utilities`, which is the only slot
+ * that works. Both neighbours are load-bearing:
+ *
+ *   - AFTER `base`, because Tailwind's preflight is
+ *     `*,::after,::before,::backdrop { border: 0 solid; margin: 0; padding: 0 }`
+ *     and Fumadocs adds `* { border-color: var(--color-fd-border) }` to the same
+ *     layer. Layer order outranks specificity absolutely, so from `@layer kairo`
+ *     placed first EVERY Kairo component loses its padding, its border and its
+ *     background — measured, not theorised: `.kairo-btn` computed to
+ *     `padding: 0px; border-width: 0px` across the whole site, and the build
+ *     stayed green throughout.
+ *   - BEFORE `utilities`, because a Tailwind/Fumadocs utility SHOULD beat a
+ *     Kairo component rule: reaching for `className="w-full"` on a Kairo
+ *     component has to work. (Before Kairo adopted `@layer`, its unlayered CSS
+ *     beat every Tailwind utility — that is what made overriding it a
+ *     specificity fight, and it is what this reverses.)
+ *
+ * This file's own rules below are deliberately left UNLAYERED, so they beat
+ * everything above, layers included.
+ *
+ * Import order still matters for a second, unrelated reason: Kairo's tokens
+ * must be defined before Fumadocs' `fd-*` presets reference `--kairo-*`.
  */
+@layer theme, base, kairo, components, utilities;
+
 @import '@kairo-ui/theme/styles.css';
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';

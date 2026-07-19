@@ -34,162 +34,170 @@
  * dual selectors when porting.
  */
 
-.kairo-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
-  font-family: var(--kairo-font-sans);
-  font-weight: 500;
-  line-height: var(--kairo-leading-tight);
-  white-space: nowrap;
-  border: var(--kairo-border-width) solid transparent;
-  border-radius: var(--kairo-radius-md);
-  cursor: pointer;
-  user-select: none;
-  outline: none;
-  -webkit-tap-highlight-color: transparent;
-  transition-property: background-color, border-color, color, box-shadow, transform;
-  transition-duration: var(--kairo-duration-fast);
-  transition-timing-function: var(--kairo-ease-standard);
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-toggle:focus-visible {
-  outline: var(--kairo-ring-width) solid var(--kairo-ring);
-  outline-offset: var(--kairo-ring-offset);
-}
+@layer kairo.components {
+  .kairo-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    font-family: var(--kairo-font-sans);
+    font-weight: 500;
+    line-height: var(--kairo-leading-tight);
+    white-space: nowrap;
+    border: var(--kairo-border-width) solid transparent;
+    border-radius: var(--kairo-radius-md);
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition-property: background-color, border-color, color, box-shadow, transform;
+    transition-duration: var(--kairo-duration-fast);
+    transition-timing-function: var(--kairo-ease-standard);
+  }
 
-.kairo-toggle:disabled,
-.kairo-toggle[data-disabled] {
-  opacity: 0.5;
-  pointer-events: none;
-  cursor: not-allowed;
-}
+  .kairo-toggle:focus-visible {
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: var(--kairo-ring-offset);
+  }
 
-.kairo-toggle:active:not(:disabled) {
-  transform: scale(0.98);
-}
+  .kairo-toggle:disabled,
+  .kairo-toggle[data-disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
 
-/* ---------------------------------------------------------------------- */
-/* Sizes — identical scale to `.kairo-btn`                                 */
-/* ---------------------------------------------------------------------- */
+  .kairo-toggle:active:not(:disabled) {
+    transform: scale(0.98);
+  }
 
-.kairo-toggle[data-size='sm'] {
-  min-height: 2rem;
-  padding-block: 0.25rem;
-  padding-inline: 0.75rem;
-  font-size: 0.8125rem;
-  border-radius: var(--kairo-radius-sm);
-}
+  /* ---------------------------------------------------------------------- */
+  /* Sizes — identical scale to `.kairo-btn`                                 */
+  /* ---------------------------------------------------------------------- */
 
-.kairo-toggle[data-size='md'] {
-  min-height: 2.5rem;
-  padding-block: 0.375rem;
-  padding-inline: 1rem;
-  font-size: 0.875rem;
-}
+  .kairo-toggle[data-size='sm'] {
+    min-height: 2rem;
+    padding-block: 0.25rem;
+    padding-inline: 0.75rem;
+    font-size: 0.8125rem;
+    border-radius: var(--kairo-radius-sm);
+  }
 
-.kairo-toggle[data-size='lg'] {
-  min-height: 3rem;
-  padding-block: 0.5rem;
-  padding-inline: 1.5rem;
-  font-size: 1rem;
-  border-radius: var(--kairo-radius-lg);
-}
+  .kairo-toggle[data-size='md'] {
+    min-height: 2.5rem;
+    padding-block: 0.375rem;
+    padding-inline: 1rem;
+    font-size: 0.875rem;
+  }
 
-/* ---------------------------------------------------------------------- */
-/* Variants — unpressed chrome, identical scale to `.kairo-btn`            */
-/* ---------------------------------------------------------------------- */
+  .kairo-toggle[data-size='lg'] {
+    min-height: 3rem;
+    padding-block: 0.5rem;
+    padding-inline: 1.5rem;
+    font-size: 1rem;
+    border-radius: var(--kairo-radius-lg);
+  }
 
-.kairo-toggle[data-variant='solid'] {
-  background-color: var(--kairo-primary);
-  color: var(--kairo-primary-foreground);
-}
+  /* ---------------------------------------------------------------------- */
+  /* Variants — unpressed chrome, identical scale to `.kairo-btn`            */
+  /* ---------------------------------------------------------------------- */
 
-.kairo-toggle[data-variant='solid']:hover:not(:disabled):not([data-pressed]) {
-  background-color: color-mix(in oklab, var(--kairo-primary) 90%, black);
-}
+  .kairo-toggle[data-variant='solid'] {
+    background-color: var(--kairo-primary);
+    color: var(--kairo-primary-foreground);
+  }
 
-.kairo-toggle[data-variant='outline'] {
-  background-color: transparent;
-  border-color: var(--kairo-border);
-  color: var(--kairo-foreground);
-}
+  .kairo-toggle[data-variant='solid']:hover:not(:disabled):not([data-pressed]) {
+    background-color: color-mix(in oklab, var(--kairo-primary) 90%, black);
+  }
 
-.kairo-toggle[data-variant='outline']:hover:not(:disabled):not([data-pressed]) {
-  background-color: var(--kairo-muted);
-}
+  .kairo-toggle[data-variant='outline'] {
+    background-color: transparent;
+    border-color: var(--kairo-border);
+    color: var(--kairo-foreground);
+  }
 
-.kairo-toggle[data-variant='ghost'] {
-  background-color: transparent;
-  color: var(--kairo-foreground);
-}
+  .kairo-toggle[data-variant='outline']:hover:not(:disabled):not([data-pressed]) {
+    background-color: var(--kairo-muted);
+  }
 
-.kairo-toggle[data-variant='ghost']:hover:not(:disabled):not([data-pressed]) {
-  background-color: var(--kairo-muted);
-}
+  .kairo-toggle[data-variant='ghost'] {
+    background-color: transparent;
+    color: var(--kairo-foreground);
+  }
 
-/*
- * Pressed ("on") state, declared after the variants above so it wins the
- * cascade at equal specificity — it overrides whichever variant is set
- * rather than combining with it. Its own hover/active shade is derived from
- * this single `--kairo-accent` token via `color-mix`, the same technique
- * `.kairo-btn[data-variant='solid']` uses for its hover, rather than adding a
- * new flat token.
- */
-.kairo-toggle[data-pressed] {
-  background-color: var(--kairo-accent);
-  border-color: var(--kairo-accent);
-  color: var(--kairo-accent-foreground);
-}
+  .kairo-toggle[data-variant='ghost']:hover:not(:disabled):not([data-pressed]) {
+    background-color: var(--kairo-muted);
+  }
 
-.kairo-toggle[data-pressed]:hover:not(:disabled) {
-  background-color: color-mix(in oklab, var(--kairo-accent) 90%, black);
-  border-color: color-mix(in oklab, var(--kairo-accent) 90%, black);
-}
+  /*
+   * Pressed ("on") state, declared after the variants above so it wins the
+   * cascade at equal specificity — it overrides whichever variant is set
+   * rather than combining with it. Its own hover/active shade is derived from
+   * this single `--kairo-accent` token via `color-mix`, the same technique
+   * `.kairo-btn[data-variant='solid']` uses for its hover, rather than adding a
+   * new flat token.
+   */
+  .kairo-toggle[data-pressed] {
+    background-color: var(--kairo-accent);
+    border-color: var(--kairo-accent);
+    color: var(--kairo-accent-foreground);
+  }
 
-/* ---------------------------------------------------------------------- */
-/* ToggleGroup — a segmented row/column of Toggles                        */
-/* ---------------------------------------------------------------------- */
+  .kairo-toggle[data-pressed]:hover:not(:disabled) {
+    background-color: color-mix(in oklab, var(--kairo-accent) 90%, black);
+    border-color: color-mix(in oklab, var(--kairo-accent) 90%, black);
+  }
 
-.kairo-toggle-group {
-  display: inline-flex;
-  border: var(--kairo-border-width) solid var(--kairo-border);
-  border-radius: var(--kairo-radius-md);
-}
+  /* ---------------------------------------------------------------------- */
+  /* ToggleGroup — a segmented row/column of Toggles                        */
+  /* ---------------------------------------------------------------------- */
 
-.kairo-toggle-group[data-orientation='vertical'] {
-  flex-direction: column;
-}
+  .kairo-toggle-group {
+    display: inline-flex;
+    border: var(--kairo-border-width) solid var(--kairo-border);
+    border-radius: var(--kairo-radius-md);
+  }
 
-.kairo-toggle-group[data-disabled] {
-  opacity: 0.5;
-}
+  .kairo-toggle-group[data-orientation='vertical'] {
+    flex-direction: column;
+  }
 
-/*
- * Items inside a group render with no border of their own — the group draws
- * the outer edge above, and only the non-first item in flow order draws a
- * single divider below, so two adjacent 1px borders never stack into a 2px
- * seam. Radius is forced to 0 regardless of `data-size`: every `--kairo-
- * radius-*` token is 0 by design here anyway, but a consumer who reintroduces
- * rounding (see tokens.css) should still get square-edged segments, matching
- * how segmented controls conventionally behave.
- */
-.kairo-toggle-group > .kairo-toggle {
-  border: none;
-  border-radius: 0;
-}
+  .kairo-toggle-group[data-disabled] {
+    opacity: 0.5;
+  }
 
-.kairo-toggle-group[data-orientation='horizontal'] > .kairo-toggle:not(:first-child) {
-  border-inline-start: var(--kairo-border-width) solid var(--kairo-border);
-}
+  /*
+   * Items inside a group render with no border of their own — the group draws
+   * the outer edge above, and only the non-first item in flow order draws a
+   * single divider below, so two adjacent 1px borders never stack into a 2px
+   * seam. Radius is forced to 0 regardless of `data-size`: every `--kairo-
+   * radius-*` token is 0 by design here anyway, but a consumer who reintroduces
+   * rounding (see tokens.css) should still get square-edged segments, matching
+   * how segmented controls conventionally behave.
+   */
+  .kairo-toggle-group > .kairo-toggle {
+    border: none;
+    border-radius: 0;
+  }
 
-.kairo-toggle-group[data-orientation='vertical'] > .kairo-toggle:not(:first-child) {
-  border-block-start: var(--kairo-border-width) solid var(--kairo-border);
-}
+  .kairo-toggle-group[data-orientation='horizontal'] > .kairo-toggle:not(:first-child) {
+    border-inline-start: var(--kairo-border-width) solid var(--kairo-border);
+  }
 
-/* Keeps the focus ring from being visually clipped by a neighbor's divider. */
-.kairo-toggle-group > .kairo-toggle:focus-visible {
-  position: relative;
-  z-index: 1;
+  .kairo-toggle-group[data-orientation='vertical'] > .kairo-toggle:not(:first-child) {
+    border-block-start: var(--kairo-border-width) solid var(--kairo-border);
+  }
+
+  /* Keeps the focus ring from being visually clipped by a neighbor's divider. */
+  .kairo-toggle-group > .kairo-toggle:focus-visible {
+    position: relative;
+    z-index: 1;
+  }
 }

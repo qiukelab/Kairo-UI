@@ -8,22 +8,30 @@
  *     content along.
  */
 
-.kairo-separator {
-  flex-shrink: 0;
-  border: none;
-  background-color: var(--kairo-border);
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-separator[data-orientation='horizontal'] {
-  width: 100%;
-  height: var(--kairo-border-width);
-}
+@layer kairo.components {
+  .kairo-separator {
+    flex-shrink: 0;
+    border: none;
+    background-color: var(--kairo-border);
+  }
 
-.kairo-separator[data-orientation='vertical'] {
-  /* `height: 100%` covers ancestors with a definite height; `align-self:
-     stretch` covers the common case of a vertical separator between flex
-     siblings in a row, even if the row overrides `align-items`. */
-  width: var(--kairo-border-width);
-  height: 100%;
-  align-self: stretch;
+  .kairo-separator[data-orientation='horizontal'] {
+    width: 100%;
+    height: var(--kairo-border-width);
+  }
+
+  .kairo-separator[data-orientation='vertical'] {
+    /* `height: 100%` covers ancestors with a definite height; `align-self:
+       stretch` covers the common case of a vertical separator between flex
+       siblings in a row, even if the row overrides `align-items`. */
+    width: var(--kairo-border-width);
+    height: 100%;
+    align-self: stretch;
+  }
 }

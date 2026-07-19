@@ -73,158 +73,166 @@
  * porting.
  */
 
-.kairo-toast-viewport {
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  left: auto;
-  top: auto;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 0.75rem;
-  width: calc(100vw - 2rem);
-  max-width: 24rem;
-  outline: none;
-  pointer-events: none;
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-toast {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  column-gap: 0.75rem;
-  row-gap: 0.25rem;
-  align-items: start;
-  padding: 1rem;
-  border: var(--kairo-border-width) solid var(--kairo-border);
-  border-radius: var(--kairo-radius-lg);
-  background-color: var(--kairo-popover);
-  color: var(--kairo-popover-foreground);
-  font-family: var(--kairo-font-sans);
-  box-shadow: var(--kairo-shadow-lg);
-  pointer-events: auto;
-  transform: translate(var(--toast-swipe-movement-x, 0px), var(--toast-swipe-movement-y, 0px));
-  transition:
-    transform var(--kairo-duration-normal) var(--kairo-ease-standard),
-    opacity var(--kairo-duration-normal) var(--kairo-ease-standard);
-}
+@layer kairo.components {
+  .kairo-toast-viewport {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    left: auto;
+    top: auto;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+    width: calc(100vw - 2rem);
+    max-width: 24rem;
+    outline: none;
+    pointer-events: none;
+  }
 
-.kairo-toast[data-swiping] {
-  transition: none;
-}
+  .kairo-toast {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 0.75rem;
+    row-gap: 0.25rem;
+    align-items: start;
+    padding: 1rem;
+    border: var(--kairo-border-width) solid var(--kairo-border);
+    border-radius: var(--kairo-radius-lg);
+    background-color: var(--kairo-popover);
+    color: var(--kairo-popover-foreground);
+    font-family: var(--kairo-font-sans);
+    box-shadow: var(--kairo-shadow-lg);
+    pointer-events: auto;
+    transform: translate(var(--toast-swipe-movement-x, 0px), var(--toast-swipe-movement-y, 0px));
+    transition:
+      transform var(--kairo-duration-normal) var(--kairo-ease-standard),
+      opacity var(--kairo-duration-normal) var(--kairo-ease-standard);
+  }
 
-.kairo-toast[data-starting-style] {
-  opacity: 0;
-  transform: translate(
-    var(--toast-swipe-movement-x, 0px),
-    calc(var(--toast-swipe-movement-y, 0px) + 0.75rem)
-  );
-}
+  .kairo-toast[data-swiping] {
+    transition: none;
+  }
 
-.kairo-toast[data-ending-style] {
-  opacity: 0;
-}
+  .kairo-toast[data-starting-style] {
+    opacity: 0;
+    transform: translate(
+      var(--toast-swipe-movement-x, 0px),
+      calc(var(--toast-swipe-movement-y, 0px) + 0.75rem)
+    );
+  }
 
-.kairo-toast[data-ending-style]:not([data-swipe-direction]) {
-  transform: translate(
-    var(--toast-swipe-movement-x, 0px),
-    calc(var(--toast-swipe-movement-y, 0px) + 0.75rem)
-  );
-}
+  .kairo-toast[data-ending-style] {
+    opacity: 0;
+  }
 
-.kairo-toast[data-ending-style][data-swipe-direction='up'] {
-  transform: translateY(calc(var(--toast-swipe-movement-y, 0px) - 150%));
-}
+  .kairo-toast[data-ending-style]:not([data-swipe-direction]) {
+    transform: translate(
+      var(--toast-swipe-movement-x, 0px),
+      calc(var(--toast-swipe-movement-y, 0px) + 0.75rem)
+    );
+  }
 
-.kairo-toast[data-ending-style][data-swipe-direction='down'] {
-  transform: translateY(calc(var(--toast-swipe-movement-y, 0px) + 150%));
-}
+  .kairo-toast[data-ending-style][data-swipe-direction='up'] {
+    transform: translateY(calc(var(--toast-swipe-movement-y, 0px) - 150%));
+  }
 
-.kairo-toast[data-ending-style][data-swipe-direction='left'] {
-  transform: translateX(calc(var(--toast-swipe-movement-x, 0px) - 150%));
-}
+  .kairo-toast[data-ending-style][data-swipe-direction='down'] {
+    transform: translateY(calc(var(--toast-swipe-movement-y, 0px) + 150%));
+  }
 
-.kairo-toast[data-ending-style][data-swipe-direction='right'] {
-  transform: translateX(calc(var(--toast-swipe-movement-x, 0px) + 150%));
-}
+  .kairo-toast[data-ending-style][data-swipe-direction='left'] {
+    transform: translateX(calc(var(--toast-swipe-movement-x, 0px) - 150%));
+  }
 
-.kairo-toast[data-limited] {
-  opacity: 0;
-}
+  .kairo-toast[data-ending-style][data-swipe-direction='right'] {
+    transform: translateX(calc(var(--toast-swipe-movement-x, 0px) + 150%));
+  }
 
-.kairo-toast-title {
-  grid-column: 1;
-  margin: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: var(--kairo-leading-tight);
-}
+  .kairo-toast[data-limited] {
+    opacity: 0;
+  }
 
-.kairo-toast-description {
-  grid-column: 1;
-  margin: 0;
-  color: var(--kairo-muted-foreground);
-  font-size: 0.875rem;
-  line-height: var(--kairo-leading-normal);
-  word-break: normal;
-  overflow-wrap: anywhere;
-}
+  .kairo-toast-title {
+    grid-column: 1;
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: var(--kairo-leading-tight);
+  }
 
-.kairo-toast-action {
-  grid-column: 1 / -1;
-  justify-self: start;
-  margin-top: 0.25rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2rem;
-  padding-block: 0.25rem;
-  padding-inline: 0.75rem;
-  border: var(--kairo-border-width) solid var(--kairo-border);
-  border-radius: var(--kairo-radius-md);
-  background-color: transparent;
-  color: var(--kairo-popover-foreground);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-toast-description {
+    grid-column: 1;
+    margin: 0;
+    color: var(--kairo-muted-foreground);
+    font-size: 0.875rem;
+    line-height: var(--kairo-leading-normal);
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
 
-.kairo-toast-action:hover {
-  background-color: var(--kairo-muted);
-}
+  .kairo-toast-action {
+    grid-column: 1 / -1;
+    justify-self: start;
+    margin-top: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2rem;
+    padding-block: 0.25rem;
+    padding-inline: 0.75rem;
+    border: var(--kairo-border-width) solid var(--kairo-border);
+    border-radius: var(--kairo-radius-md);
+    background-color: transparent;
+    color: var(--kairo-popover-foreground);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-.kairo-toast-action:focus-visible {
-  outline: var(--kairo-ring-width) solid var(--kairo-ring);
-  outline-offset: var(--kairo-ring-offset);
-}
+  .kairo-toast-action:hover {
+    background-color: var(--kairo-muted);
+  }
 
-.kairo-toast-close {
-  grid-column: 2;
-  grid-row: 1 / -1;
-  align-self: start;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  padding: 0;
-  border: none;
-  border-radius: var(--kairo-radius-sm);
-  background-color: transparent;
-  color: var(--kairo-muted-foreground);
-  cursor: pointer;
-  transition:
-    background-color var(--kairo-duration-fast) var(--kairo-ease-standard),
-    color var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-toast-action:focus-visible {
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: var(--kairo-ring-offset);
+  }
 
-.kairo-toast-close:hover {
-  background-color: var(--kairo-muted);
-  color: var(--kairo-foreground);
-}
+  .kairo-toast-close {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    align-self: start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    border: none;
+    border-radius: var(--kairo-radius-sm);
+    background-color: transparent;
+    color: var(--kairo-muted-foreground);
+    cursor: pointer;
+    transition:
+      background-color var(--kairo-duration-fast) var(--kairo-ease-standard),
+      color var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-.kairo-toast-close:focus-visible {
-  outline: var(--kairo-ring-width) solid var(--kairo-ring);
-  outline-offset: var(--kairo-ring-offset);
+  .kairo-toast-close:hover {
+    background-color: var(--kairo-muted);
+    color: var(--kairo-foreground);
+  }
+
+  .kairo-toast-close:focus-visible {
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: var(--kairo-ring-offset);
+  }
 }

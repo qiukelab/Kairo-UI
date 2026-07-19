@@ -107,184 +107,192 @@
  * enter/exit classes) when porting.
  */
 
-.kairo-menu-trigger {
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  padding: 0;
-  background: none;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  outline: none;
-  -webkit-tap-highlight-color: transparent;
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-menu-trigger:focus-visible {
-  outline: var(--kairo-ring-width) solid var(--kairo-ring);
-  outline-offset: var(--kairo-ring-offset);
-}
+@layer kairo.components {
+  .kairo-menu-trigger {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-.kairo-menu-trigger:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+  .kairo-menu-trigger:focus-visible {
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: var(--kairo-ring-offset);
+  }
 
-.kairo-menu-popup {
-  box-sizing: border-box;
-  z-index: 50;
-  min-width: 10rem;
-  max-height: var(--available-height, 24rem);
-  overflow-y: auto;
-  padding: 0.5rem;
-  border: var(--kairo-border-width) solid var(--kairo-border);
-  border-radius: var(--kairo-radius-md);
-  background-color: var(--kairo-popover);
-  color: var(--kairo-popover-foreground);
-  font-family: var(--kairo-font-sans);
-  box-shadow: var(--kairo-shadow-lg);
-  transform-origin: var(--transform-origin, center);
-}
+  .kairo-menu-trigger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-.kairo-menu-popup[data-starting-style] {
-  animation: kairo-zoom-in var(--kairo-duration-fast) var(--kairo-ease-out);
-}
+  .kairo-menu-popup {
+    box-sizing: border-box;
+    z-index: 50;
+    min-width: 10rem;
+    max-height: var(--available-height, 24rem);
+    overflow-y: auto;
+    padding: 0.5rem;
+    border: var(--kairo-border-width) solid var(--kairo-border);
+    border-radius: var(--kairo-radius-md);
+    background-color: var(--kairo-popover);
+    color: var(--kairo-popover-foreground);
+    font-family: var(--kairo-font-sans);
+    box-shadow: var(--kairo-shadow-lg);
+    transform-origin: var(--transform-origin, center);
+  }
 
-.kairo-menu-popup[data-ending-style] {
-  animation: kairo-zoom-out var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-menu-popup[data-starting-style] {
+    animation: kairo-zoom-in var(--kairo-duration-fast) var(--kairo-ease-out);
+  }
 
-.kairo-menu-popup[data-instant] {
-  animation: none;
-}
+  .kairo-menu-popup[data-ending-style] {
+    animation: kairo-zoom-out var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-/*
- * Arrow tying the popup back to its trigger — geometry matches
- * `.kairo-select-arrow`: `MenuContent`'s default `sideOffset` (8) leaves room
- * for it, and the offsets below pull it out by its own size (12x6, plus the
- * 1px border seam).
- */
-.kairo-menu-arrow {
-  display: flex;
-  z-index: 51;
-}
+  .kairo-menu-popup[data-instant] {
+    animation: none;
+  }
 
-.kairo-menu-arrow-fill {
-  fill: var(--kairo-popover);
-}
+  /*
+   * Arrow tying the popup back to its trigger — geometry matches
+   * `.kairo-select-arrow`: `MenuContent`'s default `sideOffset` (8) leaves room
+   * for it, and the offsets below pull it out by its own size (12x6, plus the
+   * 1px border seam).
+   */
+  .kairo-menu-arrow {
+    display: flex;
+    z-index: 51;
+  }
 
-.kairo-menu-arrow-edge {
-  fill: none;
-  stroke: var(--kairo-border);
-  stroke-width: var(--kairo-border-width);
-}
+  .kairo-menu-arrow-fill {
+    fill: var(--kairo-popover);
+  }
 
-.kairo-menu-arrow[data-side='bottom'] {
-  top: -6px;
-}
+  .kairo-menu-arrow-edge {
+    fill: none;
+    stroke: var(--kairo-border);
+    stroke-width: var(--kairo-border-width);
+  }
 
-.kairo-menu-arrow[data-side='top'] {
-  bottom: -6px;
-  rotate: 180deg;
-}
+  .kairo-menu-arrow[data-side='bottom'] {
+    top: -6px;
+  }
 
-.kairo-menu-arrow[data-side='left'] {
-  right: -13px;
-  rotate: 90deg;
-}
+  .kairo-menu-arrow[data-side='top'] {
+    bottom: -6px;
+    rotate: 180deg;
+  }
 
-.kairo-menu-arrow[data-side='right'] {
-  left: -13px;
-  rotate: -90deg;
-}
+  .kairo-menu-arrow[data-side='left'] {
+    right: -13px;
+    rotate: 90deg;
+  }
 
-.kairo-menu-item {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  min-height: 2rem;
-  padding: 0.5rem;
-  border-radius: var(--kairo-radius-sm);
-  font-size: 0.875rem;
-  line-height: var(--kairo-leading-normal);
-  cursor: pointer;
-  user-select: none;
-  outline: none;
-}
+  .kairo-menu-arrow[data-side='right'] {
+    left: -13px;
+    rotate: -90deg;
+  }
 
-.kairo-menu-item[data-highlighted] {
-  background-color: var(--kairo-accent);
-  color: var(--kairo-accent-foreground);
-}
+  .kairo-menu-item {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-height: 2rem;
+    padding: 0.5rem;
+    border-radius: var(--kairo-radius-sm);
+    font-size: 0.875rem;
+    line-height: var(--kairo-leading-normal);
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+  }
 
-.kairo-menu-item[data-disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+  .kairo-menu-item[data-highlighted] {
+    background-color: var(--kairo-accent);
+    color: var(--kairo-accent-foreground);
+  }
 
-.kairo-menu-checkbox-item,
-.kairo-menu-radio-item {
-  display: grid;
-  grid-template-columns: 1rem 1fr;
-  justify-content: normal;
-}
+  .kairo-menu-item[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-.kairo-menu-item-indicator {
-  grid-column: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1rem;
-  height: 1rem;
-}
+  .kairo-menu-checkbox-item,
+  .kairo-menu-radio-item {
+    display: grid;
+    grid-template-columns: 1rem 1fr;
+    justify-content: normal;
+  }
 
-.kairo-menu-item-indicator svg {
-  width: 0.8rem;
-  height: 0.8rem;
-}
+  .kairo-menu-item-indicator {
+    grid-column: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+  }
 
-.kairo-menu-item-text {
-  grid-column: 2;
-  flex: 1;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
+  .kairo-menu-item-indicator svg {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
 
-.kairo-menu-submenu-trigger[data-popup-open] {
-  background-color: color-mix(in oklab, var(--kairo-accent) 60%, transparent);
-  color: var(--kairo-accent-foreground);
-}
+  .kairo-menu-item-text {
+    grid-column: 2;
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 
-.kairo-menu-submenu-trigger-icon {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 1rem;
-  height: 1rem;
-  color: var(--kairo-muted-foreground);
-}
+  .kairo-menu-submenu-trigger[data-popup-open] {
+    background-color: color-mix(in oklab, var(--kairo-accent) 60%, transparent);
+    color: var(--kairo-accent-foreground);
+  }
 
-.kairo-menu-submenu-trigger-icon svg {
-  width: 100%;
-  height: 100%;
-}
+  .kairo-menu-submenu-trigger-icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    color: var(--kairo-muted-foreground);
+  }
 
-.kairo-menu-group-label {
-  padding: 0.375rem 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: var(--kairo-leading-tight);
-  color: var(--kairo-muted-foreground);
-}
+  .kairo-menu-submenu-trigger-icon svg {
+    width: 100%;
+    height: 100%;
+  }
 
-.kairo-menu-separator {
-  height: var(--kairo-border-width);
-  margin: 0.25rem 0;
-  background-color: var(--kairo-border);
+  .kairo-menu-group-label {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: var(--kairo-leading-tight);
+    color: var(--kairo-muted-foreground);
+  }
+
+  .kairo-menu-separator {
+    height: var(--kairo-border-width);
+    margin: 0.25rem 0;
+    background-color: var(--kairo-border);
+  }
 }

@@ -22,73 +22,81 @@
  * needed there instead.
  */
 
-.kairo-tabs {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  /* Declared on the root so the panel inherits it too. Without this the panel
-     falls back to the host page's font, which for Thai means relying on the
-     OS substituting a Thai face — inconsistent, and tofu where it can't. */
-  font-family: var(--kairo-font-sans);
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-tabs-list {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  border-bottom: var(--kairo-border-width) solid var(--kairo-border);
-}
+@layer kairo.components {
+  .kairo-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    /* Declared on the root so the panel inherits it too. Without this the panel
+       falls back to the host page's font, which for Thai means relying on the
+       OS substituting a Thai face — inconsistent, and tofu where it can't. */
+    font-family: var(--kairo-font-sans);
+  }
 
-.kairo-tab {
-  position: relative;
-  z-index: 1;
-  padding: 0.5rem 0.75rem;
-  border: none;
-  border-radius: var(--kairo-radius-sm);
-  background: none;
-  color: var(--kairo-muted-foreground);
-  font-family: var(--kairo-font-sans);
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: var(--kairo-leading-tight);
-  cursor: pointer;
-  transition: color var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-tabs-list {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-bottom: var(--kairo-border-width) solid var(--kairo-border);
+  }
 
-.kairo-tab:focus-visible {
-  outline: var(--kairo-ring-width) solid var(--kairo-ring);
-  outline-offset: var(--kairo-ring-offset);
-}
+  .kairo-tab {
+    position: relative;
+    z-index: 1;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: var(--kairo-radius-sm);
+    background: none;
+    color: var(--kairo-muted-foreground);
+    font-family: var(--kairo-font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: var(--kairo-leading-tight);
+    cursor: pointer;
+    transition: color var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-.kairo-tab[data-active] {
-  color: var(--kairo-foreground);
-}
+  .kairo-tab:focus-visible {
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: var(--kairo-ring-offset);
+  }
 
-.kairo-tab[data-disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+  .kairo-tab[data-active] {
+    color: var(--kairo-foreground);
+  }
 
-.kairo-tabs-indicator {
-  position: absolute;
-  bottom: -1px;
-  left: var(--active-tab-left, 0);
-  width: var(--active-tab-width, 0);
-  height: 2px;
-  border-radius: 0;
-  background-color: var(--kairo-primary);
-  transition:
-    left var(--kairo-duration-normal) var(--kairo-ease-emphasized),
-    width var(--kairo-duration-normal) var(--kairo-ease-emphasized);
-}
+  .kairo-tab[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-.kairo-tab-panel {
-  padding-top: 0.75rem;
-  color: var(--kairo-foreground);
-}
+  .kairo-tabs-indicator {
+    position: absolute;
+    bottom: -1px;
+    left: var(--active-tab-left, 0);
+    width: var(--active-tab-width, 0);
+    height: 2px;
+    border-radius: 0;
+    background-color: var(--kairo-primary);
+    transition:
+      left var(--kairo-duration-normal) var(--kairo-ease-emphasized),
+      width var(--kairo-duration-normal) var(--kairo-ease-emphasized);
+  }
 
-.kairo-tab-panel:focus-visible {
-  outline: var(--kairo-ring-width) solid var(--kairo-ring);
-  outline-offset: var(--kairo-ring-offset);
+  .kairo-tab-panel {
+    padding-top: 0.75rem;
+    color: var(--kairo-foreground);
+  }
+
+  .kairo-tab-panel:focus-visible {
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: var(--kairo-ring-offset);
+  }
 }

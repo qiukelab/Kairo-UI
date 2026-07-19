@@ -25,74 +25,82 @@
  * when porting.
  */
 
-.kairo-checkbox {
-  box-sizing: border-box;
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 1.15rem;
-  height: 1.15rem;
-  border: var(--kairo-border-width) solid var(--kairo-border);
-  border-radius: var(--kairo-radius-sm);
-  cursor: pointer;
-  background-color: var(--kairo-background);
-  transition:
-    background-color var(--kairo-duration-fast) var(--kairo-ease-standard),
-    border-color var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-checkbox:focus-visible {
-  outline: var(--kairo-ring-width) solid var(--kairo-ring);
-  outline-offset: var(--kairo-ring-offset);
-}
+@layer kairo.components {
+  .kairo-checkbox {
+    box-sizing: border-box;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.15rem;
+    height: 1.15rem;
+    border: var(--kairo-border-width) solid var(--kairo-border);
+    border-radius: var(--kairo-radius-sm);
+    cursor: pointer;
+    background-color: var(--kairo-background);
+    transition:
+      background-color var(--kairo-duration-fast) var(--kairo-ease-standard),
+      border-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-.kairo-checkbox[data-checked],
-.kairo-checkbox[data-indeterminate] {
-  background-color: var(--kairo-primary);
-  border-color: var(--kairo-primary);
-}
+  .kairo-checkbox:focus-visible {
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: var(--kairo-ring-offset);
+  }
 
-.kairo-checkbox[data-disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+  .kairo-checkbox[data-checked],
+  .kairo-checkbox[data-indeterminate] {
+    background-color: var(--kairo-primary);
+    border-color: var(--kairo-primary);
+  }
 
-.kairo-checkbox-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: var(--kairo-primary-foreground);
-  opacity: 0;
-  transform: scale(0.5);
-  transition:
-    opacity var(--kairo-duration-fast) var(--kairo-ease-standard),
-    transform var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-checkbox[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-.kairo-checkbox-indicator[data-checked],
-.kairo-checkbox-indicator[data-indeterminate] {
-  opacity: 1;
-  transform: scale(1);
-}
+  .kairo-checkbox-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--kairo-primary-foreground);
+    opacity: 0;
+    transform: scale(0.5);
+    transition:
+      opacity var(--kairo-duration-fast) var(--kairo-ease-standard),
+      transform var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-.kairo-checkbox-icon-check,
-.kairo-checkbox-icon-indeterminate {
-  width: 0.8rem;
-  height: 0.8rem;
-}
+  .kairo-checkbox-indicator[data-checked],
+  .kairo-checkbox-indicator[data-indeterminate] {
+    opacity: 1;
+    transform: scale(1);
+  }
 
-.kairo-checkbox-icon-indeterminate {
-  display: none;
-}
+  .kairo-checkbox-icon-check,
+  .kairo-checkbox-icon-indeterminate {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
 
-.kairo-checkbox-indicator[data-indeterminate] .kairo-checkbox-icon-check {
-  display: none;
-}
+  .kairo-checkbox-icon-indeterminate {
+    display: none;
+  }
 
-.kairo-checkbox-indicator[data-indeterminate] .kairo-checkbox-icon-indeterminate {
-  display: block;
+  .kairo-checkbox-indicator[data-indeterminate] .kairo-checkbox-icon-check {
+    display: none;
+  }
+
+  .kairo-checkbox-indicator[data-indeterminate] .kairo-checkbox-icon-indeterminate {
+    display: block;
+  }
 }

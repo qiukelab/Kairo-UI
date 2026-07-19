@@ -22,234 +22,242 @@
  * `:root` and intentionally inherited by every preset/mode combination.
  */
 
-:root {
-  /* Surfaces & text */
-  --kairo-background: oklch(1 0 0);
-  --kairo-foreground: oklch(0.145 0 0);
-  --kairo-card: oklch(1 0 0);
-  --kairo-card-foreground: oklch(0.145 0 0);
-  --kairo-popover: oklch(1 0 0);
-  --kairo-popover-foreground: oklch(0.145 0 0);
-  --kairo-muted: oklch(0.97 0 0);
-  --kairo-muted-foreground: oklch(0.47 0 0);
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-  /* Intents */
-  --kairo-primary: oklch(0.205 0 0);
-  --kairo-primary-foreground: oklch(0.985 0 0);
-  --kairo-secondary: oklch(0.97 0 0);
-  --kairo-secondary-foreground: oklch(0.205 0 0);
-  --kairo-accent: oklch(0.97 0 0);
-  --kairo-accent-foreground: oklch(0.205 0 0);
-  --kairo-success: oklch(0.52 0.15 145);
-  --kairo-success-foreground: oklch(1 0 0);
-  --kairo-warning: oklch(0.8 0.16 85);
-  --kairo-warning-foreground: oklch(0.145 0 0);
-  --kairo-danger: oklch(0.53 0.19 27);
-  --kairo-danger-foreground: oklch(1 0 0);
+@layer kairo.tokens {
+  :root {
+    /* Surfaces & text */
+    --kairo-background: oklch(1 0 0);
+    --kairo-foreground: oklch(0.145 0 0);
+    --kairo-card: oklch(1 0 0);
+    --kairo-card-foreground: oklch(0.145 0 0);
+    --kairo-popover: oklch(1 0 0);
+    --kairo-popover-foreground: oklch(0.145 0 0);
+    --kairo-muted: oklch(0.97 0 0);
+    --kairo-muted-foreground: oklch(0.47 0 0);
 
-  /* Structural */
-  --kairo-border: oklch(0.922 0 0);
-  --kairo-input: oklch(0.922 0 0);
-  --kairo-ring: oklch(0.708 0 0);
+    /* Intents */
+    --kairo-primary: oklch(0.205 0 0);
+    --kairo-primary-foreground: oklch(0.985 0 0);
+    --kairo-secondary: oklch(0.97 0 0);
+    --kairo-secondary-foreground: oklch(0.205 0 0);
+    --kairo-accent: oklch(0.97 0 0);
+    --kairo-accent-foreground: oklch(0.205 0 0);
+    --kairo-success: oklch(0.52 0.15 145);
+    --kairo-success-foreground: oklch(1 0 0);
+    --kairo-warning: oklch(0.8 0.16 85);
+    --kairo-warning-foreground: oklch(0.145 0 0);
+    --kairo-danger: oklch(0.53 0.19 27);
+    --kairo-danger-foreground: oklch(1 0 0);
 
-  /* Radius — squared off. Shape is defined by borders and the focus ring
-     rather than corners, which is what gives the system its crisp, technical
-     read. Every tier is kept as its own token (rather than collapsing them)
-     so a consumer can re-introduce rounding with a one-line override:
-       :root { --kairo-radius: 8px; --kairo-radius-sm: 6px; --kairo-radius-lg: 10px }
-     `--kairo-radius-full` is deliberately untouched — Avatar, Spinner and the
-     Switch track/thumb are round by function, not by style. */
-  --kairo-radius: 0px;
-  --kairo-radius-sm: 0px;
-  --kairo-radius-md: var(--kairo-radius);
-  --kairo-radius-lg: 0px;
-  --kairo-radius-full: 9999px;
+    /* Structural */
+    --kairo-border: oklch(0.922 0 0);
+    --kairo-input: oklch(0.922 0 0);
+    --kairo-ring: oklch(0.708 0 0);
 
-  /* Structural line weights */
-  --kairo-border-width: 1px;
-  --kairo-ring-width: 2px;
-  --kairo-ring-offset: 2px;
+    /* Radius — squared off. Shape is defined by borders and the focus ring
+       rather than corners, which is what gives the system its crisp, technical
+       read. Every tier is kept as its own token (rather than collapsing them)
+       so a consumer can re-introduce rounding with a one-line override:
+         :root { --kairo-radius: 8px; --kairo-radius-sm: 6px; --kairo-radius-lg: 10px }
+       `--kairo-radius-full` is deliberately untouched — Avatar, Spinner and the
+       Switch track/thumb are round by function, not by style. */
+    --kairo-radius: 0px;
+    --kairo-radius-sm: 0px;
+    --kairo-radius-md: var(--kairo-radius);
+    --kairo-radius-lg: 0px;
+    --kairo-radius-full: 9999px;
 
-  /* Typography.
-     The Thai families sit after the Latin system stack: font fallback is
-     per-character, so Latin still resolves to ui-sans-serif/system-ui while
-     Thai codepoints fall through to the first Thai-capable family.
-     Leelawadee UI ships with Windows and Thonburi with macOS/iOS, so Thai
-     renders correctly with no webfont download. The generic `sans-serif`
-     must stay LAST or the emoji families become unreachable. */
-  --kairo-font-sans:
-    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Noto Sans Thai', 'IBM Plex Sans Thai', 'Sarabun', 'Leelawadee UI', 'Thonburi',
-    'Helvetica Neue', Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Noto Color Emoji', sans-serif;
-  --kairo-font-mono:
-    ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+    /* Structural line weights */
+    --kairo-border-width: 1px;
+    --kairo-ring-width: 2px;
+    --kairo-ring-offset: 2px;
 
-  /* Leading. Thai stacks diacritics above AND below the base character, so
-     1.4 is the practical floor — anything tighter clips tone marks and
-     below-vowels. Components must use these tokens, never a raw number. */
-  --kairo-leading-tight: 1.4;
-  --kairo-leading-normal: 1.5;
-  --kairo-leading-relaxed: 1.65;
+    /* Typography.
+       The Thai families sit after the Latin system stack: font fallback is
+       per-character, so Latin still resolves to ui-sans-serif/system-ui while
+       Thai codepoints fall through to the first Thai-capable family.
+       Leelawadee UI ships with Windows and Thonburi with macOS/iOS, so Thai
+       renders correctly with no webfont download. The generic `sans-serif`
+       must stay LAST or the emoji families become unreachable. */
+    --kairo-font-sans:
+      ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      'Noto Sans Thai', 'IBM Plex Sans Thai', 'Sarabun', 'Leelawadee UI', 'Thonburi',
+      'Helvetica Neue', Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji',
+      'Noto Color Emoji', sans-serif;
+    --kairo-font-mono:
+      ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
 
-  /* Shadows. Split into a color channel + a strength multiplier so dark mode
-     can re-tune opacity — a black shadow is invisible on a dark surface, so
-     dark elevation leans on border contrast with shadow as faint ambient
-     occlusion. Kept tight/low-opacity: elevation here is border-led. */
-  --kairo-shadow-color: 0 0 0;
-  --kairo-shadow-strength: 1;
-  --kairo-shadow-sm: 0 1px 2px 0 rgb(var(--kairo-shadow-color) / calc(0.05 * var(--kairo-shadow-strength)));
-  --kairo-shadow-md: 0 2px 6px -1px rgb(var(--kairo-shadow-color) / calc(0.08 * var(--kairo-shadow-strength)));
-  --kairo-shadow-lg: 0 8px 24px -6px rgb(var(--kairo-shadow-color) / calc(0.12 * var(--kairo-shadow-strength)));
+    /* Leading. Thai stacks diacritics above AND below the base character, so
+       1.4 is the practical floor — anything tighter clips tone marks and
+       below-vowels. Components must use these tokens, never a raw number. */
+    --kairo-leading-tight: 1.4;
+    --kairo-leading-normal: 1.5;
+    --kairo-leading-relaxed: 1.65;
 
-  /* Motion */
-  --kairo-duration-fast: 150ms;
-  --kairo-duration-normal: 250ms;
-  --kairo-duration-slow: 400ms;
-  --kairo-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-  --kairo-ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
-  --kairo-ease-out: cubic-bezier(0, 0, 0.2, 1);
-}
+    /* Shadows. Split into a color channel + a strength multiplier so dark mode
+       can re-tune opacity — a black shadow is invisible on a dark surface, so
+       dark elevation leans on border contrast with shadow as faint ambient
+       occlusion. Kept tight/low-opacity: elevation here is border-led. */
+    --kairo-shadow-color: 0 0 0;
+    --kairo-shadow-strength: 1;
+    --kairo-shadow-sm: 0 1px 2px 0 rgb(var(--kairo-shadow-color) / calc(0.05 * var(--kairo-shadow-strength)));
+    --kairo-shadow-md: 0 2px 6px -1px rgb(var(--kairo-shadow-color) / calc(0.08 * var(--kairo-shadow-strength)));
+    --kairo-shadow-lg: 0 8px 24px -6px rgb(var(--kairo-shadow-color) / calc(0.12 * var(--kairo-shadow-strength)));
 
-.dark {
-  --kairo-background: oklch(0.145 0 0);
-  --kairo-foreground: oklch(0.985 0 0);
-  --kairo-card: oklch(0.205 0 0);
-  --kairo-card-foreground: oklch(0.985 0 0);
-  --kairo-popover: oklch(0.205 0 0);
-  --kairo-popover-foreground: oklch(0.985 0 0);
-  --kairo-muted: oklch(0.269 0 0);
-  --kairo-muted-foreground: oklch(0.708 0 0);
+    /* Motion */
+    --kairo-duration-fast: 150ms;
+    --kairo-duration-normal: 250ms;
+    --kairo-duration-slow: 400ms;
+    --kairo-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --kairo-ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --kairo-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  }
 
-  --kairo-primary: oklch(0.922 0 0);
-  --kairo-primary-foreground: oklch(0.205 0 0);
-  --kairo-secondary: oklch(0.269 0 0);
-  --kairo-secondary-foreground: oklch(0.985 0 0);
-  --kairo-accent: oklch(0.269 0 0);
-  --kairo-accent-foreground: oklch(0.985 0 0);
-  --kairo-success: oklch(0.52 0.15 145);
-  --kairo-success-foreground: oklch(1 0 0);
-  --kairo-warning: oklch(0.8 0.16 85);
-  --kairo-warning-foreground: oklch(0.145 0 0);
-  --kairo-danger: oklch(0.53 0.19 27);
-  --kairo-danger-foreground: oklch(1 0 0);
+  .dark {
+    --kairo-background: oklch(0.145 0 0);
+    --kairo-foreground: oklch(0.985 0 0);
+    --kairo-card: oklch(0.205 0 0);
+    --kairo-card-foreground: oklch(0.985 0 0);
+    --kairo-popover: oklch(0.205 0 0);
+    --kairo-popover-foreground: oklch(0.985 0 0);
+    --kairo-muted: oklch(0.269 0 0);
+    --kairo-muted-foreground: oklch(0.708 0 0);
 
-  /* Elevation in dark mode is carried by border contrast, not shadow — the
-     borders are brighter here than the light-mode equivalents, and the
-     shadow strength is raised so it still reads as ambient occlusion. */
-  --kairo-border: oklch(1 0 0 / 16%);
-  --kairo-input: oklch(1 0 0 / 20%);
-  --kairo-ring: oklch(0.556 0 0);
-  --kairo-shadow-strength: 3;
-}
+    --kairo-primary: oklch(0.922 0 0);
+    --kairo-primary-foreground: oklch(0.205 0 0);
+    --kairo-secondary: oklch(0.269 0 0);
+    --kairo-secondary-foreground: oklch(0.985 0 0);
+    --kairo-accent: oklch(0.269 0 0);
+    --kairo-accent-foreground: oklch(0.985 0 0);
+    --kairo-success: oklch(0.52 0.15 145);
+    --kairo-success-foreground: oklch(1 0 0);
+    --kairo-warning: oklch(0.8 0.16 85);
+    --kairo-warning-foreground: oklch(0.145 0 0);
+    --kairo-danger: oklch(0.53 0.19 27);
+    --kairo-danger-foreground: oklch(1 0 0);
 
-/* ---------------------------------------------------------------------- */
-/* Blue — vivid azure                                                     */
-/* ---------------------------------------------------------------------- */
+    /* Elevation in dark mode is carried by border contrast, not shadow — the
+       borders are brighter here than the light-mode equivalents, and the
+       shadow strength is raised so it still reads as ambient occlusion. */
+    --kairo-border: oklch(1 0 0 / 16%);
+    --kairo-input: oklch(1 0 0 / 20%);
+    --kairo-ring: oklch(0.556 0 0);
+    --kairo-shadow-strength: 3;
+  }
 
-/* The primary sits at L 0.58 rather than the 0.615 of the source swatch:
-   at 0.615 white text on it reaches only ~3.6:1, under the AA floor this
-   file promises. The darkening is small enough that it still reads as the
-   same bright azure.
+  /* ---------------------------------------------------------------------- */
+  /* Blue — vivid azure                                                     */
+  /* ---------------------------------------------------------------------- */
 
-   `accent` is deliberately a FAINT tint of that hue, never the brand colour
-   at full strength. It backs hovered/highlighted rows — select items, menu
-   entries, the docs sidebar — which are transient and can cover a lot of the
-   screen at once; a saturated fill there reads as a permanent selection bar
-   and fights the primary for attention. The `default` preset shows the
-   intent: its accent is plain `oklch(0.97 0 0)`. Keep any new preset's accent
-   within a few points of its background. */
-[data-kairo-theme='blue'] {
-  --kairo-background: oklch(0.99 0.005 250);
-  --kairo-foreground: oklch(0.2 0.03 260);
-  --kairo-card: oklch(1 0 0);
-  --kairo-card-foreground: oklch(0.2 0.03 260);
-  --kairo-popover: oklch(1 0 0);
-  --kairo-popover-foreground: oklch(0.2 0.03 260);
-  --kairo-muted: oklch(0.96 0.012 250);
-  --kairo-muted-foreground: oklch(0.47 0.03 255);
+  /* The primary sits at L 0.58 rather than the 0.615 of the source swatch:
+     at 0.615 white text on it reaches only ~3.6:1, under the AA floor this
+     file promises. The darkening is small enough that it still reads as the
+     same bright azure.
 
-  --kairo-primary: oklch(0.58 0.196 259);
-  --kairo-primary-foreground: oklch(1 0 0);
-  --kairo-secondary: oklch(0.95 0.02 250);
-  --kairo-secondary-foreground: oklch(0.28 0.05 258);
-  --kairo-accent: oklch(0.93 0.05 250);
-  --kairo-accent-foreground: oklch(0.35 0.12 259);
+     `accent` is deliberately a FAINT tint of that hue, never the brand colour
+     at full strength. It backs hovered/highlighted rows — select items, menu
+     entries, the docs sidebar — which are transient and can cover a lot of the
+     screen at once; a saturated fill there reads as a permanent selection bar
+     and fights the primary for attention. The `default` preset shows the
+     intent: its accent is plain `oklch(0.97 0 0)`. Keep any new preset's accent
+     within a few points of its background. */
+  [data-kairo-theme='blue'] {
+    --kairo-background: oklch(0.99 0.005 250);
+    --kairo-foreground: oklch(0.2 0.03 260);
+    --kairo-card: oklch(1 0 0);
+    --kairo-card-foreground: oklch(0.2 0.03 260);
+    --kairo-popover: oklch(1 0 0);
+    --kairo-popover-foreground: oklch(0.2 0.03 260);
+    --kairo-muted: oklch(0.96 0.012 250);
+    --kairo-muted-foreground: oklch(0.47 0.03 255);
 
-  --kairo-border: oklch(0.9 0.015 250);
-  --kairo-input: oklch(0.9 0.015 250);
-  --kairo-ring: oklch(0.615 0.2 259);
-}
+    --kairo-primary: oklch(0.58 0.196 259);
+    --kairo-primary-foreground: oklch(1 0 0);
+    --kairo-secondary: oklch(0.95 0.02 250);
+    --kairo-secondary-foreground: oklch(0.28 0.05 258);
+    --kairo-accent: oklch(0.93 0.05 250);
+    --kairo-accent-foreground: oklch(0.35 0.12 259);
 
-.dark[data-kairo-theme='blue'] {
-  --kairo-background: oklch(0.16 0.02 260);
-  --kairo-foreground: oklch(0.96 0.01 250);
-  --kairo-card: oklch(0.21 0.025 260);
-  --kairo-card-foreground: oklch(0.96 0.01 250);
-  --kairo-popover: oklch(0.21 0.025 260);
-  --kairo-popover-foreground: oklch(0.96 0.01 250);
-  --kairo-muted: oklch(0.27 0.025 258);
-  --kairo-muted-foreground: oklch(0.72 0.025 250);
+    --kairo-border: oklch(0.9 0.015 250);
+    --kairo-input: oklch(0.9 0.015 250);
+    --kairo-ring: oklch(0.615 0.2 259);
+  }
 
-  --kairo-primary: oklch(0.635 0.196 259);
-  --kairo-primary-foreground: oklch(1 0 0);
-  --kairo-secondary: oklch(0.29 0.03 255);
-  --kairo-secondary-foreground: oklch(0.92 0.015 250);
-  --kairo-accent: oklch(0.32 0.06 255);
-  --kairo-accent-foreground: oklch(0.88 0.06 250);
+  .dark[data-kairo-theme='blue'] {
+    --kairo-background: oklch(0.16 0.02 260);
+    --kairo-foreground: oklch(0.96 0.01 250);
+    --kairo-card: oklch(0.21 0.025 260);
+    --kairo-card-foreground: oklch(0.96 0.01 250);
+    --kairo-popover: oklch(0.21 0.025 260);
+    --kairo-popover-foreground: oklch(0.96 0.01 250);
+    --kairo-muted: oklch(0.27 0.025 258);
+    --kairo-muted-foreground: oklch(0.72 0.025 250);
 
-  --kairo-border: oklch(1 0 0 / 12%);
-  --kairo-input: oklch(1 0 0 / 16%);
-  --kairo-ring: oklch(0.66 0.19 259);
-}
+    --kairo-primary: oklch(0.635 0.196 259);
+    --kairo-primary-foreground: oklch(1 0 0);
+    --kairo-secondary: oklch(0.29 0.03 255);
+    --kairo-secondary-foreground: oklch(0.92 0.015 250);
+    --kairo-accent: oklch(0.32 0.06 255);
+    --kairo-accent-foreground: oklch(0.88 0.06 250);
 
-/* ---------------------------------------------------------------------- */
-/* Pink — vivid pink                                                      */
-/* ---------------------------------------------------------------------- */
+    --kairo-border: oklch(1 0 0 / 12%);
+    --kairo-input: oklch(1 0 0 / 16%);
+    --kairo-ring: oklch(0.66 0.19 259);
+  }
 
-/* `accent` is a faint tint, not the brand pink — see the note on the blue
-   preset. The brand weight lives in `primary`, deep enough that white button
-   text still clears AA. */
-[data-kairo-theme='pink'] {
-  --kairo-background: oklch(0.99 0.006 350);
-  --kairo-foreground: oklch(0.22 0.03 350);
-  --kairo-card: oklch(1 0 0);
-  --kairo-card-foreground: oklch(0.22 0.03 350);
-  --kairo-popover: oklch(1 0 0);
-  --kairo-popover-foreground: oklch(0.22 0.03 350);
-  --kairo-muted: oklch(0.96 0.014 350);
-  --kairo-muted-foreground: oklch(0.47 0.03 350);
+  /* ---------------------------------------------------------------------- */
+  /* Pink — vivid pink                                                      */
+  /* ---------------------------------------------------------------------- */
 
-  --kairo-primary: oklch(0.58 0.2 355);
-  --kairo-primary-foreground: oklch(1 0 0);
-  --kairo-secondary: oklch(0.95 0.02 350);
-  --kairo-secondary-foreground: oklch(0.3 0.05 352);
-  --kairo-accent: oklch(0.93 0.055 355);
-  --kairo-accent-foreground: oklch(0.38 0.14 355);
+  /* `accent` is a faint tint, not the brand pink — see the note on the blue
+     preset. The brand weight lives in `primary`, deep enough that white button
+     text still clears AA. */
+  [data-kairo-theme='pink'] {
+    --kairo-background: oklch(0.99 0.006 350);
+    --kairo-foreground: oklch(0.22 0.03 350);
+    --kairo-card: oklch(1 0 0);
+    --kairo-card-foreground: oklch(0.22 0.03 350);
+    --kairo-popover: oklch(1 0 0);
+    --kairo-popover-foreground: oklch(0.22 0.03 350);
+    --kairo-muted: oklch(0.96 0.014 350);
+    --kairo-muted-foreground: oklch(0.47 0.03 350);
 
-  --kairo-border: oklch(0.9 0.018 350);
-  --kairo-input: oklch(0.9 0.018 350);
-  --kairo-ring: oklch(0.62 0.2 355);
-}
+    --kairo-primary: oklch(0.58 0.2 355);
+    --kairo-primary-foreground: oklch(1 0 0);
+    --kairo-secondary: oklch(0.95 0.02 350);
+    --kairo-secondary-foreground: oklch(0.3 0.05 352);
+    --kairo-accent: oklch(0.93 0.055 355);
+    --kairo-accent-foreground: oklch(0.38 0.14 355);
 
-.dark[data-kairo-theme='pink'] {
-  --kairo-background: oklch(0.17 0.02 350);
-  --kairo-foreground: oklch(0.96 0.012 350);
-  --kairo-card: oklch(0.22 0.025 350);
-  --kairo-card-foreground: oklch(0.96 0.012 350);
-  --kairo-popover: oklch(0.22 0.025 350);
-  --kairo-popover-foreground: oklch(0.96 0.012 350);
-  --kairo-muted: oklch(0.28 0.025 350);
-  --kairo-muted-foreground: oklch(0.73 0.025 350);
+    --kairo-border: oklch(0.9 0.018 350);
+    --kairo-input: oklch(0.9 0.018 350);
+    --kairo-ring: oklch(0.62 0.2 355);
+  }
 
-  --kairo-primary: oklch(0.6 0.2 355);
-  --kairo-primary-foreground: oklch(1 0 0);
-  --kairo-secondary: oklch(0.3 0.03 350);
-  --kairo-secondary-foreground: oklch(0.92 0.02 350);
-  --kairo-accent: oklch(0.33 0.065 352);
-  --kairo-accent-foreground: oklch(0.9 0.07 350);
+  .dark[data-kairo-theme='pink'] {
+    --kairo-background: oklch(0.17 0.02 350);
+    --kairo-foreground: oklch(0.96 0.012 350);
+    --kairo-card: oklch(0.22 0.025 350);
+    --kairo-card-foreground: oklch(0.96 0.012 350);
+    --kairo-popover: oklch(0.22 0.025 350);
+    --kairo-popover-foreground: oklch(0.96 0.012 350);
+    --kairo-muted: oklch(0.28 0.025 350);
+    --kairo-muted-foreground: oklch(0.73 0.025 350);
 
-  --kairo-border: oklch(1 0 0 / 12%);
-  --kairo-input: oklch(1 0 0 / 16%);
-  --kairo-ring: oklch(0.64 0.2 355);
+    --kairo-primary: oklch(0.6 0.2 355);
+    --kairo-primary-foreground: oklch(1 0 0);
+    --kairo-secondary: oklch(0.3 0.03 350);
+    --kairo-secondary-foreground: oklch(0.92 0.02 350);
+    --kairo-accent: oklch(0.33 0.065 352);
+    --kairo-accent-foreground: oklch(0.9 0.07 350);
+
+    --kairo-border: oklch(1 0 0 / 12%);
+    --kairo-input: oklch(1 0 0 / 16%);
+    --kairo-ring: oklch(0.64 0.2 355);
+  }
 }

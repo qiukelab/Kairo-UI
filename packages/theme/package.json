@@ -43,12 +43,15 @@
     "build": "tsdown",
     "dev": "tsdown --watch",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "lint": "eslint ."
   },
   "devDependencies": {
     "@kairo-ui/tsconfig": "workspace:*",
+    "lightningcss": "^1.32.0",
     "tsdown": "0.22.9",
     "typescript": "5.9.3",
-    "unrun": "0.3.1"
+    "unrun": "0.3.1",
+    "vitest": "4.1.10"
   }
 }

@@ -1,30 +1,63 @@
-@import "./tokens.css";
-@import "./base.css";
-@import "./components/accordion.css";
-@import "./components/alert-dialog.css";
-@import "./components/avatar.css";
-@import "./components/badge.css";
-@import "./components/button.css";
-@import "./components/card.css";
-@import "./components/checkbox.css";
-@import "./components/collapsible.css";
-@import "./components/combobox.css";
-@import "./components/context-menu.css";
-@import "./components/dialog.css";
-@import "./components/drawer.css";
-@import "./components/input.css";
-@import "./components/menu.css";
-@import "./components/meter.css";
-@import "./components/number-field.css";
-@import "./components/popover.css";
-@import "./components/progress.css";
-@import "./components/radio-group.css";
-@import "./components/select.css";
-@import "./components/separator.css";
-@import "./components/slider.css";
-@import "./components/spinner.css";
-@import "./components/switch.css";
-@import "./components/tabs.css";
-@import "./components/toast.css";
-@import "./components/toggle-group.css";
-@import "./components/tooltip.css";
+/**
+ * Kairo's cascade layers.
+ *
+ * Everything this package ships lives inside `kairo.*`, in this order:
+ *
+ *   kairo.tokens      — `--kairo-*` custom properties (tokens.css).
+ *   kairo.base        — shared keyframes and zero-specificity defaults.
+ *   kairo.components  — every `css/components/*.css` sheet.
+ *   kairo.overrides   — rules that must beat the components above, e.g. the
+ *                       `:lang(th)` typography corrections in base.css.
+ *
+ * Two consequences worth knowing:
+ *
+ *   1. ANY unlayered CSS you write beats ALL of Kairo, whatever its
+ *      specificity. `.kairo-btn { background: red }` in your own stylesheet
+ *      now wins over `.kairo-btn[data-variant='solid']:hover:not(:disabled)`
+ *      without `!important` and without a specificity fight.
+ *   2. If you also use Tailwind (or anything else that layers its output),
+ *      whichever layer is declared last wins. `kairo.overrides` is a public
+ *      extension point: put your own rules in `@layer kairo.overrides { … }`
+ *      to opt back into losing to Tailwind utilities while still beating the
+ *      components.
+ *
+ * The `@layer` statement below only fixes the ORDER; each sheet declares its
+ * own layer membership internally, so `@kairo-ui/theme/css/button.css` behaves
+ * identically whether it is imported through this bundle or on its own. Do not
+ * move layer assignment out to `@import … layer()` here — that would give the
+ * same file two different cascade behaviours.
+ *
+ * A layer statement is allowed to precede `@import`; nothing else may.
+ */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
+
+@import './tokens.css';
+@import './base.css';
+@import './components/accordion.css';
+@import './components/alert-dialog.css';
+@import './components/avatar.css';
+@import './components/badge.css';
+@import './components/button.css';
+@import './components/card.css';
+@import './components/checkbox.css';
+@import './components/collapsible.css';
+@import './components/combobox.css';
+@import './components/context-menu.css';
+@import './components/dialog.css';
+@import './components/drawer.css';
+@import './components/input.css';
+@import './components/menu.css';
+@import './components/meter.css';
+@import './components/number-field.css';
+@import './components/popover.css';
+@import './components/progress.css';
+@import './components/radio-group.css';
+@import './components/select.css';
+@import './components/separator.css';
+@import './components/slider.css';
+@import './components/spinner.css';
+@import './components/switch.css';
+@import './components/tabs.css';
+@import './components/toast.css';
+@import './components/toggle-group.css';
+@import './components/tooltip.css';

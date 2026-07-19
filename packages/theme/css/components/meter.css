@@ -20,41 +20,49 @@
  * stylesheets is intentional, not an oversight.
  */
 
-.kairo-meter {
-  display: block;
-  width: 100%;
-  font-family: var(--kairo-font-sans);
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-meter-track {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  height: 0.5rem;
-  background-color: var(--kairo-muted);
-  border-radius: var(--kairo-radius);
-}
+@layer kairo.components {
+  .kairo-meter {
+    display: block;
+    width: 100%;
+    font-family: var(--kairo-font-sans);
+  }
 
-.kairo-meter-indicator {
-  height: 100%;
-  width: var(--kairo-meter-value, 0%);
-  background-color: var(--kairo-success);
-  border-radius: var(--kairo-radius);
-  transition: width var(--kairo-duration-normal) var(--kairo-ease-standard);
-}
+  .kairo-meter-track {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 0.5rem;
+    background-color: var(--kairo-muted);
+    border-radius: var(--kairo-radius);
+  }
 
-/* ---------------------------------------------------------------------- */
-/* State — tints the indicator from low/high/optimum, no color prop needed */
-/* ---------------------------------------------------------------------- */
+  .kairo-meter-indicator {
+    height: 100%;
+    width: var(--kairo-meter-value, 0%);
+    background-color: var(--kairo-success);
+    border-radius: var(--kairo-radius);
+    transition: width var(--kairo-duration-normal) var(--kairo-ease-standard);
+  }
 
-.kairo-meter[data-state='optimum'] .kairo-meter-indicator {
-  background-color: var(--kairo-success);
-}
+  /* ---------------------------------------------------------------------- */
+  /* State — tints the indicator from low/high/optimum, no color prop needed */
+  /* ---------------------------------------------------------------------- */
 
-.kairo-meter[data-state='suboptimum'] .kairo-meter-indicator {
-  background-color: var(--kairo-warning);
-}
+  .kairo-meter[data-state='optimum'] .kairo-meter-indicator {
+    background-color: var(--kairo-success);
+  }
 
-.kairo-meter[data-state='critical'] .kairo-meter-indicator {
-  background-color: var(--kairo-danger);
+  .kairo-meter[data-state='suboptimum'] .kairo-meter-indicator {
+    background-color: var(--kairo-warning);
+  }
+
+  .kairo-meter[data-state='critical'] .kairo-meter-indicator {
+    background-color: var(--kairo-danger);
+  }
 }

@@ -32,59 +32,67 @@
  * here.
  */
 
-.kairo-collapsible {
-  display: flex;
-  flex-direction: column;
-  font-family: var(--kairo-font-sans);
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-collapsible-trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-height: 2.25rem;
-  padding: 0.5rem 0.75rem;
-  border: none;
-  border-radius: var(--kairo-radius-sm);
-  background-color: transparent;
-  color: var(--kairo-foreground);
-  font-family: var(--kairo-font-sans);
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: var(--kairo-leading-tight);
-  cursor: pointer;
-  transition: background-color var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+@layer kairo.components {
+  .kairo-collapsible {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--kairo-font-sans);
+  }
 
-.kairo-collapsible-trigger:hover {
-  background-color: color-mix(in oklab, var(--kairo-foreground) 6%, transparent);
-}
+  .kairo-collapsible-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.25rem;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: var(--kairo-radius-sm);
+    background-color: transparent;
+    color: var(--kairo-foreground);
+    font-family: var(--kairo-font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: var(--kairo-leading-tight);
+    cursor: pointer;
+    transition: background-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-.kairo-collapsible-trigger:active {
-  background-color: color-mix(in oklab, var(--kairo-foreground) 10%, transparent);
-}
+  .kairo-collapsible-trigger:hover {
+    background-color: color-mix(in oklab, var(--kairo-foreground) 6%, transparent);
+  }
 
-.kairo-collapsible-trigger:focus-visible {
-  outline: var(--kairo-ring-width) solid var(--kairo-ring);
-  outline-offset: var(--kairo-ring-offset);
-}
+  .kairo-collapsible-trigger:active {
+    background-color: color-mix(in oklab, var(--kairo-foreground) 10%, transparent);
+  }
 
-.kairo-collapsible-trigger[data-disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+  .kairo-collapsible-trigger:focus-visible {
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: var(--kairo-ring-offset);
+  }
 
-.kairo-collapsible-panel {
-  overflow: hidden;
-  height: var(--collapsible-panel-height);
-  color: var(--kairo-foreground);
-  font-family: var(--kairo-font-sans);
-  font-size: 0.875rem;
-  line-height: var(--kairo-leading-normal);
-  transition: height var(--kairo-duration-normal) var(--kairo-ease-standard);
-}
+  .kairo-collapsible-trigger[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-.kairo-collapsible-panel[data-starting-style],
-.kairo-collapsible-panel[data-ending-style] {
-  height: 0;
+  .kairo-collapsible-panel {
+    overflow: hidden;
+    height: var(--collapsible-panel-height);
+    color: var(--kairo-foreground);
+    font-family: var(--kairo-font-sans);
+    font-size: 0.875rem;
+    line-height: var(--kairo-leading-normal);
+    transition: height var(--kairo-duration-normal) var(--kairo-ease-standard);
+  }
+
+  .kairo-collapsible-panel[data-starting-style],
+  .kairo-collapsible-panel[data-ending-style] {
+    height: 0;
+  }
 }

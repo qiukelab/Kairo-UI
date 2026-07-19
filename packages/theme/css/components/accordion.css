@@ -55,91 +55,99 @@
  * a manual `ResizeObserver`/height measurement would be needed there instead.
  */
 
-.kairo-accordion {
-  display: flex;
-  flex-direction: column;
-  font-family: var(--kairo-font-sans);
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-accordion-item {
-  border-bottom: var(--kairo-border-width) solid var(--kairo-border);
-}
+@layer kairo.components {
+  .kairo-accordion {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--kairo-font-sans);
+  }
 
-.kairo-accordion-item:last-child {
-  border-bottom: none;
-}
+  .kairo-accordion-item {
+    border-bottom: var(--kairo-border-width) solid var(--kairo-border);
+  }
 
-.kairo-accordion-item[data-disabled] {
-  opacity: 0.5;
-}
+  .kairo-accordion-item:last-child {
+    border-bottom: none;
+  }
 
-.kairo-accordion-header {
-  margin: 0;
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: var(--kairo-leading-normal);
-}
+  .kairo-accordion-item[data-disabled] {
+    opacity: 0.5;
+  }
 
-.kairo-accordion-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  width: 100%;
-  min-height: 2.75rem;
-  padding: 0.75rem 0.25rem;
-  border: none;
-  background-color: transparent;
-  color: var(--kairo-foreground);
-  font-family: var(--kairo-font-sans);
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: var(--kairo-leading-normal);
-  text-align: left;
-  cursor: pointer;
-  outline: none;
-  transition: background-color var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-accordion-header {
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: var(--kairo-leading-normal);
+  }
 
-.kairo-accordion-trigger:hover:not([data-disabled]) {
-  background-color: color-mix(in oklab, var(--kairo-foreground) 6%, transparent);
-}
+  .kairo-accordion-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.75rem 0.25rem;
+    border: none;
+    background-color: transparent;
+    color: var(--kairo-foreground);
+    font-family: var(--kairo-font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: var(--kairo-leading-normal);
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    transition: background-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-.kairo-accordion-trigger:focus-visible {
-  outline: var(--kairo-ring-width) solid var(--kairo-ring);
-  outline-offset: calc(-1 * var(--kairo-ring-width));
-}
+  .kairo-accordion-trigger:hover:not([data-disabled]) {
+    background-color: color-mix(in oklab, var(--kairo-foreground) 6%, transparent);
+  }
 
-.kairo-accordion-trigger[data-disabled] {
-  cursor: not-allowed;
-}
+  .kairo-accordion-trigger:focus-visible {
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: calc(-1 * var(--kairo-ring-width));
+  }
 
-.kairo-accordion-icon {
-  flex-shrink: 0;
-  width: 1rem;
-  height: 1rem;
-  color: var(--kairo-muted-foreground);
-  transition: transform var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-accordion-trigger[data-disabled] {
+    cursor: not-allowed;
+  }
 
-.kairo-accordion-trigger[data-panel-open] .kairo-accordion-icon {
-  transform: rotate(180deg);
-}
+  .kairo-accordion-icon {
+    flex-shrink: 0;
+    width: 1rem;
+    height: 1rem;
+    color: var(--kairo-muted-foreground);
+    transition: transform var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-.kairo-accordion-panel {
-  overflow: hidden;
-  height: var(--accordion-panel-height);
-  transition: height var(--kairo-duration-normal) var(--kairo-ease-emphasized);
-}
+  .kairo-accordion-trigger[data-panel-open] .kairo-accordion-icon {
+    transform: rotate(180deg);
+  }
 
-.kairo-accordion-panel[data-starting-style],
-.kairo-accordion-panel[data-ending-style] {
-  height: 0;
-}
+  .kairo-accordion-panel {
+    overflow: hidden;
+    height: var(--accordion-panel-height);
+    transition: height var(--kairo-duration-normal) var(--kairo-ease-emphasized);
+  }
 
-.kairo-accordion-panel-content {
-  padding: 0 0.25rem 1rem;
-  color: var(--kairo-foreground);
-  font-size: 0.875rem;
-  line-height: var(--kairo-leading-normal);
+  .kairo-accordion-panel[data-starting-style],
+  .kairo-accordion-panel[data-ending-style] {
+    height: 0;
+  }
+
+  .kairo-accordion-panel-content {
+    padding: 0 0.25rem 1rem;
+    color: var(--kairo-foreground);
+    font-size: 0.875rem;
+    line-height: var(--kairo-leading-normal);
+  }
 }

@@ -74,219 +74,227 @@
  * itself should need little to no change either way.
  */
 
-.kairo-drawer-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  background: color-mix(in oklab, black 50%, transparent);
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-drawer-backdrop[data-starting-style] {
-  animation: kairo-fade-in var(--kairo-duration-fast) var(--kairo-ease-out);
-}
-
-.kairo-drawer-backdrop[data-ending-style] {
-  animation: kairo-fade-out var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
-
-.kairo-drawer-viewport {
-  position: fixed;
-  inset: 0;
-  z-index: 51;
-}
-
-/* A non-modal drawer (`modal={false}` or `'trap-focus'`) leaves the rest of the
-   page interactive, so this full-screen layer must not intercept its clicks.
-   Base UI's swipe/touch handlers are attached to the viewport but fire on
-   events bubbling up from the popup, so they keep working. */
-.kairo-drawer-viewport:not([data-modal='true']) {
-  pointer-events: none;
-}
-
-/* ...but the panel itself still needs them. Scoped to `[data-open]` so a popup
-   animating out stays click-through, preserving Base UI's own
-   `pointer-events: none` on the closing viewport. */
-.kairo-drawer-viewport:not([data-modal='true']) .kairo-drawer-popup[data-open] {
-  pointer-events: auto;
-}
-
-.kairo-drawer-popup {
-  position: fixed;
-  overflow: auto;
-  padding: 1.5rem;
-  background-color: var(--kairo-popover);
-  color: var(--kairo-popover-foreground);
-  font-family: var(--kairo-font-sans);
-  line-height: var(--kairo-leading-relaxed);
-  box-shadow: var(--kairo-shadow-lg);
-  transform: translate(var(--drawer-swipe-movement-x, 0px), var(--drawer-swipe-movement-y, 0px));
-}
-
-.kairo-drawer-popup[data-side='top'] {
-  top: 0;
-  inset-inline: 0;
-  max-height: min(28rem, calc(100vh - 2rem));
-  border-block-end: var(--kairo-border-width) solid var(--kairo-border);
-}
-
-.kairo-drawer-popup[data-side='bottom'] {
-  bottom: 0;
-  inset-inline: 0;
-  max-height: min(28rem, calc(100vh - 2rem));
-  border-block-start: var(--kairo-border-width) solid var(--kairo-border);
-}
-
-.kairo-drawer-popup[data-side='left'] {
-  inset-inline-start: 0;
-  top: 0;
-  bottom: 0;
-  width: min(24rem, calc(100vw - 2rem));
-  border-inline-end: var(--kairo-border-width) solid var(--kairo-border);
-}
-
-.kairo-drawer-popup[data-side='right'] {
-  inset-inline-end: 0;
-  top: 0;
-  bottom: 0;
-  width: min(24rem, calc(100vw - 2rem));
-  border-inline-start: var(--kairo-border-width) solid var(--kairo-border);
-}
-
-@keyframes kairo-drawer-slide-in-top {
-  from {
-    opacity: 0;
-    transform: translateY(-100%);
+@layer kairo.components {
+  .kairo-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: color-mix(in oklab, black 50%, transparent);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .kairo-drawer-backdrop[data-starting-style] {
+    animation: kairo-fade-in var(--kairo-duration-fast) var(--kairo-ease-out);
   }
-}
 
-@keyframes kairo-drawer-slide-out-top {
-  from {
-    opacity: 1;
-    transform: translateY(0);
+  .kairo-drawer-backdrop[data-ending-style] {
+    animation: kairo-fade-out var(--kairo-duration-fast) var(--kairo-ease-standard);
   }
-  to {
-    opacity: 0;
-    transform: translateY(-100%);
+
+  .kairo-drawer-viewport {
+    position: fixed;
+    inset: 0;
+    z-index: 51;
   }
-}
 
-@keyframes kairo-drawer-slide-in-bottom {
-  from {
-    opacity: 0;
-    transform: translateY(100%);
+  /* A non-modal drawer (`modal={false}` or `'trap-focus'`) leaves the rest of the
+     page interactive, so this full-screen layer must not intercept its clicks.
+     Base UI's swipe/touch handlers are attached to the viewport but fire on
+     events bubbling up from the popup, so they keep working. */
+  .kairo-drawer-viewport:not([data-modal='true']) {
+    pointer-events: none;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  /* ...but the panel itself still needs them. Scoped to `[data-open]` so a popup
+     animating out stays click-through, preserving Base UI's own
+     `pointer-events: none` on the closing viewport. */
+  .kairo-drawer-viewport:not([data-modal='true']) .kairo-drawer-popup[data-open] {
+    pointer-events: auto;
   }
-}
 
-@keyframes kairo-drawer-slide-out-bottom {
-  from {
-    opacity: 1;
-    transform: translateY(0);
+  .kairo-drawer-popup {
+    position: fixed;
+    overflow: auto;
+    padding: 1.5rem;
+    background-color: var(--kairo-popover);
+    color: var(--kairo-popover-foreground);
+    font-family: var(--kairo-font-sans);
+    line-height: var(--kairo-leading-relaxed);
+    box-shadow: var(--kairo-shadow-lg);
+    transform: translate(var(--drawer-swipe-movement-x, 0px), var(--drawer-swipe-movement-y, 0px));
   }
-  to {
-    opacity: 0;
-    transform: translateY(100%);
+
+  .kairo-drawer-popup[data-side='top'] {
+    top: 0;
+    inset-inline: 0;
+    max-height: min(28rem, calc(100vh - 2rem));
+    border-block-end: var(--kairo-border-width) solid var(--kairo-border);
   }
-}
 
-@keyframes kairo-drawer-slide-in-left {
-  from {
-    opacity: 0;
-    transform: translateX(-100%);
+  .kairo-drawer-popup[data-side='bottom'] {
+    bottom: 0;
+    inset-inline: 0;
+    max-height: min(28rem, calc(100vh - 2rem));
+    border-block-start: var(--kairo-border-width) solid var(--kairo-border);
   }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+
+  .kairo-drawer-popup[data-side='left'] {
+    inset-inline-start: 0;
+    top: 0;
+    bottom: 0;
+    width: min(24rem, calc(100vw - 2rem));
+    border-inline-end: var(--kairo-border-width) solid var(--kairo-border);
   }
-}
 
-@keyframes kairo-drawer-slide-out-left {
-  from {
-    opacity: 1;
-    transform: translateX(0);
+  .kairo-drawer-popup[data-side='right'] {
+    inset-inline-end: 0;
+    top: 0;
+    bottom: 0;
+    width: min(24rem, calc(100vw - 2rem));
+    border-inline-start: var(--kairo-border-width) solid var(--kairo-border);
   }
-  to {
-    opacity: 0;
-    transform: translateX(-100%);
+
+  @keyframes kairo-drawer-slide-in-top {
+    from {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-}
 
-@keyframes kairo-drawer-slide-in-right {
-  from {
-    opacity: 0;
-    transform: translateX(100%);
+  @keyframes kairo-drawer-slide-out-top {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
   }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+
+  @keyframes kairo-drawer-slide-in-bottom {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-}
 
-@keyframes kairo-drawer-slide-out-right {
-  from {
-    opacity: 1;
-    transform: translateX(0);
+  @keyframes kairo-drawer-slide-out-bottom {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(100%);
+    }
   }
-  to {
-    opacity: 0;
-    transform: translateX(100%);
+
+  @keyframes kairo-drawer-slide-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
-}
 
-.kairo-drawer-popup[data-side='top'][data-starting-style] {
-  animation: kairo-drawer-slide-in-top var(--kairo-duration-fast) var(--kairo-ease-out);
-}
+  @keyframes kairo-drawer-slide-out-left {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+  }
 
-.kairo-drawer-popup[data-side='top'][data-ending-style] {
-  animation: kairo-drawer-slide-out-top var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  @keyframes kairo-drawer-slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
 
-.kairo-drawer-popup[data-side='bottom'][data-starting-style] {
-  animation: kairo-drawer-slide-in-bottom var(--kairo-duration-fast) var(--kairo-ease-out);
-}
+  @keyframes kairo-drawer-slide-out-right {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
 
-.kairo-drawer-popup[data-side='bottom'][data-ending-style] {
-  animation: kairo-drawer-slide-out-bottom var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-drawer-popup[data-side='top'][data-starting-style] {
+    animation: kairo-drawer-slide-in-top var(--kairo-duration-fast) var(--kairo-ease-out);
+  }
 
-.kairo-drawer-popup[data-side='left'][data-starting-style] {
-  animation: kairo-drawer-slide-in-left var(--kairo-duration-fast) var(--kairo-ease-out);
-}
+  .kairo-drawer-popup[data-side='top'][data-ending-style] {
+    animation: kairo-drawer-slide-out-top var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-.kairo-drawer-popup[data-side='left'][data-ending-style] {
-  animation: kairo-drawer-slide-out-left var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-drawer-popup[data-side='bottom'][data-starting-style] {
+    animation: kairo-drawer-slide-in-bottom var(--kairo-duration-fast) var(--kairo-ease-out);
+  }
 
-.kairo-drawer-popup[data-side='right'][data-starting-style] {
-  animation: kairo-drawer-slide-in-right var(--kairo-duration-fast) var(--kairo-ease-out);
-}
+  .kairo-drawer-popup[data-side='bottom'][data-ending-style] {
+    animation: kairo-drawer-slide-out-bottom var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-.kairo-drawer-popup[data-side='right'][data-ending-style] {
-  animation: kairo-drawer-slide-out-right var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-drawer-popup[data-side='left'][data-starting-style] {
+    animation: kairo-drawer-slide-in-left var(--kairo-duration-fast) var(--kairo-ease-out);
+  }
 
-/* RTL: `left`/`right` are logical (inline-start/inline-end) resting edges —
-   under `dir="rtl"` a `side="left"` popup actually rests on the physical
-   right, and vice-versa, so its slide animation must swap to match. */
-:dir(rtl) .kairo-drawer-popup[data-side='left'][data-starting-style] {
-  animation-name: kairo-drawer-slide-in-right;
-}
+  .kairo-drawer-popup[data-side='left'][data-ending-style] {
+    animation: kairo-drawer-slide-out-left var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-:dir(rtl) .kairo-drawer-popup[data-side='left'][data-ending-style] {
-  animation-name: kairo-drawer-slide-out-right;
-}
+  .kairo-drawer-popup[data-side='right'][data-starting-style] {
+    animation: kairo-drawer-slide-in-right var(--kairo-duration-fast) var(--kairo-ease-out);
+  }
 
-:dir(rtl) .kairo-drawer-popup[data-side='right'][data-starting-style] {
-  animation-name: kairo-drawer-slide-in-left;
-}
+  .kairo-drawer-popup[data-side='right'][data-ending-style] {
+    animation: kairo-drawer-slide-out-right var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-:dir(rtl) .kairo-drawer-popup[data-side='right'][data-ending-style] {
-  animation-name: kairo-drawer-slide-out-left;
+  /* RTL: `left`/`right` are logical (inline-start/inline-end) resting edges —
+     under `dir="rtl"` a `side="left"` popup actually rests on the physical
+     right, and vice-versa, so its slide animation must swap to match. */
+  :dir(rtl) .kairo-drawer-popup[data-side='left'][data-starting-style] {
+    animation-name: kairo-drawer-slide-in-right;
+  }
+
+  :dir(rtl) .kairo-drawer-popup[data-side='left'][data-ending-style] {
+    animation-name: kairo-drawer-slide-out-right;
+  }
+
+  :dir(rtl) .kairo-drawer-popup[data-side='right'][data-starting-style] {
+    animation-name: kairo-drawer-slide-in-left;
+  }
+
+  :dir(rtl) .kairo-drawer-popup[data-side='right'][data-ending-style] {
+    animation-name: kairo-drawer-slide-out-left;
+  }
 }

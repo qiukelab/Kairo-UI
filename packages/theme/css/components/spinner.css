@@ -10,34 +10,42 @@
  * `className="text-primary"` or an inline `color` style).
  */
 
-.kairo-spinner {
-  display: inline-block;
-  box-sizing: border-box;
-  border: 2px solid currentColor;
-  border-top-color: transparent;
-  border-radius: var(--kairo-radius-full);
-  color: currentColor;
-  animation: kairo-spin var(--kairo-duration-slow) linear infinite;
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-/* ---------------------------------------------------------------------- */
-/* Sizes                                                                   */
-/* ---------------------------------------------------------------------- */
+@layer kairo.components {
+  .kairo-spinner {
+    display: inline-block;
+    box-sizing: border-box;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: var(--kairo-radius-full);
+    color: currentColor;
+    animation: kairo-spin var(--kairo-duration-slow) linear infinite;
+  }
 
-.kairo-spinner[data-size='sm'] {
-  width: 1rem;
-  height: 1rem;
-  border-width: 2px;
-}
+  /* ---------------------------------------------------------------------- */
+  /* Sizes                                                                   */
+  /* ---------------------------------------------------------------------- */
 
-.kairo-spinner[data-size='md'] {
-  width: 1.5rem;
-  height: 1.5rem;
-  border-width: 2px;
-}
+  .kairo-spinner[data-size='sm'] {
+    width: 1rem;
+    height: 1rem;
+    border-width: 2px;
+  }
 
-.kairo-spinner[data-size='lg'] {
-  width: 2rem;
-  height: 2rem;
-  border-width: 3px;
+  .kairo-spinner[data-size='md'] {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: 2px;
+  }
+
+  .kairo-spinner[data-size='lg'] {
+    width: 2rem;
+    height: 2rem;
+    border-width: 3px;
+  }
 }

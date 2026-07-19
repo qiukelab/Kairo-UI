@@ -9,44 +9,52 @@
  *   - `::placeholder`               — placeholder text color.
  */
 
-.kairo-input {
-  display: flex;
-  width: 100%;
-  min-height: 2.5rem;
-  padding: 0.5rem 0.75rem;
-  border: var(--kairo-border-width) solid var(--kairo-input);
-  border-radius: var(--kairo-radius-md);
-  background-color: var(--kairo-background);
-  color: var(--kairo-foreground);
-  font-family: var(--kairo-font-sans);
-  font-size: 0.875rem;
-  line-height: var(--kairo-leading-normal);
-  outline: none;
-  transition-property: border-color, box-shadow;
-  transition-duration: var(--kairo-duration-fast);
-  transition-timing-function: var(--kairo-ease-standard);
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-input::placeholder {
-  color: var(--kairo-muted-foreground);
-}
+@layer kairo.components {
+  .kairo-input {
+    display: flex;
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border: var(--kairo-border-width) solid var(--kairo-input);
+    border-radius: var(--kairo-radius-md);
+    background-color: var(--kairo-background);
+    color: var(--kairo-foreground);
+    font-family: var(--kairo-font-sans);
+    font-size: 0.875rem;
+    line-height: var(--kairo-leading-normal);
+    outline: none;
+    transition-property: border-color, box-shadow;
+    transition-duration: var(--kairo-duration-fast);
+    transition-timing-function: var(--kairo-ease-standard);
+  }
 
-.kairo-input:focus-visible {
-  border-color: var(--kairo-ring);
-  outline: var(--kairo-ring-width) solid var(--kairo-ring);
-  outline-offset: var(--kairo-ring-offset);
-}
+  .kairo-input::placeholder {
+    color: var(--kairo-muted-foreground);
+  }
 
-.kairo-input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+  .kairo-input:focus-visible {
+    border-color: var(--kairo-ring);
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: var(--kairo-ring-offset);
+  }
 
-.kairo-input[aria-invalid='true'] {
-  border-color: var(--kairo-danger);
-}
+  .kairo-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-.kairo-input[aria-invalid='true']:focus-visible {
-  border-color: var(--kairo-danger);
-  outline-color: var(--kairo-danger);
+  .kairo-input[aria-invalid='true'] {
+    border-color: var(--kairo-danger);
+  }
+
+  .kairo-input[aria-invalid='true']:focus-visible {
+    border-color: var(--kairo-danger);
+    outline-color: var(--kairo-danger);
+  }
 }

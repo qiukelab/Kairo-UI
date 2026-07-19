@@ -16,54 +16,62 @@
  * selectors when porting.
  */
 
-.kairo-switch {
-  box-sizing: border-box;
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-  width: 2.75rem;
-  height: 1.5rem;
-  padding: 2px;
-  border-radius: var(--kairo-radius-full);
-  border: var(--kairo-border-width) solid transparent;
-  cursor: pointer;
-  background-color: var(--kairo-input);
-  transition: background-color var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-switch:focus-visible {
-  outline: var(--kairo-ring-width) solid var(--kairo-ring);
-  outline-offset: var(--kairo-ring-offset);
-}
+@layer kairo.components {
+  .kairo-switch {
+    box-sizing: border-box;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 1.5rem;
+    padding: 2px;
+    border-radius: var(--kairo-radius-full);
+    border: var(--kairo-border-width) solid transparent;
+    cursor: pointer;
+    background-color: var(--kairo-input);
+    transition: background-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
 
-.kairo-switch[data-checked] {
-  background-color: var(--kairo-primary);
-}
+  .kairo-switch:focus-visible {
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: var(--kairo-ring-offset);
+  }
 
-.kairo-switch[data-disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+  .kairo-switch[data-checked] {
+    background-color: var(--kairo-primary);
+  }
 
-.kairo-switch-thumb {
-  display: block;
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: var(--kairo-radius-full);
-  background-color: var(--kairo-background);
-  box-shadow: var(--kairo-shadow-sm);
-  transform: translateX(0);
-  transition: transform var(--kairo-duration-fast) var(--kairo-ease-standard);
-}
+  .kairo-switch[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-/*
- * Track is a 2.75rem/1.5rem (44px/24px) box-sizing:border-box box with a 2px
- * padding and a 1px border on every side, so the flex content area the thumb
- * lives in is only 38px wide (44 - 2*1 border - 2*2 padding). The 1.25rem
- * (20px) thumb therefore has 18px (1.125rem) of room to travel so it lands
- * flush against the right inner edge.
- */
-.kairo-switch-thumb[data-checked] {
-  transform: translateX(1.125rem);
+  .kairo-switch-thumb {
+    display: block;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: var(--kairo-radius-full);
+    background-color: var(--kairo-background);
+    box-shadow: var(--kairo-shadow-sm);
+    transform: translateX(0);
+    transition: transform var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
+
+  /*
+   * Track is a 2.75rem/1.5rem (44px/24px) box-sizing:border-box box with a 2px
+   * padding and a 1px border on every side, so the flex content area the thumb
+   * lives in is only 38px wide (44 - 2*1 border - 2*2 padding). The 1.25rem
+   * (20px) thumb therefore has 18px (1.125rem) of room to travel so it lands
+   * flush against the right inner edge.
+   */
+  .kairo-switch-thumb[data-checked] {
+    transform: translateX(1.125rem);
+  }
 }

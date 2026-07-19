@@ -10,51 +10,59 @@
  *   - `.kairo-card-footer`       — footer region (actions, meta).
  */
 
-.kairo-card {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding-block: 1.5rem;
-  background-color: var(--kairo-card);
-  color: var(--kairo-card-foreground);
-  border: var(--kairo-border-width) solid var(--kairo-border);
-  border-radius: var(--kairo-radius-lg);
-  box-shadow: var(--kairo-shadow-sm);
-  font-family: var(--kairo-font-sans);
-}
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
 
-.kairo-card-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-  padding-inline: 1.5rem;
-}
+@layer kairo.components {
+  .kairo-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-block: 1.5rem;
+    background-color: var(--kairo-card);
+    color: var(--kairo-card-foreground);
+    border: var(--kairo-border-width) solid var(--kairo-border);
+    border-radius: var(--kairo-radius-lg);
+    box-shadow: var(--kairo-shadow-sm);
+    font-family: var(--kairo-font-sans);
+  }
 
-.kairo-card-title {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: var(--kairo-leading-tight);
-}
+  .kairo-card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    padding-inline: 1.5rem;
+  }
 
-.kairo-card-description {
-  margin: 0;
-  font-size: 0.875rem;
-  line-height: var(--kairo-leading-relaxed);
-  color: var(--kairo-muted-foreground);
-  word-break: normal;
-  overflow-wrap: anywhere;
-}
+  .kairo-card-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: var(--kairo-leading-tight);
+  }
 
-.kairo-card-content {
-  padding-inline: 1.5rem;
-  line-height: var(--kairo-leading-relaxed);
-  word-break: normal;
-  overflow-wrap: anywhere;
-}
+  .kairo-card-description {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: var(--kairo-leading-relaxed);
+    color: var(--kairo-muted-foreground);
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
 
-.kairo-card-footer {
-  display: flex;
-  align-items: center;
-  padding-inline: 1.5rem;
+  .kairo-card-content {
+    padding-inline: 1.5rem;
+    line-height: var(--kairo-leading-relaxed);
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .kairo-card-footer {
+    display: flex;
+    align-items: center;
+    padding-inline: 1.5rem;
+  }
 }

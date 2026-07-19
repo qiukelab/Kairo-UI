@@ -21,6 +21,57 @@ import '@kairo-ui/theme/styles.css';
 That single entry point pulls in the tokens, base keyframes/focus-ring
 styles, and every component's CSS.
 
+## Overriding: your CSS always wins
+
+Everything this package ships lives in a cascade layer:
+
+```css
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
+```
+
+Unlayered CSS beats layered CSS no matter how specific the layered rule is, so
+plain CSS of your own wins over Kairo without a specificity fight and without
+`!important`:
+
+```css
+/* Beats `.kairo-btn[data-variant='solid']:hover:not(:disabled)` (0,4,0). */
+.kairo-btn {
+  background: rebeccapurple;
+}
+```
+
+If you also use Tailwind (or anything else that layers its own output), pin the
+order explicitly rather than letting your import order decide it:
+
+```css
+@layer theme, base, kairo, components, utilities;
+@import '@kairo-ui/theme/styles.css';
+@import 'tailwindcss';
+```
+
+`kairo` goes **after `base` and before `utilities`**, and both halves matter.
+Tailwind's preflight lives in `base` and is
+`*, ::before, ::after { border: 0 solid; margin: 0; padding: 0 }` — layer order
+beats specificity outright, so listing `kairo` first strips the padding, borders
+and backgrounds off every Kairo component with no warning of any kind. Putting
+it before `utilities` is what makes `className="w-full"` on a Kairo component
+work.
+
+`kairo.overrides` is a supported extension point — put rules there when you
+want them to beat Kairo's components but still lose to your utility classes:
+
+```css
+@layer kairo.overrides {
+  .kairo-btn {
+    border-radius: 0;
+  }
+}
+```
+
+Each stylesheet declares its own layer internally, so
+`@kairo-ui/theme/css/components/button.css` imported on its own cascades
+exactly like the bundle.
+
 ## Tokens
 
 Every value components read is expressed as a CSS custom property on
