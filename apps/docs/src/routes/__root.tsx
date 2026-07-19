@@ -1,4 +1,5 @@
 import { createRootRoute, HeadContent, Outlet, Scripts, useRouter, useRouterState } from '@tanstack/react-router';
+import { KairoLocaleProvider } from '@kairo-ui/react';
 import { RootProvider } from 'fumadocs-ui/provider/tanstack';
 import { NotFound } from '@/components/not-found';
 import { SearchDialog } from '@/components/search-dialog';
@@ -53,7 +54,17 @@ function RootComponent() {
             },
           }}
         >
-          <Outlet />
+          {/*
+            `<html lang>` above is not enough for Kairo's popups: Base UI
+            portals them to `document.body`, so they sit outside this tree and
+            `:lang(th)` typography rules never reach them. This provider is what
+            stamps `lang` onto each portalled popup element itself. Dropping it
+            regresses silently — the pages still look right, only the portalled
+            Thai text loses its typography.
+          */}
+          <KairoLocaleProvider locale={locale}>
+            <Outlet />
+          </KairoLocaleProvider>
         </RootProvider>
         <Scripts />
       </body>
