@@ -26,6 +26,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Format and lint run first, before the build. Neither needs one —
+      # oxfmt and oxlint are single-pass native binaries that finish in well
+      # under a second — and until now Lint sat at the very end, so a lint-only
+      # failure cost a full build, prerender, typecheck and test run before it
+      # said anything.
+      #
+      # The format gate is new: nothing has ever enforced formatting in this
+      # repo, which is how 90 files came to be unformatted. Run `pnpm format`
+      # before pushing.
+      - name: Format
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
       - name: Build
         run: pnpm build
 
@@ -97,6 +112,3 @@ jobs:
 
       - name: Test
         run: pnpm test
-
-      - name: Lint
-        run: pnpm lint

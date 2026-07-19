@@ -126,8 +126,12 @@ scaffolding.
 Make sure the full verification suite is green:
 
 ```bash
-pnpm build && pnpm typecheck && pnpm test && pnpm lint
+pnpm format:check && pnpm lint && pnpm build && pnpm typecheck && pnpm test
 ```
+
+Same order CI uses — format and lint are near-instant and need no build, so
+they fail first if they're going to. If `format:check` complains, `pnpm format`
+fixes it.
 
 Then, in your PR:
 
