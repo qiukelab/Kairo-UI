@@ -19,7 +19,20 @@ import '@kairo-ui/theme/styles.css';
 ```
 
 That single entry point pulls in the tokens, base keyframes/focus-ring
-styles, and every component's CSS.
+styles, and every component's CSS, bundled and minified with
+[Lightning CSS](https://lightningcss.dev).
+
+If you only want the design tokens — no base styles, no component CSS, e.g.
+to feed a Tailwind token bridge — import `./tokens.css` instead:
+
+```ts
+import '@kairo-ui/theme/tokens.css';
+```
+
+Prefer the raw sources? `./css/*` still exposes every unbundled,
+unminified file under `css/` (`@kairo-ui/theme/css/tokens.css`,
+`@kairo-ui/theme/css/components/button.css`, etc.) for importing a single
+component's CSS or assembling your own bundle.
 
 ## Overriding: your CSS always wins
 

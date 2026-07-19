@@ -56,18 +56,18 @@ and component reference live in the docs site (`apps/docs`) — see
 
 ## Components
 
-11 components, built as thin wrappers over native elements or
+28 components, built as thin wrappers over native elements or
 [Base UI](https://base-ui.com) primitives. **RSC-safe** means the component
 carries no `'use client'` directive and can render as a zero-JS Server
 Component in the Next.js App Router.
 
-| Category     | Components                 |
-| ------------ | -------------------------- |
-| **Actions**  | Button ⚡                  |
-| **Forms**    | Input ⚡, Checkbox, Switch |
-| **Layout**   | Card ⚡, Tabs, Avatar      |
-| **Feedback** | Badge ⚡, Spinner ⚡       |
-| **Overlay**  | Tooltip, Dialog            |
+| Category       | Components                                                                                             |
+| -------------- | ------------------------------------------------------------------------------------------------------- |
+| **Forms**      | Button ⚡, Input ⚡, Number Field, Select, Combobox, Checkbox, Radio Group, Switch, Toggle Group, Slider |
+| **Navigation** | Tabs                                                                                                     |
+| **Display**    | Badge ⚡, Avatar, Card ⚡, Spinner ⚡, Separator ⚡, Progress ⚡, Meter ⚡                                |
+| **Disclosure** | Accordion, Collapsible                                                                                   |
+| **Overlay**    | Popover, Tooltip, Menu, Context Menu, Dialog, Alert Dialog, Drawer, Toast                                |
 
 ⚡ = RSC-safe (no `'use client'`). Everything else declares its own client
 boundary, so you never need to add `'use client'` yourself just to use it.
@@ -113,14 +113,22 @@ be a welcoming project for everyone.
 
 ## Roadmap
 
-Kairo has shipped its `v0.1.0` milestone (11 components, theming, docs,
-CI/release automation). Next up:
+Kairo has 28 components, theming and a full docs site — `v0.1.0` is being
+prepared for its first npm publish (both packages are still at `0.0.0`).
+Per [`docs/ROADMAP.md`](./docs/ROADMAP.md):
 
-- `@kairo-ui/motion-react` — an optional motion addon (peer dep on
-  [Motion](https://motion.dev)), kept out of the core bundle.
-- More components: Select, Popover, Toast.
-- A Vue port (`@kairo-ui/vue`) sharing the same `@kairo-ui/theme` CSS layer.
-- A hosted docs site, npm provenance, and a Tailwind token bridge.
+- **Done** — the 14 → 28 component expansion, pushing/merging to GitHub,
+  and CSS `@layer`s + Lightning CSS minification + typed tokens.
+- **Planned, not started** — migrating the toolchain from ESLint/Prettier
+  to oxlint/oxfmt.
+- **Pending** — hosting the docs site (it only runs locally today),
+  publishing to npm (see [`PUBLISHING.md`](./PUBLISHING.md)), and flipping
+  the GitHub repo to public.
+- **Later** — `@kairo-ui/motion-react` (already built, but kept `private`
+  and held out of the v0.1.0 publish on purpose), a Vue port
+  (`@kairo-ui/vue`), Color/ListBox/TagGroup components, a
+  Field/Fieldset/Form primitive cluster, npm provenance, and a Tailwind
+  token bridge.
 
 ## License
 

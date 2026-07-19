@@ -34,22 +34,24 @@ export function Example() {
 
 ## Components
 
-11 components, built as thin wrappers over native elements or
-[Base UI](https://base-ui.com) primitives:
+28 components, grouped the same way as the docs site, built as thin
+wrappers over native elements or [Base UI](https://base-ui.com)
+primitives:
 
-| Static (server-safe) | Interactive (`'use client'`) |
-| --------------------- | ------------------------------ |
-| Button                | Avatar                         |
-| Badge                 | Checkbox                       |
-| Card                  | Dialog                         |
-| Input                 | Switch                         |
-| Spinner               | Tabs                           |
-|                       | Tooltip                        |
+| Category       | Components                                                                                             |
+| -------------- | ------------------------------------------------------------------------------------------------------- |
+| **Forms**      | Button ⚡, Input ⚡, Number Field, Select, Combobox, Checkbox, Radio Group, Switch, Toggle Group, Slider |
+| **Navigation** | Tabs                                                                                                     |
+| **Display**    | Badge ⚡, Avatar, Card ⚡, Spinner ⚡, Separator ⚡, Progress ⚡, Meter ⚡                                |
+| **Disclosure** | Accordion, Collapsible                                                                                   |
+| **Overlay**    | Popover, Tooltip, Menu, Context Menu, Dialog, Alert Dialog, Drawer, Toast                                |
 
-- **RSC-friendly** — the static components carry no `'use client'` directive
-  and render as zero-JS Server Components in the Next.js App Router.
-  Interactive components declare their own client boundary, so you never
-  need to add `'use client'` yourself just to use them.
+⚡ = RSC-safe (no `'use client'` directive) — 8 components in total.
+
+- **RSC-friendly** — the RSC-safe components above carry no `'use client'`
+  directive and render as zero-JS Server Components in the Next.js App
+  Router. Interactive components declare their own client boundary, so you
+  never need to add `'use client'` yourself just to use them.
 - **Accessible** — interactive components are built on Base UI, which
   provides correct ARIA semantics, keyboard navigation and focus management.
 - **Tree-shakeable** — import everything from the package root, or reach for

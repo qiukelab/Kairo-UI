@@ -8,6 +8,12 @@
 /
   Cache-Control: public, max-age=0, must-revalidate
 
-# Static search index — small, but should pick up new content on redeploy.
+# Static search index — one blob per locale, fetched in full on the first
+# search. These are the heaviest things served (~1.9 MB raw, ~290 KB gzipped
+# each), so caching them matters more than anything else here, but they must
+# still pick up new content on redeploy. Both locales need a rule: the Thai
+# index was missing one and fell through to the host default.
 /static-search-en.json
+  Cache-Control: public, max-age=300, must-revalidate
+/static-search-th.json
   Cache-Control: public, max-age=300, must-revalidate

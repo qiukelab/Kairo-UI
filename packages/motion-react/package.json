@@ -6,14 +6,14 @@
   "type": "module",
   "license": "MIT",
   "author": "Kairo Contributors",
-  "homepage": "https://github.com/qiukelab/Kairo-UI#readme",
+  "homepage": "https://github.com/qiukelab/kairo-ui#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qiukelab/Kairo-UI.git",
+    "url": "git+https://github.com/qiukelab/kairo-ui.git",
     "directory": "packages/motion-react"
   },
   "bugs": {
-    "url": "https://github.com/qiukelab/Kairo-UI/issues"
+    "url": "https://github.com/qiukelab/kairo-ui/issues"
   },
   "keywords": [
     "react",
