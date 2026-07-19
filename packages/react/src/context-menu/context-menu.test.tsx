@@ -20,12 +20,14 @@ import { KairoLocaleProvider } from '../i18n/locale-provider';
 function Example({
   onOpenChange,
   onCopy,
+  disabled,
 }: {
   onOpenChange?: (open: boolean) => void;
   onCopy?: () => void;
+  disabled?: boolean;
 }) {
   return (
-    <ContextMenu onOpenChange={onOpenChange}>
+    <ContextMenu disabled={disabled} onOpenChange={onOpenChange}>
       <ContextMenuTrigger data-testid="trigger">Right-click this area</ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem onClick={onCopy}>Copy</ContextMenuItem>
@@ -200,5 +202,56 @@ describe('ContextMenu', () => {
     const menu = await screen.findByRole('menu');
     expect(portalTarget.contains(menu)).toBe(true);
     document.body.removeChild(portalTarget);
+  });
+
+  it('renders an enabled trigger with no data-disabled/aria-disabled', () => {
+    render(<Example />);
+    const trigger = screen.getByTestId('trigger');
+    expect(trigger).not.toHaveAttribute('data-disabled');
+    expect(trigger).not.toHaveAttribute('aria-disabled');
+  });
+
+  it('fans a disabled root out to the trigger as data-disabled/aria-disabled', () => {
+    render(<Example disabled />);
+    const trigger = screen.getByTestId('trigger');
+    expect(trigger).toHaveAttribute('data-disabled');
+    expect(trigger).toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('does not open (and does not suppress the native menu) when the root is disabled', () => {
+    render(<Example disabled />);
+    const trigger = screen.getByTestId('trigger');
+    // Base UI's own `handleContextMenu` bails out before calling
+    // `stopEvent`/`preventDefault` when `disabled`, so — unlike the
+    // non-disabled case above — this event is left uncancelled, meaning the
+    // dispatch returns `true`. That's also the reason a disabled trigger was
+    // *worse* than doing nothing before this fix: the browser's native menu
+    // would still appear.
+    const notPrevented = fireEvent.contextMenu(trigger);
+    expect(notPrevented).toBe(true);
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+  });
+
+  it("lets the trigger's own disabled prop override the root's for the visual affordance alone", async () => {
+    render(
+      <ContextMenu>
+        <ContextMenuTrigger data-testid="trigger" disabled>
+          Right-click this area
+        </ContextMenuTrigger>
+        <ContextMenuContent>
+          <ContextMenuItem>Copy</ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>,
+    );
+    const trigger = screen.getByTestId('trigger');
+    // Visually disabled…
+    expect(trigger).toHaveAttribute('data-disabled');
+    expect(trigger).toHaveAttribute('aria-disabled', 'true');
+    // …but the root itself was never told to disable, so the interaction
+    // still works — this is the documented (discouraged) mismatch the
+    // `disabled` prop's own doc comment warns about.
+    const notPrevented = fireEvent.contextMenu(trigger);
+    expect(notPrevented).toBe(false);
+    expect(await screen.findByRole('menu')).toBeInTheDocument();
   });
 });

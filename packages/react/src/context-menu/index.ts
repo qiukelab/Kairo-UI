@@ -8,6 +8,7 @@ export {
   ContextMenuSeparator,
 } from './context-menu';
 export type {
+  ContextMenuProps,
   ContextMenuTriggerComponentProps,
   ContextMenuContentProps,
   ContextMenuItemComponentProps,

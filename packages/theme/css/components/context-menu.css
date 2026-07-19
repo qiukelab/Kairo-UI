@@ -24,8 +24,23 @@
  *   - `[data-popup-open]`             — present on `.kairo-context-menu-trigger`
  *     while its menu is open.
  *   - `[data-disabled]`               — present on `.kairo-context-menu-item`
- *     when disabled (there is no per-trigger disabled attribute — disabling
- *     comes from `disabled` on the `ContextMenu` root instead).
+ *     when disabled (Base UI's own attribute), and also on
+ *     `.kairo-context-menu-trigger` when its visual affordance is disabled.
+ *     The trigger's is entirely **Kairo's own** — do not go looking for it in
+ *     Base UI's docs/source. Base UI's `ContextMenuTriggerState` is exactly
+ *     `{ open: boolean }` and never emits a disabled attribute of any kind,
+ *     even though Base UI's underlying `Menu.Root`'s `disabled` genuinely
+ *     gates the interaction (`ContextMenu.Trigger`'s `handleContextMenu`/
+ *     `handleTouchStart` bail out early). Left unfixed that's worse than
+ *     nothing — a disabled trigger still showed the `context-menu` cursor and
+ *     a right-click on it popped the *browser's* native menu instead of doing
+ *     nothing. So `context-menu.tsx`'s `ContextMenuTrigger` stamps
+ *     `data-disabled` (and `aria-disabled`) itself, driven by its own
+ *     `disabled` prop, which — left unset — automatically mirrors the
+ *     nearest `ContextMenu` root's `disabled` (fanned out via context, the
+ *     same technique `Drawer`/`Dialog` use for `side`/`modal`) so setting
+ *     `disabled` on the root alone is enough for both behavior and
+ *     appearance.
  *   - `[data-highlighted]`            — present on `.kairo-context-menu-item`
  *     when keyboard/pointer-highlighted; drives the accent background, the
  *     same token Select's highlighted item uses.
@@ -84,6 +99,22 @@
      arbitrary content the consumer wrapped in the trigger. */
   .kairo-context-menu-trigger[data-popup-open] {
     background-color: color-mix(in oklab, var(--kairo-accent) 40%, transparent);
+  }
+
+  .kairo-context-menu-trigger[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* The open-state tint above is normally impossible to see at the same time
+     as the disabled state — Base UI's root `disabled` already stops the menu
+     from opening at all — but `ContextMenuTrigger`'s own `disabled` prop can
+     be set independently of the root's (see `context-menu.tsx`) for a
+     visual-only override, so guard against the two fighting: disabled always
+     wins. Higher specificity (two attribute selectors) beats the single-
+     attribute rule above without relying on source order. */
+  .kairo-context-menu-trigger[data-disabled][data-popup-open] {
+    background-color: transparent;
   }
 
   .kairo-context-menu-popup {

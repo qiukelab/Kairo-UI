@@ -54,6 +54,20 @@ from `@base-ui/react`.
   point back at once it opens.
 </Callout>
 
+<Callout title="A disabled trigger looks disabled too" type="info">
+  Base UI's `ContextMenu.Trigger` genuinely honours `disabled` on
+  `ContextMenu` — right-clicking or long-pressing it does nothing — but
+  exposes no attribute for that state at all: its trigger state is just
+  `{ open: boolean }`. Left alone, a disabled trigger used to still show the
+  `context-menu` cursor, and right-clicking it popped the *browser's* native
+  menu instead of doing nothing — worse than no fix at all. `ContextMenuTrigger`
+  now stamps its own `data-disabled`/`aria-disabled`, entirely Kairo's own
+  addition, not Base UI's. Its `disabled` prop, left unset, automatically
+  mirrors the nearest `ContextMenu`'s own `disabled`, so setting `disabled` on
+  `ContextMenu` alone is enough for both the interaction and the look — see
+  **Props** below.
+</Callout>
+
 ## Icons, a keyboard-shortcut hint, a disabled item & a group
 
 Right-click (or long-press on touch) the dashed box below to open the menu.
@@ -115,7 +129,7 @@ is a flex row with `justify-content: space-between` for exactly that.
 | `open`         | `boolean`                                  | —       | Controlled open state. Use with `onOpenChange`.                                                                                                          |
 | `defaultOpen`  | `boolean`                                  | `false` | Initial open state for an uncontrolled context menu.                                                                                                     |
 | `onOpenChange` | `(open: boolean, eventDetails) => void`    | —       | Called when the menu opens or closes.                                                                                                                    |
-| `disabled`     | `boolean`                                  | `false` | Prevents the trigger from opening the menu — right-clicking the trigger falls through to the browser's native context menu instead of being suppressed. |
+| `disabled`     | `boolean`                                  | `false` | Prevents the trigger from opening the menu — right-clicking the trigger falls through to the browser's native context menu instead of being suppressed. Also fans out to `ContextMenuTrigger`'s own `disabled` (see below), so the trigger looks disabled (`data-disabled`/`aria-disabled`, dimmed with a `not-allowed` cursor) without setting it there too. |
 | ...            | Additional props | — | All other props are forwarded through. Unlike a dropdown `Menu`, `modal`, `openOnHover`, `delay`, and `closeDelay` aren't exposed — omitted since they don't apply to a menu that opens from a cursor position rather than hover/press on a trigger. |
 
 ### `ContextMenuTrigger`
@@ -126,6 +140,7 @@ reacts to a native `contextmenu` event (right click) or a touch long-press.
 
 | Prop        | Type      | Default | Description                                                        |
 | ----------- | --------- | ------- | -------------------------------------------------------------------------- |
+| `disabled`  | `boolean` | —       | Dims the trigger and swaps its cursor to `not-allowed` via `data-disabled`/`aria-disabled` — entirely Kairo's own addition; Base UI exposes no such attribute. Left unset, mirrors the nearest `ContextMenu`'s own `disabled` automatically, so the common case only needs `disabled` set on `ContextMenu`. Pass it here explicitly only to decouple the visual state from the root's actual `disabled` — doing so without also disabling the root reproduces the mismatch this prop exists to fix. |
 | `className` | `string`  | —       | Merged with the base `kairo-context-menu-trigger` class.                   |
 | ...         | Additional props | — | All other props are forwarded to the underlying trigger element. |
 

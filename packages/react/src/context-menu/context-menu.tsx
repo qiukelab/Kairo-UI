@@ -1,9 +1,10 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { createContext, forwardRef, useContext } from 'react';
 import { ContextMenu as BaseContextMenu } from '@base-ui/react/context-menu';
 import { Separator as BaseSeparator } from '@base-ui/react/separator';
 import type {
+  ContextMenuRootProps,
   ContextMenuTriggerProps,
   ContextMenuPositionerProps,
   ContextMenuPopupProps,
@@ -49,12 +50,69 @@ import { useKairoLocale } from '../i18n/use-kairo-messages';
  * position, which disappears the instant the menu opens), so Kairo does not
  * expose a `ContextMenuArrow` part at all.
  *
- * `ContextMenu.Root` renders no DOM element of its own, so it's re-exported
- * as-is — the same reasoning as `Select`/`Popover`.
+ * **Disabling.** `disabled` is genuinely honoured by Base UI's underlying
+ * `Menu.Root` — `ContextMenu.Trigger`'s `handleContextMenu`/`handleTouchStart`
+ * bail out early when it's set, so right-clicking/long-pressing a disabled
+ * trigger does nothing (verified against `@base-ui/react@1.6.0`'s installed
+ * source). But Base UI gives no visual affordance for that: its
+ * `ContextMenuTriggerState` is exactly `{ open: boolean }`, and
+ * `ContextMenuTriggerProps` has no `disabled` prop at all, so nothing is ever
+ * stamped on the trigger element. Left alone, a disabled trigger still shows
+ * the `context-menu` cursor and, worse, a right-click on it pops the
+ * *browser's* native menu instead of doing nothing — since Base UI's own
+ * `disabled` short-circuit runs before it would otherwise suppress that
+ * native event. Rather than send consumers digging through Base UI for an
+ * attribute that doesn't exist, Kairo closes the gap itself: `ContextMenu`
+ * wraps `Menu.Root`'s `disabled` in a context provider (the same technique
+ * `Drawer` uses for `side`/`modal` and `Dialog` uses for `modal`, since Base
+ * UI's `Menu.Root` likewise keeps `disabled` in an internal store with no
+ * context/hook of its own to read it back from) and fans it out to
+ * `ContextMenuTrigger`, which stamps its own `data-disabled`/`aria-disabled`
+ * — see `ContextMenuTrigger`'s doc comment for the fan-out and
+ * `context-menu.css` for the resulting `cursor: not-allowed`/dimmed styling.
+ *
+ * Unlike Base UI's root (which this used to re-export as-is), `ContextMenu`
+ * therefore renders a context provider around it; it still renders no DOM
+ * element of its own.
  */
-export const ContextMenu = BaseContextMenu.Root;
+export interface ContextMenuProps extends ContextMenuRootProps {}
 
-export interface ContextMenuTriggerComponentProps extends ContextMenuTriggerProps {}
+/**
+ * Whether the nearest `ContextMenu` root is `disabled`, fanned out so
+ * `ContextMenuTrigger` can pick it up as its own default without the
+ * consumer having to set `disabled` twice — see `ContextMenu`'s doc comment
+ * above for why this exists at all. Defaults to `false`, matching Base UI's
+ * own default for `Menu.Root`'s `disabled`.
+ */
+const ContextMenuDisabledContext = createContext(false);
+
+export function ContextMenu({ disabled = false, ...props }: ContextMenuProps) {
+  return (
+    <ContextMenuDisabledContext.Provider value={disabled}>
+      <BaseContextMenu.Root disabled={disabled} {...props} />
+    </ContextMenuDisabledContext.Provider>
+  );
+}
+
+export interface ContextMenuTriggerComponentProps extends ContextMenuTriggerProps {
+  /**
+   * Marks the trigger's visual affordance disabled: swaps its cursor to
+   * `not-allowed` and dims it via `.kairo-context-menu-trigger[data-disabled]`
+   * (see `context-menu.css`), and sets `aria-disabled="true"`. This is
+   * entirely Kairo's own invention — Base UI's `ContextMenu.Trigger` exposes
+   * no `disabled` prop or state at all (see `ContextMenu`'s doc comment).
+   *
+   * Left unset, this automatically mirrors the nearest `ContextMenu` root's
+   * `disabled` prop (fanned out via context), which is what actually gates
+   * the interaction — so for the common case, setting `disabled` on the root
+   * is enough; you do not need to also pass it here. Pass it explicitly here
+   * only to decouple the *visual* affordance from the root (e.g. previewing
+   * the disabled look without disabling the interaction) — doing so without
+   * also disabling the root reproduces the exact mismatch this prop exists
+   * to fix, so prefer the root's `disabled` for anything user-facing.
+   */
+  disabled?: boolean;
+}
 
 /**
  * The area that becomes right-clickable (or long-press-able on touch) —
@@ -69,12 +127,23 @@ export interface ContextMenuTriggerComponentProps extends ContextMenuTriggerProp
  * `preventDefault` on that `contextmenu` event itself (both on this element
  * and, via a document-level listener, on Kairo's own popup/backdrop) so the
  * browser's native menu never appears alongside Kairo's.
+ *
+ * `data-disabled`/`aria-disabled` are stamped whenever the resolved
+ * `disabled` (own prop, defaulting to the nearest `ContextMenu` root's own
+ * `disabled` fanned out via context) is true — see `disabled`'s doc comment
+ * above and `ContextMenu`'s for why. Neither is forwarded to Base UI's
+ * `ContextMenu.Trigger`, which has no `disabled` prop to receive it (the
+ * actual interaction is gated by the root's `disabled` alone).
  */
 export const ContextMenuTrigger = forwardRef<HTMLDivElement, ContextMenuTriggerComponentProps>(
-  function ContextMenuTrigger({ className, ...props }, ref) {
+  function ContextMenuTrigger({ className, disabled, ...props }, ref) {
+    const rootDisabled = useContext(ContextMenuDisabledContext);
+    const isDisabled = disabled ?? rootDisabled;
     return (
       <BaseContextMenu.Trigger
         ref={ref}
+        data-disabled={isDisabled || undefined}
+        aria-disabled={isDisabled ? true : undefined}
         className={className ? `kairo-context-menu-trigger ${className}` : 'kairo-context-menu-trigger'}
         {...props}
       />
