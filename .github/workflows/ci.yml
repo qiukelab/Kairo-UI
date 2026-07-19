@@ -86,7 +86,10 @@ jobs:
       # cannot represent (not a package defect), so those two entrypoints
       # are excluded from its scan. See each package's `check-exports`
       # script for the exact flags.
-      - name: Verify package exports
+      # Also asserts the `'use client'` boundaries, which is why this reads
+      # "artifacts" rather than "exports": see
+      # `packages/react/scripts/check-use-client.mjs`.
+      - name: Verify published package artifacts
         run: pnpm check-exports
 
       - name: Typecheck
