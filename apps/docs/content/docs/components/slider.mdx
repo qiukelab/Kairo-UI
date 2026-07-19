@@ -1,0 +1,187 @@
+---
+title: Slider
+description: A draggable control for selecting a numeric value, or a range of two, along a track, built on Base UI.
+icon: SlidersHorizontal
+---
+
+import { SliderDemo } from '@/components/demos/slider-demo';
+
+## Usage
+
+```tsx
+import {
+  Slider,
+  SliderLabel,
+  SliderValue,
+  SliderControl,
+  SliderTrack,
+  SliderIndicator,
+  SliderThumb,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Slider defaultValue={30}>
+      <SliderLabel>Brightness</SliderLabel>
+      <SliderValue />
+      <SliderControl>
+        <SliderTrack>
+          <SliderIndicator />
+          <SliderThumb />
+        </SliderTrack>
+      </SliderControl>
+    </Slider>
+  );
+}
+```
+
+`Slider` groups the parts and renders Base UI's `Slider.Root` (a `<div
+role="group">`). `SliderControl` owns pointer/touch drag and track-press
+(jump-to-click) handling for every `SliderThumb` inside it. `SliderTrack` is
+the positioning context a `SliderThumb` measures its offset against — a
+`SliderThumb` must be rendered inside a `SliderTrack`, not directly inside
+`SliderControl`. Each `SliderThumb` renders a real `role="slider"` `<input
+type="range">`, so `aria-valuenow`, Arrow/Home/End/Page-Up/Page-Down keyboard
+stepping, and controlled/uncontrolled value handling all come from
+`@base-ui/react`.
+
+Pass an array of two numbers as `value`/`defaultValue` for a range slider, with
+one `SliderThumb` per value — see the range example below.
+
+## Default, controlled, range & disabled
+
+<ComponentPreview
+  code={`<Slider defaultValue={30}>
+  <SliderLabel>Brightness</SliderLabel>
+  <SliderValue />
+  <SliderControl>
+    <SliderTrack>
+      <SliderIndicator />
+      <SliderThumb />
+    </SliderTrack>
+  </SliderControl>
+</Slider>
+
+<Slider value={volume} onValueChange={setVolume}>
+  <SliderLabel>Volume (controlled)</SliderLabel>
+  <SliderValue />
+  <SliderControl>
+    <SliderTrack>
+      <SliderIndicator />
+      <SliderThumb />
+    </SliderTrack>
+  </SliderControl>
+</Slider>
+
+<Slider defaultValue={[20, 80]}>
+  <SliderLabel>Price range</SliderLabel>
+  <SliderValue />
+  <SliderControl>
+    <SliderTrack>
+      <SliderIndicator />
+      <SliderThumb index={0} aria-label="Minimum price" />
+      <SliderThumb index={1} aria-label="Maximum price" />
+    </SliderTrack>
+  </SliderControl>
+</Slider>
+
+<Slider defaultValue={60} disabled>
+  <SliderLabel>Disabled</SliderLabel>
+  <SliderValue />
+  <SliderControl>
+    <SliderTrack>
+      <SliderIndicator />
+      <SliderThumb />
+    </SliderTrack>
+  </SliderControl>
+</Slider>`}
+>
+  <SliderDemo />
+</ComponentPreview>
+
+## Props
+
+### `Slider`
+
+| Prop                    | Type                                                       | Default        | Description                                                                                   |
+| ----------------------- | ------------------------------------------------------------ | -------------- | ----------------------------------------------------------------------------------------------- |
+| `value`                 | `number \| readonly number[]`                                | —              | Controlled value(s). Use with `onValueChange`. Pass a two-item array for a range slider.        |
+| `defaultValue`          | `number \| readonly number[]`                                | —              | Initial value(s) for an uncontrolled `Slider`.                                                  |
+| `onValueChange`         | `(value, eventDetails) => void`                               | —              | Called while the value is changing (drag, keyboard, or track-press).                             |
+| `onValueCommitted`      | `(value, eventDetails) => void`                               | —              | Called once a value change is committed (e.g. on pointer up).                                    |
+| `min`                   | `number`                                                      | `0`            | The minimum allowed value.                                                                        |
+| `max`                   | `number`                                                      | `100`          | The maximum allowed value.                                                                        |
+| `step`                  | `number`                                                      | `1`            | Granularity the value snaps to when stepping.                                                     |
+| `largeStep`             | `number`                                                      | `10`           | Step used for Page Up/Page Down or Shift + Arrow.                                                 |
+| `minStepsBetweenValues` | `number`                                                      | `0`            | Minimum steps kept between the two thumbs of a range slider.                                     |
+| `orientation`           | `'horizontal' \| 'vertical'`                                  | `'horizontal'` | The axis the slider is laid out along.                                                            |
+| `disabled`               | `boolean`                                                    | `false`        | Prevents interaction with every thumb.                                                            |
+| `name`                  | `string`                                                      | —              | Identifies the field when a form is submitted.                                                    |
+| `form`                  | `string`                                                      | —              | Identifies the form that owns the thumb inputs.                                                   |
+| `className`             | `string`                                                      | —              | Merged with the base `kairo-slider` class.                                                        |
+| ...                     | `Slider.Root` props from `@base-ui/react/slider`              | —              | All other Base UI `Slider.Root` props are passed through.                                        |
+
+### `SliderLabel`
+
+An accessible label, automatically associated with every `SliderThumb`'s
+`<input>` in the same `Slider` (via `aria-labelledby`) unless a thumb sets its
+own `aria-label`/`aria-labelledby`.
+
+| Prop        | Type     | Default | Description                                              |
+| ----------- | -------- | ------- | ------------------------------------------------------------ |
+| `className` | `string` | —       | Merged with the base `kairo-slider-label` class.              |
+| ...         | `Slider.Label` props from `@base-ui/react/slider` | — | All other Base UI `Slider.Label` props are passed through. |
+
+### `SliderValue`
+
+Displays the current value(s) as text; renders Base UI's `<output>`.
+
+| Prop        | Type                                                             | Default | Description                                                              |
+| ----------- | ------------------------------------------------------------------ | ------- | ------------------------------------------------------------------------------ |
+| `children`  | `(formattedValues: readonly string[], values: readonly number[]) => ReactNode` | —       | Renders a custom readout instead of the default `"20 – 80"`-style join.         |
+| `className` | `string`                                                            | —       | Merged with the base `kairo-slider-value` class.                                |
+| ...         | `Slider.Value` props from `@base-ui/react/slider`                   | —       | All other Base UI `Slider.Value` props are passed through.                     |
+
+### `SliderControl`
+
+The clickable/draggable surface: owns pointer capture, track-press
+(jump-to-click), and drag handling for every `SliderThumb` inside it.
+
+| Prop        | Type     | Default | Description                                                  |
+| ----------- | -------- | ------- | ------------------------------------------------------------------ |
+| `className` | `string` | —       | Merged with the base `kairo-slider-control` class.                  |
+| ...         | `Slider.Control` props from `@base-ui/react/slider` | — | All other Base UI `Slider.Control` props are passed through. |
+
+### `SliderTrack`
+
+The full-range rail, and the positioning context `SliderThumb` measures its
+offset against.
+
+| Prop        | Type     | Default | Description                                                |
+| ----------- | -------- | ------- | ---------------------------------------------------------------- |
+| `className` | `string` | —       | Merged with the base `kairo-slider-track` class.                  |
+| ...         | `Slider.Track` props from `@base-ui/react/slider` | — | All other Base UI `Slider.Track` props are passed through. |
+
+### `SliderIndicator`
+
+The filled portion of the track, from `min` (or the lower thumb) to the value.
+
+| Prop        | Type     | Default | Description                                                    |
+| ----------- | -------- | ------- | ---------------------------------------------------------------------- |
+| `className` | `string` | —       | Merged with the base `kairo-slider-indicator` class.                    |
+| ...         | `Slider.Indicator` props from `@base-ui/react/slider` | — | All other Base UI `Slider.Indicator` props are passed through. |
+
+### `SliderThumb`
+
+The draggable handle. Renders a `<div>` wrapping Base UI's visually-hidden
+`<input type="range">`, the actual `role="slider"` element.
+
+| Prop        | Type      | Default | Description                                                                          |
+| ----------- | --------- | ------- | ------------------------------------------------------------------------------------------ |
+| `index`     | `number`  | —       | The thumb's index in a range slider. Inferred from mount order if omitted.                  |
+| `disabled`  | `boolean` | `false` | Prevents this thumb from being moved.                                                        |
+| `className` | `string`  | —       | Merged with the base `kairo-slider-thumb` class.                                             |
+| ...         | `Slider.Thumb` props from `@base-ui/react/slider` | — | All other Base UI `Slider.Thumb` props are passed through, including `aria-label`. |
+
+All other props from `@base-ui/react/slider`'s corresponding part are passed
+through on each Kairo component.

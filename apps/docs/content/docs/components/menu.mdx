@@ -1,0 +1,167 @@
+---
+title: Menu
+description: A dropdown menu of actions opened from a trigger, with checkbox items, radio items and submenus, built on Base UI.
+icon: Menu
+---
+
+import { MenuDemo } from '@/components/demos/menu-demo';
+
+## Usage
+
+```tsx
+import { Menu, MenuTrigger, MenuContent, MenuItem } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Menu>
+      <MenuTrigger>Options</MenuTrigger>
+      <MenuContent>
+        <MenuItem onClick={() => console.log('Copy')}>Copy</MenuItem>
+        <MenuItem onClick={() => console.log('Paste')}>Paste</MenuItem>
+      </MenuContent>
+    </Menu>
+  );
+}
+```
+
+`Menu` groups the parts (it renders no DOM element of its own — the same as
+Base UI's `Menu.Root`). `MenuTrigger` renders a native `<button>` with no
+default icon or styling beyond focus/disabled affordances — pair it with a
+Kairo `Button` via `render` when you want it to look like one. `MenuContent`
+composes Base UI's `Menu.Portal` > `Menu.Positioner` + `Menu.Popup` in one
+call, with an arrow pointing back at the trigger. `role="menu"`/`"menuitem"`,
+keyboard navigation & typeahead, and closing on item selection all come from
+`@base-ui/react`.
+
+## Icons, a checkbox item, a radio group & a submenu
+
+<ComponentPreview
+  code={`<Menu>
+  <MenuTrigger render={<Button variant="outline">File</Button>} />
+  <MenuContent>
+    <MenuItem>New file</MenuItem>
+    <MenuItem>Rename</MenuItem>
+    <MenuItem disabled>Delete</MenuItem>
+    <MenuSeparator />
+    <MenuCheckboxItem checked={wordWrap} onCheckedChange={setWordWrap}>
+      Word wrap
+    </MenuCheckboxItem>
+    <MenuGroup>
+      <MenuGroupLabel>Theme</MenuGroupLabel>
+      <MenuRadioGroup value={theme} onValueChange={setTheme}>
+        <MenuRadioItem value="light">Light</MenuRadioItem>
+        <MenuRadioItem value="dark">Dark</MenuRadioItem>
+        <MenuRadioItem value="system">System</MenuRadioItem>
+      </MenuRadioGroup>
+    </MenuGroup>
+    <MenuSeparator />
+    <MenuSub>
+      <MenuSubmenuTrigger>Share</MenuSubmenuTrigger>
+      <MenuContent>
+        <MenuItem>Email</MenuItem>
+        <MenuItem>Copy link</MenuItem>
+      </MenuContent>
+    </MenuSub>
+  </MenuContent>
+</Menu>
+
+<Menu open={open} onOpenChange={setOpen}>
+  <MenuTrigger render={<Button variant="outline">{open ? 'Close menu' : 'Open menu'}</Button>} />
+  <MenuContent>
+    <MenuItem>Profile</MenuItem>
+    <MenuItem>Settings</MenuItem>
+    <MenuItem>Sign out</MenuItem>
+  </MenuContent>
+</Menu>`}
+>
+  <MenuDemo />
+</ComponentPreview>
+
+## Props
+
+### `Menu`
+
+| Prop           | Type                                     | Default | Description                                                     |
+| -------------- | ------------------------------------------ | ------- | ----------------------------------------------------------------- |
+| `open`         | `boolean`                                  | —       | Controlled open state. Use with `onOpenChange`.                    |
+| `defaultOpen`  | `boolean`                                  | `false` | Initial open state for an uncontrolled menu.                       |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`    | —       | Called when the menu opens or closes.                              |
+| `modal`        | `boolean`                                  | `true`  | Whether the menu is modal (traps focus, blocks outside interaction). |
+| `disabled`     | `boolean`                                  | `false` | Prevents user interaction with the whole menu.                     |
+| ...            | `Menu.Root` props from `@base-ui/react/menu` | —     | All other Base UI `Menu.Root` props are passed through.            |
+
+### `MenuTrigger`
+
+Renders a native `<button>` (or composes with another element via its
+`render` prop, e.g. a Kairo `Button`). Carries `[data-popup-open]` while the
+menu is open and `[data-pressed]` while pressed; use `:disabled` (a native
+attribute, since this is a real button) to style the disabled state.
+
+### `MenuContent`
+
+| Prop         | Type                                              | Default | Description                                                            |
+| ------------ | ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------ |
+| `side`       | `'top' \| 'bottom' \| 'left' \| 'right'`             | —       | Which side of the trigger to render the popup against.                          |
+| `align`      | `'start' \| 'center' \| 'end'`                       | `'start'` | How to align the popup relative to `side`.                                    |
+| `sideOffset` | `number`                                             | `8`     | Distance in pixels between the trigger and the popup.                          |
+| `className`  | `string`                                             | —       | Merged with the base `kairo-menu-popup` class on the popup element.            |
+| ...          | `Menu.Popup` props from `@base-ui/react/menu`        | —       | All other Base UI `Menu.Popup` props (e.g. `finalFocus`) are passed through.    |
+
+Reused as-is for a submenu's popup — render it as the second child of a
+`MenuSub`, after a `MenuSubmenuTrigger`.
+
+### `MenuItem`
+
+| Prop        | Type      | Default | Description                                                    |
+| ----------- | --------- | ------- | -------------------------------------------------------------------- |
+| `disabled`  | `boolean` | `false` | Prevents the item from being selected.                                |
+| `closeOnClick` | `boolean` | `true` | Whether to close the menu when the item is clicked.                |
+| `className` | `string`  | —       | Merged with the base `kairo-menu-item` class.                         |
+
+### `MenuCheckboxItem`
+
+| Prop              | Type                                          | Default | Description                                              |
+| ----------------- | ------------------------------------------------ | ------- | ---------------------------------------------------------------- |
+| `checked`         | `boolean`                                        | —       | Controlled checked state. Use with `onCheckedChange`.              |
+| `defaultChecked`  | `boolean`                                        | `false` | Initial checked state for an uncontrolled checkbox item.            |
+| `onCheckedChange` | `(checked: boolean, eventDetails) => void`       | —       | Called when the item is ticked or unticked.                        |
+| `disabled`        | `boolean`                                        | `false` | Prevents the item from being toggled.                              |
+
+Renders `children` next to a check-mark indicator (present in the DOM only
+while checked). Does not close the menu on click by default.
+
+### `MenuRadioGroup` / `MenuRadioItem`
+
+`MenuRadioGroup` groups related `MenuRadioItem`s so only one can be selected
+at a time.
+
+| Prop            | Type                                | Default | Description                                                    |
+| --------------- | -------------------------------------- | ------- | ---------------------------------------------------------------------- |
+| `value`         | `any`                                   | —       | Controlled selected value. Use with `onValueChange`.                    |
+| `defaultValue`  | `any`                                   | —       | Initial selected value for an uncontrolled radio group.                 |
+| `onValueChange` | `(value: any, eventDetails) => void`   | —       | Called when the selected value changes.                                 |
+
+`MenuRadioItem` takes a required `value` prop and renders `children` next to
+a dot indicator (present in the DOM only for the selected item). Does not
+close the menu on click by default.
+
+### `MenuGroup` / `MenuGroupLabel`
+
+`MenuGroup` groups related items; `MenuGroupLabel` is an accessible label
+automatically associated with its parent `MenuGroup`.
+
+### `MenuSeparator`
+
+A visual divider between items/groups. Hidden from the accessibility tree
+(`aria-hidden="true"`) by default, since the `menu` role only permits
+`menuitem`/`menuitemcheckbox`/`menuitemradio`/`group` children.
+
+### `MenuSub` / `MenuSubmenuTrigger`
+
+`MenuSub` groups all parts of a submenu — pair it with a `MenuSubmenuTrigger`
+and a `MenuContent`. `MenuSubmenuTrigger` renders `children` followed by a
+default chevron, and opens its submenu on hover, focus, or activation
+(`ArrowRight` when highlighted in a vertical menu).
+
+All other props from `@base-ui/react/menu`'s corresponding part are passed
+through on each Kairo component.

@@ -1,0 +1,256 @@
+---
+title: Combobox
+description: A text input paired with a filtered listbox for picking a value from a searchable list, built on Base UI.
+icon: TextSearch
+---
+
+import { ComboboxDemo } from '@/components/demos/combobox-demo';
+
+## Usage
+
+```tsx
+import {
+  Combobox,
+  ComboboxControl,
+  ComboboxInput,
+  ComboboxTrigger,
+  ComboboxClear,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+} from '@kairo-ui/react';
+
+const fruits = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'orange', label: 'Orange' },
+];
+
+export function Example() {
+  return (
+    <Combobox items={fruits} defaultValue={fruits[0]}>
+      <ComboboxControl>
+        <ComboboxInput aria-label="Fruit" placeholder="Search fruit…" />
+        <ComboboxClear />
+        <ComboboxTrigger />
+      </ComboboxControl>
+      <ComboboxContent>
+        <ComboboxEmpty />
+        <ComboboxList>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  );
+}
+```
+
+`Combobox` groups the parts (it renders no DOM element of its own — the same
+as Base UI's `Combobox.Root`). `ComboboxControl` is the bordered box that
+visually *is* the control — it renders Base UI's `Combobox.InputGroup` and is
+what the popup anchors to. `ComboboxInput` is a borderless, transparent
+`<input>` placed inside it; `role="combobox"`, `aria-expanded`,
+`aria-controls`, and `aria-activedescendant`-driven keyboard navigation (focus
+never leaves the input — Base UI's combobox highlights options virtually,
+unlike `Select`'s roving focus) all come from `@base-ui/react`.
+
+**Filtering is Base UI's job, not yours.** Pass the data through the `items`
+prop on `Combobox` and render it through a *function child* on `ComboboxList`,
+as above — Base UI narrows `items` against the input's typed query with an
+`Intl.Collator`-backed matcher and hands the survivors to that function. Pass
+`filter` to `Combobox` to override the matcher, or `filter={null}` to disable
+filtering. Static `ComboboxItem` children (no function child) are never
+filtered — see the grouped example below, which uses that form for a plain
+listbox with no search behavior.
+
+`ComboboxContent` composes Base UI's `Combobox.Portal` > `Combobox.Positioner`
++ `Combobox.Arrow` + `Combobox.Popup` in one call. Its `role="presentation"` —
+`role="listbox"` lives on `ComboboxList` instead, a sibling of `ComboboxEmpty`
+inside it (Base UI's `Combobox.Popup` can't carry `listbox` itself since it
+also has to host `ComboboxEmpty`'s `role="status"` live region, which is
+invalid ARIA as a direct child of a `listbox`).
+
+## Filterable, controlled & grouped
+
+<ComponentPreview
+  code={`<Combobox items={fruits} defaultValue={fruits[0]}>
+  <ComboboxControl className="w-56">
+    <ComboboxInput aria-label="Fruit" placeholder="Search fruit…" />
+    <ComboboxClear />
+    <ComboboxTrigger />
+  </ComboboxControl>
+  <ComboboxContent>
+    <ComboboxEmpty />
+    <ComboboxList>
+      {(item) => (
+        <ComboboxItem key={item.value} value={item}>
+          {item.label}
+        </ComboboxItem>
+      )}
+    </ComboboxList>
+  </ComboboxContent>
+</Combobox>
+
+<Combobox items={fruits} value={fruit} onValueChange={setFruit}>
+  <ComboboxControl className="w-56">
+    <ComboboxInput aria-label="Fruit (controlled)" placeholder="Search fruit…" />
+    <ComboboxClear />
+    <ComboboxTrigger />
+  </ComboboxControl>
+  <ComboboxContent>
+    <ComboboxEmpty />
+    <ComboboxList>
+      {(item) => (
+        <ComboboxItem key={item.value} value={item}>
+          {item.label}
+        </ComboboxItem>
+      )}
+    </ComboboxList>
+  </ComboboxContent>
+</Combobox>
+
+<Combobox>
+  <ComboboxControl className="w-56">
+    <ComboboxInput aria-label="Fruit (grouped)" placeholder="Pick a fruit" />
+  </ComboboxControl>
+  <ComboboxContent>
+    <ComboboxList>
+      <ComboboxItem value="apple">Apple</ComboboxItem>
+      <ComboboxItem value="banana">Banana</ComboboxItem>
+      <ComboboxSeparator />
+      <ComboboxGroup>
+        <ComboboxGroupLabel>Citrus</ComboboxGroupLabel>
+        <ComboboxItem value="orange">Orange</ComboboxItem>
+      </ComboboxGroup>
+    </ComboboxList>
+  </ComboboxContent>
+</Combobox>`}
+>
+  <ComboboxDemo />
+</ComponentPreview>
+
+The selected item's `label` (from the matching entry in `items`) fills the
+input automatically once chosen — pass `itemToStringLabel` to `Combobox` to
+customize that when an item isn't shaped like `{ value, label }`.
+
+## Props
+
+### `Combobox`
+
+| Prop                | Type                                          | Default  | Description                                                                          |
+| -------------------- | ------------------------------------------------ | ---------- | ------------------------------------------------------------------------------------------ |
+| `value`              | `any`                                             | —          | Controlled selected value. Use with `onValueChange`.                                       |
+| `defaultValue`       | `any`                                             | —          | Initial value for an uncontrolled combobox.                                                |
+| `onValueChange`      | `(value: any, eventDetails) => void`              | —          | Called when the selected value changes.                                                    |
+| `open`               | `boolean`                                         | —          | Controlled open state. Use with `onOpenChange`.                                            |
+| `defaultOpen`        | `boolean`                                         | `false`    | Initial open state for an uncontrolled combobox.                                           |
+| `onOpenChange`       | `(open: boolean, eventDetails) => void`           | —          | Called when the popup opens or closes.                                                     |
+| `items`              | `readonly any[]`                                  | —          | The data filtered against the input's query and handed to `ComboboxList`'s function child. |
+| `filter`             | `(item, query, itemToString?) => boolean \| null` | built-in   | Overrides the default `Intl.Collator`-backed matcher. `null` disables filtering.           |
+| `multiple`           | `boolean`                                         | `false`    | Whether multiple items can be selected.                                                    |
+| `disabled`           | `boolean`                                         | `false`    | Prevents user interaction.                                                                 |
+| `readOnly`           | `boolean`                                         | `false`    | Prevents choosing a different value from the popup.                                        |
+| `autoHighlight`      | `boolean \| 'always'`                             | `false`    | Whether the first matching item is highlighted automatically.                              |
+| `name`               | `string`                                          | —          | Identifies the field when a form is submitted.                                             |
+| `itemToStringLabel`  | `(item) => string`                                | —          | Formats an object item for display; used automatically for `{ value, label }` shapes.      |
+| ...                  | `Combobox.Root` props from `@base-ui/react/combobox` | — | All other Base UI `Combobox.Root` props are passed through.                                |
+
+### `ComboboxControl`
+
+The bordered box that visually *is* the control (border and focus ring live
+here, not on the input) and the element the popup anchors to.
+
+| Prop        | Type     | Default | Description                                                     |
+| ----------- | -------- | ------- | ------------------------------------------------------------------- |
+| `className` | `string` | —       | Merged with the base `kairo-combobox-control` class.                 |
+| ...         | `Combobox.InputGroup` props from `@base-ui/react/combobox` | — | All other Base UI `Combobox.InputGroup` props are passed through. |
+
+### `ComboboxInput`
+
+Renders a plain, borderless `<input>`. Give it an accessible name with
+`aria-label` or a wrapping `<label>`.
+
+| Prop        | Type     | Default | Description                                          |
+| ----------- | -------- | ------- | --------------------------------------------------------- |
+| `className` | `string` | —       | Merged with the base `kairo-combobox-input` class.          |
+| ...         | `Combobox.Input` props from `@base-ui/react/combobox` | — | All other Base UI `Combobox.Input` props are passed through. |
+
+### `ComboboxTrigger`
+
+A button that opens the popup without typing. Renders a default chevron
+(wrapped in `Combobox.Icon`) when given no `children`.
+
+| Prop          | Type      | Default | Description                                                                                        |
+| -------------- | --------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| `aria-hidden`  | `boolean` | `true`  | Hides it from the accessibility tree — the input already exposes `role="combobox"` with `aria-expanded`. |
+| `tabIndex`     | `number`  | `-1`    | Kept out of the tab order; the input is the sole keyboard entry point.                                 |
+| `className`    | `string`  | —       | Merged with the base `kairo-combobox-trigger` class.                                                   |
+| ...            | `Combobox.Trigger` props from `@base-ui/react/combobox` | — | All other Base UI `Combobox.Trigger` props are passed through.                     |
+
+### `ComboboxClear`
+
+Resets the value and the typed query. Only mounted while there is something to
+clear (unless `keepMounted`). Renders a default X icon when given no
+`children`.
+
+| Prop          | Type     | Default            | Description                              |
+| -------------- | -------- | -------------------- | --------------------------------------------- |
+| `aria-label`   | `string` | `'Clear selection'`  | The button's accessible name.                 |
+| `className`    | `string` | —                    | Merged with the base `kairo-combobox-clear` class. |
+| ...            | `Combobox.Clear` props from `@base-ui/react/combobox` | — | All other Base UI `Combobox.Clear` props are passed through. |
+
+### `ComboboxContent`
+
+| Prop         | Type                                     | Default | Description                                                             |
+| ------------- | ------------------------------------------- | ------- | ------------------------------------------------------------------------------ |
+| `side`        | `'top' \| 'bottom' \| 'left' \| 'right'`    | —       | Which side of the control to render the popup against.                          |
+| `align`       | `'start' \| 'center' \| 'end'`              | `'start'` | How to align the popup relative to `side`.                                    |
+| `sideOffset`  | `number`                                    | `8`     | Distance in pixels between the control and the popup.                           |
+| `className`   | `string`                                    | —       | Merged with the base `kairo-combobox-popup` class on the popup element.         |
+| ...           | `Combobox.Popup` props from `@base-ui/react/combobox` | — | All other Base UI `Combobox.Popup` props (e.g. `finalFocus`) are passed through. |
+
+### `ComboboxList`
+
+The `role="listbox"` container, rendered inside `ComboboxContent`. Pass a
+function child to render Base UI's filtered results (see **Usage** above);
+static element children are rendered verbatim and never filtered.
+
+### `ComboboxItem`
+
+| Prop        | Type      | Default | Description                                                    |
+| ----------- | --------- | ------- | -------------------------------------------------------------------- |
+| `value`     | `any`     | —       | The value of this item.                                               |
+| `disabled`  | `boolean` | `false` | Prevents the item from being selected.                                |
+| `className` | `string`  | —       | Merged with the base `kairo-combobox-item` class.                     |
+
+Renders `children` directly (Combobox has no `ItemText` part, unlike Select),
+preceded by a check-mark `Combobox.ItemIndicator` present in the DOM only for
+the selected item.
+
+### `ComboboxEmpty`
+
+The no-results message, rendered as a sibling of `ComboboxList` inside
+`ComboboxContent`. Only meaningful when `Combobox` has an `items` prop.
+
+| Prop        | Type        | Default              | Description                                |
+| ----------- | ----------- | ---------------------- | ------------------------------------------------ |
+| `children`  | `ReactNode` | `'No results found'`   | The message shown when the query matches nothing. |
+
+### `ComboboxGroup` / `ComboboxGroupLabel`
+
+`ComboboxGroup` groups related items; `ComboboxGroupLabel` is an accessible
+label automatically associated with its parent `ComboboxGroup`.
+
+### `ComboboxSeparator`
+
+A visual divider between items/groups. Hidden from the accessibility tree
+(`aria-hidden="true"`) by default, since the listbox role only permits
+`option`/`group` children.
+
+All other props from `@base-ui/react/combobox`'s corresponding part are passed
+through on each Kairo component.

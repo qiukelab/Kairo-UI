@@ -1,0 +1,148 @@
+---
+title: NumberField
+description: A locale-aware numeric input with increment/decrement stepper buttons, built on Base UI.
+icon: Hash
+---
+
+import { NumberFieldDemo } from '@/components/demos/number-field-demo';
+
+## Usage
+
+```tsx
+import {
+  NumberField,
+  NumberFieldGroup,
+  NumberFieldInput,
+  NumberFieldIncrement,
+  NumberFieldDecrement,
+} from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <NumberField defaultValue={1} min={0} max={10}>
+      <NumberFieldGroup>
+        <NumberFieldDecrement aria-label="Decrease quantity" />
+        <NumberFieldInput aria-label="Quantity" />
+        <NumberFieldIncrement aria-label="Increase quantity" />
+      </NumberFieldGroup>
+    </NumberField>
+  );
+}
+```
+
+`NumberField` groups the parts and renders Base UI's `NumberField.Root` (a `<div>`
+that only owns state — the border lives on `NumberFieldGroup`). `NumberFieldGroup`
+renders `NumberField.Group`, the bordered box containing the decrement button, the
+input, and the increment button in that order. Clamping to `min`/`max`,
+`step`/`smallStep`/`largeStep` keyboard and button stepping, and locale-aware
+parsing/formatting of the typed text via `Intl.NumberFormat` all come from
+`@base-ui/react`.
+
+`NumberFieldInput` renders a plain `<input type="text">` with
+`aria-roledescription="Number field"`, not `role="spinbutton"` — the visible text is
+locale-formatted (e.g. `"1,234"`), which the native spinbutton role's raw-number
+semantics would fight. Give it an accessible name with `aria-label` or a wrapping
+`<label>`, same as a plain `Input`.
+
+`NumberFieldIncrement`/`NumberFieldDecrement` render a default plus/minus icon when
+given no `children`, and are not reachable via <kbd>Tab</kbd> — the input is the sole
+keyboard entry point, and the buttons step the value with keyboard focus still on it.
+Base UI gives each button a built-in `aria-label` (`"Increase"`/`"Decrease"`), but
+that string is hardcoded English inside Base UI itself, not read from Kairo's
+`KairoMessages` — pass `aria-label` explicitly (as above) to localize it.
+
+`NumberField` accepts a `locale` prop (`Intl.LocalesArgument`) that drives both
+parsing and formatting. When omitted, it's read from the nearest
+`KairoLocaleProvider`, so a `<NumberField>` mounted under
+`<KairoLocaleProvider locale="th">` formats/parses with Thai numbering conventions
+automatically.
+
+## Uncontrolled, controlled & disabled
+
+<ComponentPreview
+  code={`<NumberField defaultValue={1} min={0} max={10}>
+  <NumberFieldGroup>
+    <NumberFieldDecrement aria-label="Decrease quantity" />
+    <NumberFieldInput aria-label="Quantity" />
+    <NumberFieldIncrement aria-label="Increase quantity" />
+  </NumberFieldGroup>
+</NumberField>
+
+<NumberField value={quantity} onValueChange={setQuantity} min={0} max={10}>
+  <NumberFieldGroup>
+    <NumberFieldDecrement aria-label="Decrease quantity" />
+    <NumberFieldInput aria-label="Quantity" />
+    <NumberFieldIncrement aria-label="Increase quantity" />
+  </NumberFieldGroup>
+</NumberField>
+
+<NumberField defaultValue={5} disabled>
+  <NumberFieldGroup>
+    <NumberFieldDecrement aria-label="Decrease quantity" />
+    <NumberFieldInput aria-label="Quantity" />
+    <NumberFieldIncrement aria-label="Increase quantity" />
+  </NumberFieldGroup>
+</NumberField>`}
+>
+  <NumberFieldDemo />
+</ComponentPreview>
+
+## Props
+
+### `NumberField`
+
+| Prop               | Type                                                | Default              | Description                                                                                          |
+| ------------------- | ----------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `value`             | `number \| null`                                       | —                       | The raw numeric value of the field. Use with `onValueChange`.                                                |
+| `defaultValue`      | `number`                                               | —                       | The uncontrolled value of the field when it's initially rendered.                                            |
+| `onValueChange`     | `(value: number \| null, eventDetails) => void`        | —                       | Called when the number value changes.                                                                        |
+| `onValueCommitted`  | `(value: number \| null, eventDetails) => void`        | —                       | Called after the value is committed (on blur, or when a stepper/scrub interaction ends).                     |
+| `min`               | `number`                                               | —                       | The minimum value of the input element.                                                                      |
+| `max`               | `number`                                               | —                       | The maximum value of the input element.                                                                      |
+| `step`              | `number \| 'any'`                                      | `1`                     | Amount to increment/decrement with the buttons and arrow keys.                                               |
+| `smallStep`         | `number`                                               | `0.1`                   | Step used when incrementing while the Alt key is held.                                                       |
+| `largeStep`         | `number`                                               | `10`                    | Step used when incrementing while the Shift key is held.                                                     |
+| `allowOutOfRange`   | `boolean`                                              | `false`                 | Lets direct text entry fall outside `min`/`max` (step-based interactions still clamp).                       |
+| `allowWheelScrub`   | `boolean`                                              | `false`                 | Whether the mouse wheel steps the value while the input is focused and hovered.                              |
+| `snapOnStep`        | `boolean`                                              | `false`                 | Whether the value snaps to the nearest step when incrementing/decrementing.                                  |
+| `format`            | `Intl.NumberFormatOptions`                             | —                       | Options used to format the displayed value.                                                                  |
+| `locale`            | `Intl.LocalesArgument`                                 | nearest locale provider | Locale used to parse/format the value. Defaults to the nearest `KairoLocaleProvider`'s `locale`.              |
+| `disabled`          | `boolean`                                              | `false`                 | Prevents interaction with the field.                                                                         |
+| `readOnly`          | `boolean`                                              | `false`                 | Prevents the user from changing the field's value.                                                           |
+| `required`          | `boolean`                                              | `false`                 | Whether a value must be entered before submitting a form.                                                    |
+| `name`              | `string`                                               | —                       | Identifies the field when a form is submitted.                                                               |
+| `form`              | `string`                                               | —                       | Identifies the form that owns the hidden `<input>`.                                                          |
+| `className`         | `string`                                               | —                       | Merged with the base `kairo-number-field` class.                                                             |
+| ...                 | `NumberField.Root` props from `@base-ui/react/number-field` | —                 | All other Base UI `NumberField.Root` props (e.g. `id`, `inputRef`) are passed through.                        |
+
+### `NumberFieldGroup`
+
+The bordered box that visually matches `.kairo-input` (same min-height, border and
+focus ring — the ring shows via `:focus-within`, since the input inside is the only
+focusable part of the group).
+
+| Prop        | Type     | Default | Description                                                    |
+| ----------- | -------- | ------- | ---------------------------------------------------------------- |
+| `className` | `string` | —       | Merged with the base `kairo-number-field-group` class.            |
+| ...         | `NumberField.Group` props from `@base-ui/react/number-field` | — | All other Base UI `NumberField.Group` props are passed through. |
+
+### `NumberFieldInput`
+
+| Prop                   | Type      | Default          | Description                                                                                       |
+| ----------------------- | --------- | ------------------ | ----------------------------------------------------------------------------------------------------- |
+| `aria-roledescription`  | `string`  | `'Number field'`   | Role description announced to assistive tech (not an accessible name — pass `aria-label` for that).  |
+| `className`             | `string`  | —                  | Merged with the base `kairo-number-field-input` class.                                                |
+| ...                     | `NumberField.Input` props from `@base-ui/react/number-field` | — | All other Base UI `NumberField.Input` props are passed through.                                       |
+
+### `NumberFieldIncrement` / `NumberFieldDecrement`
+
+Render a `<button>` (not reachable via <kbd>Tab</kbd>) with `children` — or a default
+plus/minus icon when no `children` are given.
+
+| Prop        | Type     | Default | Description                                                                          |
+| ----------- | -------- | ------- | --------------------------------------------------------------------------------------- |
+| `className` | `string` | —       | Merged with the base `kairo-number-field-increment`/`kairo-number-field-decrement` class. |
+| ...         | `NumberField.Increment`/`NumberField.Decrement` props from `@base-ui/react/number-field` | — | All other Base UI props are passed through. |
+
+All other props from `@base-ui/react/number-field`'s corresponding part are passed
+through on each Kairo component.

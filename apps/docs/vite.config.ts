@@ -23,19 +23,33 @@ const kairoVersion: string = JSON.parse(
  * out so adding a page is a one-line change here.
  */
 const COMPONENT_SLUGS = [
+  'accordion',
+  'alert-dialog',
   'avatar',
   'badge',
   'button',
   'card',
   'checkbox',
+  'collapsible',
+  'combobox',
+  'context-menu',
   'dialog',
+  'drawer',
   'input',
+  'menu',
+  'meter',
+  'number-field',
   'popover',
+  'progress',
+  'radio-group',
   'select',
+  'separator',
+  'slider',
   'spinner',
   'switch',
   'tabs',
   'toast',
+  'toggle-group',
   'tooltip',
 ] as const;
 
