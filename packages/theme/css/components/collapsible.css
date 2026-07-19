@@ -1,0 +1,90 @@
+/**
+ * Kairo Collapsible.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-collapsible`         — base class on the Root `<div>`.
+ *   - `.kairo-collapsible-trigger` — base class on the Trigger `<button>`.
+ *   - `.kairo-collapsible-panel`   — base class on the Panel `<div>`. Base UI
+ *     writes the panel's measured height inline as the
+ *     `--collapsible-panel-height` CSS custom property (`auto` before the
+ *     first measurement); this file transitions `height` to/from that value.
+ *   - `[data-panel-open]`          — present on the Trigger while its panel
+ *     is open (Base UI: `CollapsibleTriggerDataAttributes.panelOpen`; absent,
+ *     rather than set to a falsy value, while closed).
+ *   - `[data-open]` / `[data-closed]` — present on the Root and the Panel
+ *     depending on open state (Base UI: `CollapsiblePanelDataAttributes`,
+ *     reused for the Root via `collapsibleStateAttributesMapping`).
+ *   - `[data-starting-style]` / `[data-ending-style]` — present on the Panel
+ *     for one frame at the start of the open/close transition; used here to
+ *     force `height` to `0` so the transition has somewhere to animate
+ *     from/to.
+ *   - `[data-disabled]`            — present on the Trigger (and Root/Panel)
+ *     when `disabled`.
+ *   - `:focus-visible`             — keyboard focus ring on the Trigger.
+ *
+ * Note for future Vue port: Reka UI's Collapsible exposes `[data-state="open"|
+ * "closed"]` on the trigger/content instead of Base UI's `data-panel-open`/
+ * `data-open`/`data-closed`, and publishes the measured height as
+ * `--reka-collapsible-content-height` instead of `--collapsible-panel-height`.
+ *
+ * The height transition is neutralised under `prefers-reduced-motion` by the
+ * shared `[class*='kairo-']` rule in `base.css` — no competing rule is added
+ * here.
+ */
+
+.kairo-collapsible {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--kairo-font-sans);
+}
+
+.kairo-collapsible-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.25rem;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: var(--kairo-radius-sm);
+  background-color: transparent;
+  color: var(--kairo-foreground);
+  font-family: var(--kairo-font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: var(--kairo-leading-tight);
+  cursor: pointer;
+  transition: background-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-collapsible-trigger:hover {
+  background-color: color-mix(in oklab, var(--kairo-foreground) 6%, transparent);
+}
+
+.kairo-collapsible-trigger:active {
+  background-color: color-mix(in oklab, var(--kairo-foreground) 10%, transparent);
+}
+
+.kairo-collapsible-trigger:focus-visible {
+  outline: var(--kairo-ring-width) solid var(--kairo-ring);
+  outline-offset: var(--kairo-ring-offset);
+}
+
+.kairo-collapsible-trigger[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kairo-collapsible-panel {
+  overflow: hidden;
+  height: var(--collapsible-panel-height);
+  color: var(--kairo-foreground);
+  font-family: var(--kairo-font-sans);
+  font-size: 0.875rem;
+  line-height: var(--kairo-leading-normal);
+  transition: height var(--kairo-duration-normal) var(--kairo-ease-standard);
+}
+
+.kairo-collapsible-panel[data-starting-style],
+.kairo-collapsible-panel[data-ending-style] {
+  height: 0;
+}

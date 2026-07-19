@@ -1,0 +1,263 @@
+/**
+ * Kairo Drawer (an edge-pinned "side sheet").
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-drawer-backdrop`  — Kairo's own class, on Base UI's `Drawer.Backdrop`.
+ *   - `.kairo-drawer-viewport`  — Kairo's own class, on Base UI's `Drawer.Viewport`
+ *     (the fixed, full-screen container Base UI requires wrapping `Drawer.Popup`
+ *     to enable swipe/touch-scroll handling — Dialog has no equivalent part).
+ *     It carries no positioning of its own beyond `inset: 0`; like the backdrop,
+ *     it is left free to capture pointer events across the whole screen while
+ *     the (modal, by default) drawer is open, matching Base UI's own reference
+ *     CSS, which doesn't set `pointer-events: none` on it either.
+ *   - `.kairo-drawer-popup`     — Kairo's own class, on Base UI's `Drawer.Popup`.
+ *     Positioned directly with `position: fixed` + inset offsets (not via the
+ *     viewport's layout), so nesting inside the also-fixed viewport is safe.
+ *   - `[data-side]` — **Kairo's own attribute, NOT from Base UI.** Base UI's
+ *     Drawer has no "side"/placement concept; it only has `swipeDirection`
+ *     (default `'down'`), which names the *dismiss-swipe axis* and surfaces as
+ *     Base UI's own `[data-swipe-direction]` on the popup. Kairo's `<Drawer
+ *     side="...">` (see `drawer.tsx`) sets `swipeDirection` to match so the
+ *     dismiss gesture always points toward the resting edge, but stamps this
+ *     separate `[data-side]` via its own React context so this stylesheet
+ *     never depends on Base UI's gesture-attribute naming for layout.
+ *   - `[data-starting-style]` / `[data-ending-style]` — Base UI's own; present
+ *     on the backdrop and popup while mounting/unmounting, drives the
+ *     enter/exit `animation` below.
+ *   - `[data-open]` / `[data-closed]` — Base UI's own; not used for animation
+ *     here.
+ *
+ * Local `@keyframes` (`kairo-drawer-slide-*`) are used instead of `base.css`'s
+ * shared `kairo-slide-in-{top,bottom,left,right}` — those only nudge an
+ * element in from half a rem (sized for a tooltip/popover-style entrance) and
+ * have no matching slide-*out* counterparts, so they can't express a panel
+ * sliding fully off-screen and back on close. `prefers-reduced-motion: reduce`
+ * is still handled globally in `base.css` for any `[class*='kairo-']` element.
+ *
+ * RTL: the resting edge for `left`/`right` uses `inset-inline-start`/
+ * `inset-inline-end` (and `border-inline-start`/`border-inline-end` for the
+ * single visible border edge), so it auto-flips under `dir="rtl"` — no extra
+ * rule needed, that's what logical properties are for. The slide *animation*,
+ * however, uses `transform: translateX(...)`, which is physical and does NOT
+ * auto-flip with direction; the `:dir(rtl)` overrides near the bottom of this
+ * file swap which keyframes play for `left`/`right` so the panel always
+ * animates in/out from whichever physical edge it actually rests at. `top`/
+ * `bottom` are block-axis sides and need no such override.
+ *
+ * The popup's resting `transform` also composes Base UI's own
+ * `--drawer-swipe-movement-x`/`-y` custom properties (registered at runtime
+ * by Base UI, defaulting to `0px`) so a manual swipe visually drags the panel
+ * along with the pointer instead of only snapping at the end.
+ *
+ * Note for future Vue port: Reka UI has a Dialog but, as far as this
+ * component's author could confirm, no equivalent swipeable/snap-point Drawer
+ * primitive. Base UI's own docs make the same call for consumers who don't
+ * need gestures: "A panel that slides in from the edge of the screen and
+ * doesn't need gesture support is a positioned Dialog." Porting this
+ * component likely means reimplementing it as a positioned Dialog variant and
+ * dropping swipe-to-dismiss — `[data-side]` being Kairo's own attribute
+ * (independent of any Base-UI-specific gesture data) means this CSS file
+ * itself should need little to no change either way.
+ */
+
+.kairo-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: color-mix(in oklab, black 50%, transparent);
+}
+
+.kairo-drawer-backdrop[data-starting-style] {
+  animation: kairo-fade-in var(--kairo-duration-fast) var(--kairo-ease-out);
+}
+
+.kairo-drawer-backdrop[data-ending-style] {
+  animation: kairo-fade-out var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-drawer-viewport {
+  position: fixed;
+  inset: 0;
+  z-index: 51;
+}
+
+.kairo-drawer-popup {
+  position: fixed;
+  overflow: auto;
+  padding: 1.5rem;
+  background-color: var(--kairo-popover);
+  color: var(--kairo-popover-foreground);
+  font-family: var(--kairo-font-sans);
+  line-height: var(--kairo-leading-relaxed);
+  box-shadow: var(--kairo-shadow-lg);
+  transform: translate(var(--drawer-swipe-movement-x, 0px), var(--drawer-swipe-movement-y, 0px));
+}
+
+.kairo-drawer-popup[data-side='top'] {
+  top: 0;
+  inset-inline: 0;
+  max-height: min(28rem, calc(100vh - 2rem));
+  border-block-end: var(--kairo-border-width) solid var(--kairo-border);
+}
+
+.kairo-drawer-popup[data-side='bottom'] {
+  bottom: 0;
+  inset-inline: 0;
+  max-height: min(28rem, calc(100vh - 2rem));
+  border-block-start: var(--kairo-border-width) solid var(--kairo-border);
+}
+
+.kairo-drawer-popup[data-side='left'] {
+  inset-inline-start: 0;
+  top: 0;
+  bottom: 0;
+  width: min(24rem, calc(100vw - 2rem));
+  border-inline-end: var(--kairo-border-width) solid var(--kairo-border);
+}
+
+.kairo-drawer-popup[data-side='right'] {
+  inset-inline-end: 0;
+  top: 0;
+  bottom: 0;
+  width: min(24rem, calc(100vw - 2rem));
+  border-inline-start: var(--kairo-border-width) solid var(--kairo-border);
+}
+
+@keyframes kairo-drawer-slide-in-top {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kairo-drawer-slide-out-top {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes kairo-drawer-slide-in-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kairo-drawer-slide-out-bottom {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes kairo-drawer-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes kairo-drawer-slide-out-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes kairo-drawer-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes kairo-drawer-slide-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.kairo-drawer-popup[data-side='top'][data-starting-style] {
+  animation: kairo-drawer-slide-in-top var(--kairo-duration-fast) var(--kairo-ease-out);
+}
+
+.kairo-drawer-popup[data-side='top'][data-ending-style] {
+  animation: kairo-drawer-slide-out-top var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-drawer-popup[data-side='bottom'][data-starting-style] {
+  animation: kairo-drawer-slide-in-bottom var(--kairo-duration-fast) var(--kairo-ease-out);
+}
+
+.kairo-drawer-popup[data-side='bottom'][data-ending-style] {
+  animation: kairo-drawer-slide-out-bottom var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-drawer-popup[data-side='left'][data-starting-style] {
+  animation: kairo-drawer-slide-in-left var(--kairo-duration-fast) var(--kairo-ease-out);
+}
+
+.kairo-drawer-popup[data-side='left'][data-ending-style] {
+  animation: kairo-drawer-slide-out-left var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-drawer-popup[data-side='right'][data-starting-style] {
+  animation: kairo-drawer-slide-in-right var(--kairo-duration-fast) var(--kairo-ease-out);
+}
+
+.kairo-drawer-popup[data-side='right'][data-ending-style] {
+  animation: kairo-drawer-slide-out-right var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+/* RTL: `left`/`right` are logical (inline-start/inline-end) resting edges —
+   under `dir="rtl"` a `side="left"` popup actually rests on the physical
+   right, and vice-versa, so its slide animation must swap to match. */
+:dir(rtl) .kairo-drawer-popup[data-side='left'][data-starting-style] {
+  animation-name: kairo-drawer-slide-in-right;
+}
+
+:dir(rtl) .kairo-drawer-popup[data-side='left'][data-ending-style] {
+  animation-name: kairo-drawer-slide-out-right;
+}
+
+:dir(rtl) .kairo-drawer-popup[data-side='right'][data-starting-style] {
+  animation-name: kairo-drawer-slide-in-left;
+}
+
+:dir(rtl) .kairo-drawer-popup[data-side='right'][data-ending-style] {
+  animation-name: kairo-drawer-slide-out-left;
+}

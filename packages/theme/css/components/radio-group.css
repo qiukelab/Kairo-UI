@@ -1,0 +1,95 @@
+/**
+ * Kairo RadioGroup / Radio.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-radio-group`            — base class on Base UI's `RadioGroup`
+ *     (a `<div role="radiogroup">`); stacks its `Radio` children vertically.
+ *   - `.kairo-radio`                  — base class on `Radio`'s Root `<span
+ *     role="radio">` (the visible circle); Base UI renders a visually hidden
+ *     `<input type="radio">` alongside it for native form semantics.
+ *   - `.kairo-radio-indicator`        — base class on the inner dot (always
+ *     mounted, via `keepMounted`, faded/scaled in and out purely with CSS —
+ *     there is no icon markup, the dot is drawn entirely from
+ *     `background-color` + `border-radius`).
+ *   - `[data-checked]` / `[data-unchecked]` — selected state, present on both
+ *     `.kairo-radio` and `.kairo-radio-indicator`. Only one `Radio` in a given
+ *     `RadioGroup` carries `[data-checked]` at a time.
+ *   - `[data-disabled]`               — disabled state, present on
+ *     `.kairo-radio-group` (set on the group) and on individual
+ *     `.kairo-radio` items (set on the group's `disabled` prop or the item's
+ *     own).
+ *   - `:focus-visible`                — keyboard focus ring (each `.kairo-radio`
+ *     Root `<span>` is itself the focusable/tabbable element, same as Checkbox
+ *     and Switch — the hidden `<input>` is not in the tab order). Arrow keys
+ *     move this focus AND selection between radios in the group — Base UI's
+ *     roving-tabindex composite behavior is what distinguishes a radio group
+ *     from a plain set of checkboxes.
+ *
+ * This is the one control in Kairo's otherwise-square design system that is
+ * deliberately round (`var(--kairo-radius-full)`, both on `.kairo-radio` and
+ * `.kairo-radio-indicator`) — shape carries meaning here: a round control
+ * reads as single-choice, a square one as multi-choice.
+ *
+ * Note for future Vue port: Base UI emits `[data-checked]`/`[data-unchecked]`;
+ * Reka UI (Vue)'s `RadioGroup` primitive instead emits
+ * `[data-state='checked'|'unchecked']` on its `RadioGroupItem` — add dual
+ * selectors when porting.
+ */
+
+.kairo-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.kairo-radio-group[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kairo-radio {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: var(--kairo-border-width) solid var(--kairo-border);
+  border-radius: var(--kairo-radius-full);
+  cursor: pointer;
+  background-color: var(--kairo-background);
+  transition: border-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-radio:focus-visible {
+  outline: var(--kairo-ring-width) solid var(--kairo-ring);
+  outline-offset: var(--kairo-ring-offset);
+}
+
+.kairo-radio[data-checked] {
+  border-color: var(--kairo-primary);
+}
+
+.kairo-radio[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kairo-radio-indicator {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: var(--kairo-radius-full);
+  background-color: var(--kairo-primary);
+  opacity: 0;
+  transform: scale(0.5);
+  transition:
+    opacity var(--kairo-duration-fast) var(--kairo-ease-standard),
+    transform var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-radio-indicator[data-checked] {
+  opacity: 1;
+  transform: scale(1);
+}

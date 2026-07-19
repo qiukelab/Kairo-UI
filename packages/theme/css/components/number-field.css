@@ -1,0 +1,137 @@
+/**
+ * Kairo NumberField.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-number-field`            — Base UI's `NumberField.Root`; renders
+ *     a `<div>` that owns state only, carries no border of its own.
+ *   - `.kairo-number-field-group`      — Base UI's `NumberField.Group`
+ *     (`role="group"`); the bordered box that visually matches `.kairo-input`
+ *     (border/radius/min-height/focus ring), containing the decrement button,
+ *     the input, and the increment button in that order.
+ *   - `.kairo-number-field-input`      — Base UI's `NumberField.Input`; a
+ *     plain `<input type="text">` (not `type="number"`, and not
+ *     `role="spinbutton"` — see the doc comment on `NumberFieldInput` in
+ *     `@kairo-ui/react` for why), borderless — the border lives on the group.
+ *   - `.kairo-number-field-increment` / `.kairo-number-field-decrement` —
+ *     Base UI's `NumberField.Increment`/`Decrement`; square icon buttons
+ *     divided from the input by a border, not reachable via Tab (Base UI sets
+ *     `tabIndex={-1}` on them — the input is the sole keyboard entry point).
+ *   - `[data-disabled]`                — present on the group when the whole
+ *     field is disabled (the `disabled` prop on `NumberField`), and
+ *     independently on *each* stepper button when it is at its boundary
+ *     (`value` already at `min`/`max`) — a button can be disabled by
+ *     boundary alone while the input and the other button stay enabled.
+ *   - `[aria-disabled='true']`         — present on a stepper button when the
+ *     field is `readOnly`; Base UI does not also set `data-disabled` for this
+ *     case (`readOnly` is intentionally excluded from the buttons'
+ *     `data-disabled`-driving state), so both attributes are keyed on here.
+ *   - `:disabled`                      — the input is a real native `<input>`,
+ *     so its disabled state is the native pseudo-class (unlike the buttons,
+ *     which stay real `<button>` elements *without* the native `disabled`
+ *     attribute so they remain focusable-by-touch — see `[data-disabled]`
+ *     above).
+ *   - `:focus-within`                  — drives the group's focus ring. The
+ *     group itself is never focusable; only the input inside it is.
+ *
+ * Note for future Vue port: Reka UI has no NumberField primitive at the time
+ * of writing — this anatomy and its data-attributes are Base UI–specific.
+ */
+
+.kairo-number-field {
+  display: block;
+  width: 100%;
+}
+
+.kairo-number-field-group {
+  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 2.5rem;
+  border: var(--kairo-border-width) solid var(--kairo-input);
+  border-radius: var(--kairo-radius-md);
+  background-color: var(--kairo-background);
+  transition-property: border-color, box-shadow;
+  transition-duration: var(--kairo-duration-fast);
+  transition-timing-function: var(--kairo-ease-standard);
+}
+
+.kairo-number-field-group:focus-within {
+  border-color: var(--kairo-ring);
+  outline: var(--kairo-ring-width) solid var(--kairo-ring);
+  outline-offset: var(--kairo-ring-offset);
+}
+
+.kairo-number-field-input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background-color: transparent;
+  color: var(--kairo-foreground);
+  font-family: var(--kairo-font-sans);
+  font-size: 0.875rem;
+  line-height: var(--kairo-leading-normal);
+  text-align: center;
+  outline: none;
+}
+
+.kairo-number-field-input::placeholder {
+  color: var(--kairo-muted-foreground);
+}
+
+.kairo-number-field-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kairo-number-field-increment,
+.kairo-number-field-decrement {
+  box-sizing: border-box;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  border: none;
+  background-color: transparent;
+  color: var(--kairo-foreground);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-number-field-increment svg,
+.kairo-number-field-decrement svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.kairo-number-field-decrement {
+  border-right: var(--kairo-border-width) solid var(--kairo-input);
+}
+
+.kairo-number-field-increment {
+  border-left: var(--kairo-border-width) solid var(--kairo-input);
+}
+
+.kairo-number-field-increment:hover:not([data-disabled]):not([aria-disabled='true']),
+.kairo-number-field-decrement:hover:not([data-disabled]):not([aria-disabled='true']) {
+  background-color: color-mix(in oklab, var(--kairo-foreground) 8%, transparent);
+}
+
+.kairo-number-field-increment:active:not([data-disabled]):not([aria-disabled='true']),
+.kairo-number-field-decrement:active:not([data-disabled]):not([aria-disabled='true']) {
+  background-color: color-mix(in oklab, var(--kairo-foreground) 14%, transparent);
+}
+
+.kairo-number-field-increment[data-disabled],
+.kairo-number-field-decrement[data-disabled],
+.kairo-number-field-increment[aria-disabled='true'],
+.kairo-number-field-decrement[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}

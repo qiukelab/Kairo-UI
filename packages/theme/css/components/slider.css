@@ -1,0 +1,158 @@
+/**
+ * Kairo Slider.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-slider`             — base class on Base UI's `Slider.Root` (a
+ *     `<div role="group">`); a vertical flex stack holding the optional
+ *     `.kairo-slider-label`/`.kairo-slider-value` row above
+ *     `.kairo-slider-control`.
+ *   - `.kairo-slider-label`       — base class on `Slider.Label` (`<div>`);
+ *     clicking it focuses the nearest thumb.
+ *   - `.kairo-slider-value`       — base class on `Slider.Value` (`<output>`);
+ *     the live text readout of the current value(s).
+ *   - `.kairo-slider-control`     — base class on `Slider.Control` (`<div>`);
+ *     the pointer/touch hit area that owns track-press and drag handling.
+ *     Padded taller (or wider, when vertical) than `.kairo-slider-track`
+ *     itself so the click target isn't limited to the thin visual track, and
+ *     `touch-action: none` so dragging a thumb on touch doesn't also scroll
+ *     the page.
+ *   - `.kairo-slider-track`       — base class on `Slider.Track` (`<div>`);
+ *     the full-range rail, and the positioning context `.kairo-slider-thumb`
+ *     measures its inline `insetInlineStart`/`top` offsets against (Base UI
+ *     sets `position: relative` on it inline). Its computed `height` (or
+ *     `width` when vertical) is inherited by `.kairo-slider-indicator` via
+ *     Base UI's own inline `height: inherit`/`width: inherit`, so the
+ *     indicator's cross-axis thickness must come from here, not from
+ *     `.kairo-slider-indicator` itself.
+ *   - `.kairo-slider-indicator`   — base class on `Slider.Indicator`
+ *     (`<div>`); the filled portion from `min` (or the lower thumb, for a
+ *     range slider) up to the value. Base UI positions/sizes it inline (a
+ *     literal `%` `width`/`insetInlineStart`, not a custom property), so this
+ *     stylesheet only supplies its color and corner radius.
+ *   - `.kairo-slider-thumb`       — base class on `Slider.Thumb` (`<div>`);
+ *     the round, draggable handle. Base UI positions it inline too (again a
+ *     literal `%` `insetInlineStart`/`top` plus `position: absolute`),
+ *     wrapping a visually-hidden `<input type="range">` that is the actual
+ *     `role="slider"` element carrying focus — see `:focus-within` below.
+ *   - `[data-orientation="horizontal"|"vertical"]` — present on every part;
+ *     flips which axis the track/control grow along.
+ *   - `[data-disabled]`           — present on the root, control and thumb.
+ *   - `[data-dragging]`           — present on every part (a root-level
+ *     state, not scoped to the specific thumb being dragged) while any thumb
+ *     is being dragged.
+ *   - `:focus-within`             — drives `.kairo-slider-thumb`'s keyboard
+ *     focus ring. The thumb `<div>` is never itself focusable — only the
+ *     hidden `<input type="range">` nested inside it is — so `:focus-visible`
+ *     on the div would never match; `.kairo-number-field-group` uses the same
+ *     `:focus-within` technique for the same reason.
+ *
+ * Note for future Vue port: Base UI emits `data-dragging`/`data-orientation`/
+ * `data-disabled` across every part from one shared root state object; Reka UI
+ * (Vue) has no Slider primitive at the time of writing.
+ */
+
+.kairo-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  font-family: var(--kairo-font-sans);
+}
+
+.kairo-slider[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kairo-slider-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: var(--kairo-leading-normal);
+  color: var(--kairo-foreground);
+}
+
+.kairo-slider-value {
+  font-size: 0.875rem;
+  line-height: var(--kairo-leading-normal);
+  color: var(--kairo-muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Control & track                                                        */
+/* ---------------------------------------------------------------------- */
+
+.kairo-slider-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-block: 0.75rem;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+.kairo-slider-control[data-orientation='vertical'] {
+  flex-direction: column;
+  width: auto;
+  height: 100%;
+  padding-block: 0;
+  padding-inline: 0.75rem;
+}
+
+.kairo-slider-control[data-disabled] {
+  cursor: not-allowed;
+}
+
+.kairo-slider-track {
+  width: 100%;
+  height: 0.375rem;
+  background-color: var(--kairo-muted);
+  border-radius: var(--kairo-radius);
+}
+
+.kairo-slider-track[data-orientation='vertical'] {
+  width: 0.375rem;
+  height: 100%;
+}
+
+.kairo-slider-indicator {
+  background-color: var(--kairo-primary);
+  border-radius: var(--kairo-radius);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Thumb — the one round element in an otherwise square-edged system       */
+/* ---------------------------------------------------------------------- */
+
+.kairo-slider-thumb {
+  box-sizing: border-box;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: var(--kairo-border-width) solid var(--kairo-primary);
+  border-radius: var(--kairo-radius-full);
+  background-color: var(--kairo-background);
+  box-shadow: var(--kairo-shadow-sm);
+  cursor: grab;
+  transition: box-shadow var(--kairo-duration-fast) var(--kairo-ease-standard);
+}
+
+.kairo-slider-thumb:hover:not([data-disabled]) {
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--kairo-primary) 12%, transparent);
+}
+
+.kairo-slider-thumb:focus-within {
+  outline: var(--kairo-ring-width) solid var(--kairo-ring);
+  outline-offset: var(--kairo-ring-offset);
+}
+
+.kairo-slider-thumb[data-dragging] {
+  cursor: grabbing;
+  box-shadow: 0 0 0 8px color-mix(in oklab, var(--kairo-primary) 16%, transparent);
+}
+
+.kairo-slider-thumb[data-disabled] {
+  cursor: not-allowed;
+  border-color: var(--kairo-border);
+}
