@@ -129,7 +129,12 @@ export function HomePage({ locale }: { locale: Locale }) {
           </h1>
           <p className="max-w-lg text-fd-muted-foreground xl:text-lg">{copy.description}</p>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Link {...docsLink(locale, '')} className="kairo-btn" data-variant="solid" data-size="lg">
+            <Link
+              {...docsLink(locale, '')}
+              className="kairo-btn"
+              data-variant="solid"
+              data-size="lg"
+            >
               {copy.ctaPrimary}
             </Link>
             <Link
@@ -158,121 +163,116 @@ export function HomePage({ locale }: { locale: Locale }) {
         <HomeNav locale={locale} />
 
         {/* Overview: lead paragraph + install snippet + what it stands on */}
-          <section className="flex flex-col gap-6 border-b border-fd-border px-6 py-12 lg:px-12">
-            <SectionLabel>{copy.overviewLabel}</SectionLabel>
-            <p className="max-w-2xl text-fd-foreground">{copy.lead}</p>
+        <section className="flex flex-col gap-6 border-b border-fd-border px-6 py-12 lg:px-12">
+          <SectionLabel>{copy.overviewLabel}</SectionLabel>
+          <p className="max-w-2xl text-fd-foreground">{copy.lead}</p>
 
-            <Tabs defaultValue={INSTALL_COMMANDS[0].id}>
-              <TabsList>
-                {INSTALL_COMMANDS.map((entry) => (
-                  <Tab key={entry.id} value={entry.id}>
-                    {entry.id}
-                  </Tab>
-                ))}
-              </TabsList>
+          <Tabs defaultValue={INSTALL_COMMANDS[0].id}>
+            <TabsList>
               {INSTALL_COMMANDS.map((entry) => (
-                <TabPanel key={entry.id} value={entry.id}>
-                  <pre className="overflow-x-auto border border-fd-border bg-fd-secondary px-4 py-3 text-sm">
-                    <code>{entry.command}</code>
-                  </pre>
-                </TabPanel>
+                <Tab key={entry.id} value={entry.id}>
+                  {entry.id}
+                </Tab>
               ))}
-            </Tabs>
+            </TabsList>
+            {INSTALL_COMMANDS.map((entry) => (
+              <TabPanel key={entry.id} value={entry.id}>
+                <pre className="overflow-x-auto border border-fd-border bg-fd-secondary px-4 py-3 text-sm">
+                  <code>{entry.command}</code>
+                </pre>
+              </TabPanel>
+            ))}
+          </Tabs>
 
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2">
-              <span className="text-xs font-medium tracking-widest text-fd-muted-foreground uppercase">
-                {copy.builtOnLabel}
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2">
+            <span className="text-xs font-medium tracking-widest text-fd-muted-foreground uppercase">
+              {copy.builtOnLabel}
+            </span>
+            {copy.builtOn.map((item) => (
+              <span key={item} className="text-sm text-fd-muted-foreground">
+                {item}
               </span>
-              {copy.builtOn.map((item) => (
-                <span key={item} className="text-sm text-fd-muted-foreground">
-                  {item}
-                </span>
-              ))}
+            ))}
+          </div>
+        </section>
+
+        {/* Live preview */}
+        <section className="flex flex-col gap-6 border-b border-fd-border px-6 py-12 lg:px-12">
+          <SectionLabel>{copy.previewHeading}</SectionLabel>
+          <p className="max-w-2xl text-fd-muted-foreground">{copy.previewDescription}</p>
+          <ComponentPreview
+            code={`<Button variant="solid">Solid</Button>\n<Button variant="outline">Outline</Button>\n<Button variant="ghost">Ghost</Button>`}
+          >
+            <div className="flex flex-wrap items-center gap-3">
+              <Button variant="solid">Solid</Button>
+              <Button variant="outline">Outline</Button>
+              <Button variant="ghost">Ghost</Button>
             </div>
-          </section>
+          </ComponentPreview>
+        </section>
 
-          {/* Live preview */}
-          <section className="flex flex-col gap-6 border-b border-fd-border px-6 py-12 lg:px-12">
-            <SectionLabel>{copy.previewHeading}</SectionLabel>
-            <p className="max-w-2xl text-fd-muted-foreground">{copy.previewDescription}</p>
-            <ComponentPreview
-              code={`<Button variant="solid">Solid</Button>\n<Button variant="outline">Outline</Button>\n<Button variant="ghost">Ghost</Button>`}
-            >
-              <div className="flex flex-wrap items-center gap-3">
-                <Button variant="solid">Solid</Button>
-                <Button variant="outline">Outline</Button>
-                <Button variant="ghost">Ghost</Button>
-              </div>
-            </ComponentPreview>
-          </section>
+        {/* Feature grid — numbered, in the reference's two-up rhythm */}
+        <section className="flex flex-col gap-6 border-b border-fd-border px-6 py-12 lg:px-12">
+          <SectionLabel>{copy.featuresHeading}</SectionLabel>
+          <p className="max-w-2xl text-fd-muted-foreground">{copy.featuresDescription}</p>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {copy.features.map((feature, index) => (
+              <Card key={feature.title}>
+                <CardHeader>
+                  <div className="mb-1 flex items-center gap-3">
+                    <span className="font-mono text-xs text-fd-muted-foreground">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <span
+                      className="flex size-9 items-center justify-center"
+                      style={{
+                        backgroundColor: 'var(--kairo-accent)',
+                        color: 'var(--kairo-accent-foreground)',
+                      }}
+                    >
+                      {FEATURE_ICONS[index]}
+                    </span>
+                  </div>
+                  <CardTitle>{feature.title}</CardTitle>
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </section>
 
-          {/* Feature grid — numbered, in the reference's two-up rhythm */}
-          <section className="flex flex-col gap-6 border-b border-fd-border px-6 py-12 lg:px-12">
-            <SectionLabel>{copy.featuresHeading}</SectionLabel>
-            <p className="max-w-2xl text-fd-muted-foreground">{copy.featuresDescription}</p>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              {copy.features.map((feature, index) => (
-                <Card key={feature.title}>
-                  <CardHeader>
-                    <div className="mb-1 flex items-center gap-3">
-                      <span className="font-mono text-xs text-fd-muted-foreground">
-                        {String(index + 1).padStart(2, '0')}
-                      </span>
-                      <span
-                        className="flex size-9 items-center justify-center"
-                        style={{
-                          backgroundColor: 'var(--kairo-accent)',
-                          color: 'var(--kairo-accent-foreground)',
-                        }}
-                      >
-                        {FEATURE_ICONS[index]}
-                      </span>
-                    </div>
-                    <CardTitle>{feature.title}</CardTitle>
-                    <CardDescription>{feature.description}</CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
-          </section>
-
-          {/* Theming — code beside the claims it backs up */}
-          <section className="flex flex-col gap-6 border-b border-fd-border px-6 py-12 lg:px-12">
-            <SectionLabel>{copy.themingHeading}</SectionLabel>
-            <p className="max-w-2xl text-fd-muted-foreground">{copy.themingDescription}</p>
-            <div className="grid grid-cols-1 gap-px border border-fd-border bg-fd-border xl:grid-cols-[1.4fr_1fr]">
-              {/* Same `minmax(auto, 1fr)` trap as the page columns — without
+        {/* Theming — code beside the claims it backs up */}
+        <section className="flex flex-col gap-6 border-b border-fd-border px-6 py-12 lg:px-12">
+          <SectionLabel>{copy.themingHeading}</SectionLabel>
+          <p className="max-w-2xl text-fd-muted-foreground">{copy.themingDescription}</p>
+          <div className="grid grid-cols-1 gap-px border border-fd-border bg-fd-border xl:grid-cols-[1.4fr_1fr]">
+            {/* Same `minmax(auto, 1fr)` trap as the page columns — without
                   `min-w-0` the snippet's longest line sets this track's floor
                   and pushes the points list off the edge. */}
-              <pre className="min-w-0 overflow-x-auto bg-fd-secondary p-4 text-xs leading-relaxed">
-                <code>{THEMING_SNIPPET}</code>
-              </pre>
-              <ul className="flex flex-col gap-px bg-fd-border">
-                {copy.themingPoints.map((point) => (
-                  <li key={point.title} className="flex-1 bg-fd-background p-4">
-                    <p className="text-sm font-medium text-fd-foreground">{point.title}</p>
-                    <p className="mt-1 text-sm text-fd-muted-foreground">{point.description}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
+            <pre className="min-w-0 overflow-x-auto bg-fd-secondary p-4 text-xs leading-relaxed">
+              <code>{THEMING_SNIPPET}</code>
+            </pre>
+            <ul className="flex flex-col gap-px bg-fd-border">
+              {copy.themingPoints.map((point) => (
+                <li key={point.title} className="flex-1 bg-fd-background p-4">
+                  <p className="text-sm font-medium text-fd-foreground">{point.title}</p>
+                  <p className="mt-1 text-sm text-fd-muted-foreground">{point.description}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
 
-          {/* Closing CTA */}
-          <section className="flex flex-col items-start gap-4 px-6 py-12 lg:px-12">
-            <h2 className="text-2xl font-semibold tracking-tight text-fd-foreground">
-              {copy.closingHeading}
-            </h2>
-            <p className="max-w-xl text-fd-muted-foreground">{copy.closingDescription}</p>
-            <Link
-              {...docsLink(locale, '')}
-              className="kairo-btn"
-              data-variant="solid"
-              data-size="lg"
-            >
-              {copy.finalCta}
-            </Link>
-          </section>
+        {/* Closing CTA */}
+        <section className="flex flex-col items-start gap-4 px-6 py-12 lg:px-12">
+          <h2 className="text-2xl font-semibold tracking-tight text-fd-foreground">
+            {copy.closingHeading}
+          </h2>
+          <p className="max-w-xl text-fd-muted-foreground">{copy.closingDescription}</p>
+          <Link {...docsLink(locale, '')} className="kairo-btn" data-variant="solid" data-size="lg">
+            {copy.finalCta}
+          </Link>
+        </section>
       </div>
     </main>
   );

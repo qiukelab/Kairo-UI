@@ -55,7 +55,12 @@ function clamp(value: number, min: number, max: number): number {
  * `low`/`high` are assumed to already be clamped into `[min, max]` with
  * `low <= high`.
  */
-export function getMeterState(value: number, low: number, high: number, optimum: number): MeterState {
+export function getMeterState(
+  value: number,
+  low: number,
+  high: number,
+  optimum: number,
+): MeterState {
   if (optimum >= low && optimum <= high) {
     return value >= low && value <= high ? 'optimum' : 'suboptimum';
   }

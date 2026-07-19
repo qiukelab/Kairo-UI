@@ -144,7 +144,9 @@ export const ContextMenuTrigger = forwardRef<HTMLDivElement, ContextMenuTriggerC
         ref={ref}
         data-disabled={isDisabled || undefined}
         aria-disabled={isDisabled ? true : undefined}
-        className={className ? `kairo-context-menu-trigger ${className}` : 'kairo-context-menu-trigger'}
+        className={
+          className ? `kairo-context-menu-trigger ${className}` : 'kairo-context-menu-trigger'
+        }
         {...props}
       />
     );
@@ -206,7 +208,9 @@ export const ContextMenuContent = forwardRef<HTMLDivElement, ContextMenuContentP
           <BaseContextMenu.Popup
             ref={ref}
             lang={locale}
-            className={className ? `kairo-context-menu-popup ${className}` : 'kairo-context-menu-popup'}
+            className={
+              className ? `kairo-context-menu-popup ${className}` : 'kairo-context-menu-popup'
+            }
             {...props}
           >
             {children}
@@ -263,19 +267,20 @@ ContextMenuGroup.displayName = 'ContextMenuGroup';
 export interface ContextMenuGroupLabelComponentProps extends ContextMenuGroupLabelProps {}
 
 /** An accessible label for a `ContextMenuGroup`, automatically associated with it. */
-export const ContextMenuGroupLabel = forwardRef<HTMLDivElement, ContextMenuGroupLabelComponentProps>(
-  function ContextMenuGroupLabel({ className, ...props }, ref) {
-    return (
-      <BaseContextMenu.GroupLabel
-        ref={ref}
-        className={
-          className ? `kairo-context-menu-group-label ${className}` : 'kairo-context-menu-group-label'
-        }
-        {...props}
-      />
-    );
-  },
-);
+export const ContextMenuGroupLabel = forwardRef<
+  HTMLDivElement,
+  ContextMenuGroupLabelComponentProps
+>(function ContextMenuGroupLabel({ className, ...props }, ref) {
+  return (
+    <BaseContextMenu.GroupLabel
+      ref={ref}
+      className={
+        className ? `kairo-context-menu-group-label ${className}` : 'kairo-context-menu-group-label'
+      }
+      {...props}
+    />
+  );
+});
 
 ContextMenuGroupLabel.displayName = 'ContextMenuGroupLabel';
 
@@ -296,7 +301,9 @@ export const ContextMenuSeparator = forwardRef<HTMLDivElement, ContextMenuSepara
     return (
       <BaseSeparator
         ref={ref}
-        className={className ? `kairo-context-menu-separator ${className}` : 'kairo-context-menu-separator'}
+        className={
+          className ? `kairo-context-menu-separator ${className}` : 'kairo-context-menu-separator'
+        }
         {...props}
       />
     );

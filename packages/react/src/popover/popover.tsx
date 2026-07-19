@@ -132,17 +132,18 @@ PopoverTitle.displayName = 'PopoverTitle';
 export interface PopoverDescriptionComponentProps extends PopoverDescriptionProps {}
 
 /** A paragraph with additional information about the popover. Renders a `<p>` element. */
-export const PopoverDescription = forwardRef<HTMLParagraphElement, PopoverDescriptionComponentProps>(
-  function PopoverDescription({ className, ...props }, ref) {
-    return (
-      <BasePopover.Description
-        ref={ref}
-        className={className ? `kairo-popover-description ${className}` : 'kairo-popover-description'}
-        {...props}
-      />
-    );
-  },
-);
+export const PopoverDescription = forwardRef<
+  HTMLParagraphElement,
+  PopoverDescriptionComponentProps
+>(function PopoverDescription({ className, ...props }, ref) {
+  return (
+    <BasePopover.Description
+      ref={ref}
+      className={className ? `kairo-popover-description ${className}` : 'kairo-popover-description'}
+      {...props}
+    />
+  );
+});
 
 PopoverDescription.displayName = 'PopoverDescription';
 

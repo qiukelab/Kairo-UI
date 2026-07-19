@@ -102,7 +102,9 @@ export function TokenShowcase() {
                   className="flex h-16 items-center justify-center text-xs font-medium"
                   style={{
                     backgroundColor: `var(--kairo-${name})`,
-                    color: hasForeground ? `var(--kairo-${name}-foreground)` : 'var(--kairo-foreground)',
+                    color: hasForeground
+                      ? `var(--kairo-${name}-foreground)`
+                      : 'var(--kairo-foreground)',
                   }}
                 >
                   Aa
@@ -169,7 +171,10 @@ export function TokenShowcase() {
         <h3 className="mb-3 text-sm font-medium" style={sectionHeadingStyle}>
           Motion
         </h3>
-        <ul className="grid grid-cols-2 gap-2 text-xs font-mono sm:grid-cols-3" style={sectionHeadingStyle}>
+        <ul
+          className="grid grid-cols-2 gap-2 text-xs font-mono sm:grid-cols-3"
+          style={sectionHeadingStyle}
+        >
           {MOTION_TOKENS.map((name) => (
             <li key={name}>
               --kairo-{name}: {motion[name]}
@@ -183,8 +188,12 @@ export function TokenShowcase() {
           Typography
         </h3>
         <div className="flex flex-col gap-2 text-sm">
-          <p style={{ fontFamily: 'var(--kairo-font-sans)' }}>The quick brown fox jumps over the lazy dog (font-sans)</p>
-          <p style={{ fontFamily: 'var(--kairo-font-mono)' }}>The quick brown fox jumps over the lazy dog (font-mono)</p>
+          <p style={{ fontFamily: 'var(--kairo-font-sans)' }}>
+            The quick brown fox jumps over the lazy dog (font-sans)
+          </p>
+          <p style={{ fontFamily: 'var(--kairo-font-mono)' }}>
+            The quick brown fox jumps over the lazy dog (font-mono)
+          </p>
         </div>
       </section>
     </div>

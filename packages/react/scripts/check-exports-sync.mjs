@@ -30,7 +30,8 @@ const exportKeys = new Set(Object.keys(exports));
 const onlyInEntry = [...entryKeys].filter((key) => !exportKeys.has(key));
 const onlyInExports = [...exportKeys].filter((key) => !entryKeys.has(key));
 
-for (const key of onlyInEntry) console.error(`tsdown entry has no matching "exports" subpath: ${key}`);
+for (const key of onlyInEntry)
+  console.error(`tsdown entry has no matching "exports" subpath: ${key}`);
 for (const key of onlyInExports) console.error(`"exports" has no matching tsdown entry: ${key}`);
 
 if (onlyInEntry.length || onlyInExports.length) process.exit(1);

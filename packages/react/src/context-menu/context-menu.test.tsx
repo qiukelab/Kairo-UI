@@ -122,7 +122,11 @@ describe('ContextMenu', () => {
     // initial auto-highlight already consumed.
     const names: string[] = [];
     for (let i = 0; i < 4; i += 1) {
-      names.push(document.activeElement?.getAttribute('aria-label') ?? document.activeElement?.textContent ?? '');
+      names.push(
+        document.activeElement?.getAttribute('aria-label') ??
+          document.activeElement?.textContent ??
+          '',
+      );
       fireEvent.keyDown(document.activeElement as HTMLElement, { key: 'ArrowDown' });
       await waitFor(() => expect(document.activeElement).not.toBe(document.body));
     }

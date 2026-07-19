@@ -1,6 +1,14 @@
 'use client';
 
-import { Button, Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from '@kairo-ui/react';
+import {
+  Button,
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from '@kairo-ui/react';
 
 /**
  * Interactive demo for the Dialog docs page: a trigger button opens a modal

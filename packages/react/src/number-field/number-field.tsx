@@ -41,20 +41,19 @@ import { useKairoLocale } from '../i18n/use-kairo-messages';
  */
 export interface NumberFieldComponentProps extends NumberFieldRootProps {}
 
-export const NumberField = forwardRef<HTMLDivElement, NumberFieldComponentProps>(function NumberField(
-  { className, locale, ...props },
-  ref,
-) {
-  const contextLocale = useKairoLocale();
-  return (
-    <BaseNumberField.Root
-      ref={ref}
-      locale={locale ?? contextLocale}
-      className={className ? `kairo-number-field ${className}` : 'kairo-number-field'}
-      {...props}
-    />
-  );
-});
+export const NumberField = forwardRef<HTMLDivElement, NumberFieldComponentProps>(
+  function NumberField({ className, locale, ...props }, ref) {
+    const contextLocale = useKairoLocale();
+    return (
+      <BaseNumberField.Root
+        ref={ref}
+        locale={locale ?? contextLocale}
+        className={className ? `kairo-number-field ${className}` : 'kairo-number-field'}
+        {...props}
+      />
+    );
+  },
+);
 
 NumberField.displayName = 'NumberField';
 
@@ -111,21 +110,22 @@ export interface NumberFieldIncrementComponentProps extends NumberFieldIncrement
  * which has no `numberField*` entry yet. Pass `aria-label` explicitly to
  * localize it (it overrides Base UI's default) until that wiring exists.
  */
-export const NumberFieldIncrement = forwardRef<HTMLButtonElement, NumberFieldIncrementComponentProps>(
-  function NumberFieldIncrement({ className, children, ...props }, ref) {
-    return (
-      <BaseNumberField.Increment
-        ref={ref}
-        className={
-          className ? `kairo-number-field-increment ${className}` : 'kairo-number-field-increment'
-        }
-        {...props}
-      >
-        {children ?? <PlusIcon />}
-      </BaseNumberField.Increment>
-    );
-  },
-);
+export const NumberFieldIncrement = forwardRef<
+  HTMLButtonElement,
+  NumberFieldIncrementComponentProps
+>(function NumberFieldIncrement({ className, children, ...props }, ref) {
+  return (
+    <BaseNumberField.Increment
+      ref={ref}
+      className={
+        className ? `kairo-number-field-increment ${className}` : 'kairo-number-field-increment'
+      }
+      {...props}
+    >
+      {children ?? <PlusIcon />}
+    </BaseNumberField.Increment>
+  );
+});
 
 NumberFieldIncrement.displayName = 'NumberFieldIncrement';
 
@@ -139,21 +139,22 @@ export interface NumberFieldDecrementComponentProps extends NumberFieldDecrement
  * Same built-in-but-unlocalized `aria-label="Decrease"` caveat as
  * {@link NumberFieldIncrement} — see its doc comment.
  */
-export const NumberFieldDecrement = forwardRef<HTMLButtonElement, NumberFieldDecrementComponentProps>(
-  function NumberFieldDecrement({ className, children, ...props }, ref) {
-    return (
-      <BaseNumberField.Decrement
-        ref={ref}
-        className={
-          className ? `kairo-number-field-decrement ${className}` : 'kairo-number-field-decrement'
-        }
-        {...props}
-      >
-        {children ?? <MinusIcon />}
-      </BaseNumberField.Decrement>
-    );
-  },
-);
+export const NumberFieldDecrement = forwardRef<
+  HTMLButtonElement,
+  NumberFieldDecrementComponentProps
+>(function NumberFieldDecrement({ className, children, ...props }, ref) {
+  return (
+    <BaseNumberField.Decrement
+      ref={ref}
+      className={
+        className ? `kairo-number-field-decrement ${className}` : 'kairo-number-field-decrement'
+      }
+      {...props}
+    >
+      {children ?? <MinusIcon />}
+    </BaseNumberField.Decrement>
+  );
+});
 
 NumberFieldDecrement.displayName = 'NumberFieldDecrement';
 

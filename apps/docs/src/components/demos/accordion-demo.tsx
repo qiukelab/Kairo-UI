@@ -20,8 +20,8 @@ export function AccordionDemo() {
           <AccordionTrigger>What are the shipping options?</AccordionTrigger>
         </AccordionHeader>
         <AccordionPanel>
-          Standard shipping arrives in 3-5 business days. Express shipping arrives
-          the next business day.
+          Standard shipping arrives in 3-5 business days. Express shipping arrives the next business
+          day.
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem value="returns">

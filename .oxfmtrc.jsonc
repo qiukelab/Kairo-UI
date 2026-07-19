@@ -51,6 +51,6 @@
     // regenerate -> reformat -> red-test loop rather than a one-time fixup.
     // Excluded from the FORMATTER only: it is public API that consumers
     // import, so oxlint still lints it. Do not merge these two ignore lists.
-    "packages/theme/src/tokens.generated.ts"
-  ]
+    "packages/theme/src/tokens.generated.ts",
+  ],
 }

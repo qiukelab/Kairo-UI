@@ -70,7 +70,10 @@ const DrawerModalityContext = createContext<DrawerModality>(true);
  * exports, so it's pulled out of `DrawerRootProps['swipeDirection']` instead
  * of reaching into Base UI's internals.
  */
-const SWIPE_DIRECTION_BY_SIDE: Record<DrawerSide, NonNullable<DrawerRootProps['swipeDirection']>> = {
+const SWIPE_DIRECTION_BY_SIDE: Record<
+  DrawerSide,
+  NonNullable<DrawerRootProps['swipeDirection']>
+> = {
   top: 'up',
   right: 'right',
   bottom: 'down',
@@ -200,29 +203,30 @@ export interface DrawerContentProps extends DrawerPopupProps {
  * any `lang` set further up the tree, so CSS `:lang()` rules can't otherwise
  * reach it. Pass `lang` explicitly to override.
  */
-export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
-  function DrawerContent({ className, children, container, ...props }, ref) {
-    const locale = useKairoLocale();
-    const side = useContext(DrawerSideContext);
-    const modal = useContext(DrawerModalityContext);
-    return (
-      <BaseDrawer.Portal container={container}>
-        {modal === true && <BaseDrawer.Backdrop className="kairo-drawer-backdrop" />}
-        <BaseDrawer.Viewport className="kairo-drawer-viewport" data-modal={String(modal)}>
-          <BaseDrawer.Popup
-            ref={ref}
-            lang={locale}
-            data-side={side}
-            className={className ? `kairo-drawer-popup ${className}` : 'kairo-drawer-popup'}
-            {...props}
-          >
-            {children}
-          </BaseDrawer.Popup>
-        </BaseDrawer.Viewport>
-      </BaseDrawer.Portal>
-    );
-  },
-);
+export const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(function DrawerContent(
+  { className, children, container, ...props },
+  ref,
+) {
+  const locale = useKairoLocale();
+  const side = useContext(DrawerSideContext);
+  const modal = useContext(DrawerModalityContext);
+  return (
+    <BaseDrawer.Portal container={container}>
+      {modal === true && <BaseDrawer.Backdrop className="kairo-drawer-backdrop" />}
+      <BaseDrawer.Viewport className="kairo-drawer-viewport" data-modal={String(modal)}>
+        <BaseDrawer.Popup
+          ref={ref}
+          lang={locale}
+          data-side={side}
+          className={className ? `kairo-drawer-popup ${className}` : 'kairo-drawer-popup'}
+          {...props}
+        >
+          {children}
+        </BaseDrawer.Popup>
+      </BaseDrawer.Viewport>
+    </BaseDrawer.Portal>
+  );
+});
 
 DrawerContent.displayName = 'DrawerContent';
 

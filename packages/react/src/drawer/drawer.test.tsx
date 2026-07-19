@@ -6,7 +6,14 @@ import { axe } from 'vitest-axe';
 // and vitest-axe matchers lives in test/setup.ts; see also
 // ../button/vitest-axe.d.ts for the vitest-axe matcher types).
 import '@testing-library/jest-dom/vitest';
-import { Drawer, DrawerTrigger, DrawerContent, DrawerTitle, DrawerDescription, DrawerClose } from './drawer';
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerClose,
+} from './drawer';
 import { KairoLocaleProvider } from '../i18n/locale-provider';
 
 function Example() {

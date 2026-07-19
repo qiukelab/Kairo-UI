@@ -40,7 +40,11 @@ export function SearchDialog(props: SharedProps) {
         locale === 'th'
           ? {
               from: '/static-search-th.json',
-              initOrama: () => create({ schema: { _: 'string' }, components: { tokenizer: createThaiTokenizer() } }),
+              initOrama: () =>
+                create({
+                  schema: { _: 'string' },
+                  components: { tokenizer: createThaiTokenizer() },
+                }),
             }
           : { from: '/static-search-en.json' },
       ),
@@ -49,7 +53,12 @@ export function SearchDialog(props: SharedProps) {
   );
 
   return (
-    <SearchDialogPrimitive search={search} onSearchChange={setSearch} isLoading={query.isLoading} {...props}>
+    <SearchDialogPrimitive
+      search={search}
+      onSearchChange={setSearch}
+      isLoading={query.isLoading}
+      {...props}
+    >
       <SearchDialogOverlay />
       <SearchDialogContent>
         <SearchDialogHeader>

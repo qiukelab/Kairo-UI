@@ -6,7 +6,14 @@ import { axe } from 'vitest-axe';
 // and vitest-axe matchers lives in test/setup.ts; see also
 // ../button/vitest-axe.d.ts for the vitest-axe matcher types).
 import '@testing-library/jest-dom/vitest';
-import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from './dialog';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from './dialog';
 import { KairoLocaleProvider } from '../i18n/locale-provider';
 
 function Example() {

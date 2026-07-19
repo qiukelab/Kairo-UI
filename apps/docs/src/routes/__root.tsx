@@ -1,4 +1,11 @@
-import { createRootRoute, HeadContent, Outlet, Scripts, useRouter, useRouterState } from '@tanstack/react-router';
+import {
+  createRootRoute,
+  HeadContent,
+  Outlet,
+  Scripts,
+  useRouter,
+  useRouterState,
+} from '@tanstack/react-router';
 import { KairoLocaleProvider } from '@kairo-ui/react';
 import { RootProvider } from 'fumadocs-ui/provider/tanstack';
 import { NotFound } from '@/components/not-found';
@@ -17,7 +24,7 @@ export const Route = createRootRoute({
       {
         name: 'description',
         content:
-          "Accessible React components with a CSS-first theme system. No Tailwind required. Built for Next.js and Vite.",
+          'Accessible React components with a CSS-first theme system. No Tailwind required. Built for Next.js and Vite.',
       },
     ],
     links: [{ rel: 'stylesheet', href: appCss }],

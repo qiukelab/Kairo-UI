@@ -39,7 +39,12 @@ describe('Switch', () => {
   it('prevents toggling when disabled', () => {
     const onCheckedChange = vi.fn();
     render(
-      <Switch aria-label="Airplane mode" disabled defaultChecked={false} onCheckedChange={onCheckedChange} />,
+      <Switch
+        aria-label="Airplane mode"
+        disabled
+        defaultChecked={false}
+        onCheckedChange={onCheckedChange}
+      />,
     );
     const toggle = screen.getByRole('switch', { name: 'Airplane mode' });
     fireEvent.click(toggle);

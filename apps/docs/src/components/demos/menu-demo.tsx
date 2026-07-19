@@ -86,7 +86,9 @@ export function MenuDemo() {
 
       <div className="flex flex-col gap-2">
         <Menu open={open} onOpenChange={setOpen}>
-          <MenuTrigger render={<Button variant="outline">{open ? 'Close menu' : 'Open menu'}</Button>} />
+          <MenuTrigger
+            render={<Button variant="outline">{open ? 'Close menu' : 'Open menu'}</Button>}
+          />
           <MenuContent>
             <MenuItem>Profile</MenuItem>
             <MenuItem>Settings</MenuItem>

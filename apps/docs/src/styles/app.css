@@ -282,10 +282,7 @@ html > body[data-scroll-locked] {
   grid-template-columns:
     0
     var(--fd-sidebar-col)
-    minmax(
-      0,
-      calc(var(--fd-layout-width, 97rem) - var(--fd-sidebar-col) - var(--fd-toc-width))
-    )
+    minmax(0, calc(var(--fd-layout-width, 97rem) - var(--fd-sidebar-col) - var(--fd-toc-width)))
     var(--fd-toc-width)
     minmax(0, 1fr) !important;
 

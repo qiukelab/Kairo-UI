@@ -146,7 +146,8 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
     ],
 
     themingHeading: 'Theming',
-    themingDescription: 'Every colour, radius and easing curve is a CSS variable. Change one, change everywhere.',
+    themingDescription:
+      'Every colour, radius and easing curve is a CSS variable. Change one, change everywhere.',
     themingPoints: [
       {
         title: 'Tokens, not overrides',
@@ -258,19 +259,16 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
       },
       {
         title: 'สว่างและมืด ปรับแยกกัน',
-        description:
-          'โหมดมืดไม่ใช่การกลับสี เส้นขอบจะสว่างขึ้นและเงาถูกปรับใหม่ เพื่อให้ระดับความสูงยังอ่านออกบนพื้นมืด',
+        description: 'โหมดมืดไม่ใช่การกลับสี เส้นขอบจะสว่างขึ้นและเงาถูกปรับใหม่ เพื่อให้ระดับความสูงยังอ่านออกบนพื้นมืด',
       },
       {
         title: 'คอนทราสต์ผ่านเกณฑ์ AA',
-        description:
-          'ทุก token ของสีตัวอักษรถูกตรวจกับพื้นผิวที่จับคู่ด้วย ที่อัตราส่วน 4.5:1 ขึ้นไป',
+        description: 'ทุก token ของสีตัวอักษรถูกตรวจกับพื้นผิวที่จับคู่ด้วย ที่อัตราส่วน 4.5:1 ขึ้นไป',
       },
     ],
 
     closingHeading: 'พร้อมเริ่มสร้างหรือยัง',
-    closingDescription:
-      'ติดตั้งสองแพ็กเกจ import สไตล์ชีตหนึ่งไฟล์ แล้วเริ่มประกอบ UI ที่เข้าถึงง่ายได้เลย',
+    closingDescription: 'ติดตั้งสองแพ็กเกจ import สไตล์ชีตหนึ่งไฟล์ แล้วเริ่มประกอบ UI ที่เข้าถึงง่ายได้เลย',
     finalCta: 'อ่านเอกสาร',
   },
 };

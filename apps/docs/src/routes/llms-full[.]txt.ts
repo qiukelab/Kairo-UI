@@ -21,7 +21,9 @@ async function buildLlmsFull(): Promise<string> {
   for (const locale of i18n.languages) {
     for (const page of source.getPages(locale)) {
       const raw = await page.data.getText('raw');
-      sections.push(`# ${page.data.title ?? page.url}\n\nURL: ${page.url}\n\n${stripFrontmatter(raw)}`);
+      sections.push(
+        `# ${page.data.title ?? page.url}\n\nURL: ${page.url}\n\n${stripFrontmatter(raw)}`,
+      );
     }
   }
   return sections.join('\n\n---\n\n');

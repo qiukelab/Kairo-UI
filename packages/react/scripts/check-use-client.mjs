@@ -33,7 +33,16 @@ const DIST = join(ROOT, 'dist');
 // Component tree without dragging in a client boundary. Hardcoded and
 // fail-closed: anything not listed here is assumed interactive, so a new
 // component must either ship a directive or be added here on purpose.
-const STATIC = new Set(['button', 'badge', 'card', 'spinner', 'separator', 'progress', 'meter', 'input']);
+const STATIC = new Set([
+  'button',
+  'badge',
+  'card',
+  'spinner',
+  'separator',
+  'progress',
+  'meter',
+  'input',
+]);
 
 /**
  * Returns the string-literal values of `source`'s leading directive
@@ -159,7 +168,9 @@ function toDisplayPath(absPath) {
 
 function main() {
   if (!existsSync(DIST)) {
-    console.error('dist/ does not exist. Run `pnpm build` first — this check inspects the built output, not src/.');
+    console.error(
+      'dist/ does not exist. Run `pnpm build` first — this check inspects the built output, not src/.',
+    );
     process.exit(1);
   }
 
@@ -227,7 +238,9 @@ function main() {
   // the whole package into a client boundary, defeating every static export.
   const rootIndex = join(DIST, 'index.mjs');
   if (readDirectivesOf(rootIndex).includes('use client')) {
-    console.error(`${toDisplayPath(rootIndex)} (the root barrel) must not carry a 'use client' directive`);
+    console.error(
+      `${toDisplayPath(rootIndex)} (the root barrel) must not carry a 'use client' directive`,
+    );
     failed = true;
   }
 
@@ -252,7 +265,9 @@ function main() {
   }
 
   if (failed) process.exit(1);
-  console.log(`${componentNames.length} components checked (${clientCount} client, ${serverCount} server)`);
+  console.log(
+    `${componentNames.length} components checked (${clientCount} client, ${serverCount} server)`,
+  );
 }
 
 // Only run the check when this file is executed directly (`node

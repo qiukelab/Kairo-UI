@@ -26,7 +26,9 @@ describe('i18n', () => {
     render(<Probe />);
     expect(screen.getByTestId('locale')).toHaveTextContent('none');
     expect(screen.getByTestId('spinner-label')).toHaveTextContent(defaultMessages.spinnerLabel);
-    expect(screen.getByTestId('dismiss-label')).toHaveTextContent(defaultMessages.toastDismissLabel);
+    expect(screen.getByTestId('dismiss-label')).toHaveTextContent(
+      defaultMessages.toastDismissLabel,
+    );
   });
 
   it('supplies the locale and overrides messages via KairoLocaleProvider', () => {

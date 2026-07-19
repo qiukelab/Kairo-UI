@@ -7,14 +7,13 @@ import type { Variants } from 'motion/react';
 import { transitions } from '../transitions';
 import { shapes, type VariantName } from '../variants/shapes';
 
-export interface RevealProps
-  extends Omit<
-    ComponentPropsWithoutRef<'div'>,
-    // Dropped: Motion's `motion.div` redefines these four with gesture/
-    // animation-lifecycle signatures incompatible with the native DOM
-    // event handlers of the same name.
-    'onAnimationStart' | 'onDrag' | 'onDragStart' | 'onDragEnd'
-  > {
+export interface RevealProps extends Omit<
+  ComponentPropsWithoutRef<'div'>,
+  // Dropped: Motion's `motion.div` redefines these four with gesture/
+  // animation-lifecycle signatures incompatible with the native DOM
+  // event handlers of the same name.
+  'onAnimationStart' | 'onDrag' | 'onDragStart' | 'onDragEnd'
+> {
   /** Which entrance shape to play. @default 'slideUp' */
   variant?: VariantName;
   /** Delay, in seconds, before the entrance transition starts. @default 0 */

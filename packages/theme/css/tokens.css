@@ -87,8 +87,8 @@
     --kairo-font-sans:
       ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
       'Noto Sans Thai', 'IBM Plex Sans Thai', 'Sarabun', 'Leelawadee UI', 'Thonburi',
-      'Helvetica Neue', Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji',
-      'Noto Color Emoji', sans-serif;
+      'Helvetica Neue', Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji',
+      sans-serif;
     --kairo-font-mono:
       ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
 
@@ -105,9 +105,12 @@
        occlusion. Kept tight/low-opacity: elevation here is border-led. */
     --kairo-shadow-color: 0 0 0;
     --kairo-shadow-strength: 1;
-    --kairo-shadow-sm: 0 1px 2px 0 rgb(var(--kairo-shadow-color) / calc(0.05 * var(--kairo-shadow-strength)));
-    --kairo-shadow-md: 0 2px 6px -1px rgb(var(--kairo-shadow-color) / calc(0.08 * var(--kairo-shadow-strength)));
-    --kairo-shadow-lg: 0 8px 24px -6px rgb(var(--kairo-shadow-color) / calc(0.12 * var(--kairo-shadow-strength)));
+    --kairo-shadow-sm: 0 1px 2px 0
+      rgb(var(--kairo-shadow-color) / calc(0.05 * var(--kairo-shadow-strength)));
+    --kairo-shadow-md: 0 2px 6px -1px
+      rgb(var(--kairo-shadow-color) / calc(0.08 * var(--kairo-shadow-strength)));
+    --kairo-shadow-lg: 0 8px 24px -6px
+      rgb(var(--kairo-shadow-color) / calc(0.12 * var(--kairo-shadow-strength)));
 
     /* Motion */
     --kairo-duration-fast: 150ms;

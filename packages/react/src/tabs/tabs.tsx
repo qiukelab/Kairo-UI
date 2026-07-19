@@ -57,10 +57,7 @@ export const TabsList = forwardRef<HTMLDivElement, TabsListComponentProps>(funct
 
 TabsList.displayName = 'TabsList';
 
-export const Tab = forwardRef<HTMLElement, TabProps>(function Tab(
-  { className, ...props },
-  ref,
-) {
+export const Tab = forwardRef<HTMLElement, TabProps>(function Tab({ className, ...props }, ref) {
   return (
     <BaseTabs.Tab
       ref={ref}

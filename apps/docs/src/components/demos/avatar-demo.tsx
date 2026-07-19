@@ -24,7 +24,11 @@ export function AvatarDemo() {
         <Avatar size="lg" fallback="LG" />
       </div>
       <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" checked={broken} onChange={(event) => setBroken(event.target.checked)} />
+        <input
+          type="checkbox"
+          checked={broken}
+          onChange={(event) => setBroken(event.target.checked)}
+        />
         Simulate a broken image URL (falls back to initials)
       </label>
     </div>

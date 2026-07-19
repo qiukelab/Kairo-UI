@@ -231,7 +231,9 @@ export const MenuRadioItem = forwardRef<HTMLElement, MenuRadioItemComponentProps
       <BaseMenu.RadioItem
         ref={ref}
         className={
-          className ? `kairo-menu-item kairo-menu-radio-item ${className}` : 'kairo-menu-item kairo-menu-radio-item'
+          className
+            ? `kairo-menu-item kairo-menu-radio-item ${className}`
+            : 'kairo-menu-item kairo-menu-radio-item'
         }
         {...props}
       >
@@ -315,7 +317,10 @@ MenuSeparator.displayName = 'MenuSeparator';
  */
 export const MenuSub = BaseMenu.SubmenuRoot;
 
-export interface MenuSubmenuTriggerComponentProps extends Omit<MenuSubmenuTriggerProps, 'children'> {
+export interface MenuSubmenuTriggerComponentProps extends Omit<
+  MenuSubmenuTriggerProps,
+  'children'
+> {
   children?: ReactNode;
 }
 

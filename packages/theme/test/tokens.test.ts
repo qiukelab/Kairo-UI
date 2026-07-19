@@ -2,7 +2,12 @@ import { readFileSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { OUTPUT_PATH, generateTokens, parseTokensCss, renderTokensModule } from '../scripts/generate-tokens.mjs';
+import {
+  OUTPUT_PATH,
+  generateTokens,
+  parseTokensCss,
+  renderTokensModule,
+} from '../scripts/generate-tokens.mjs';
 
 /**
  * `src/tokens.generated.ts` is committed, not built on the fly (a token
@@ -32,7 +37,9 @@ describe('tokens.generated.ts', () => {
     const missing = foreignTokens.filter((token) => !rootNames.has(token.name));
     expect(
       missing,
-      missing.map((token) => `${token.name} in '${token.selector}' (tokens.css:${token.line})`).join('\n'),
+      missing
+        .map((token) => `${token.name} in '${token.selector}' (tokens.css:${token.line})`)
+        .join('\n'),
     ).toEqual([]);
   });
 

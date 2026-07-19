@@ -106,8 +106,12 @@ describe('NumberField', () => {
   it('renders the input and both buttons as disabled when the field is disabled', () => {
     render(<Example defaultValue={5} disabled />);
     expect(screen.getByRole('textbox', { name: 'Quantity' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Increase quantity' })).toHaveAttribute('data-disabled');
-    expect(screen.getByRole('button', { name: 'Decrease quantity' })).toHaveAttribute('data-disabled');
+    expect(screen.getByRole('button', { name: 'Increase quantity' })).toHaveAttribute(
+      'data-disabled',
+    );
+    expect(screen.getByRole('button', { name: 'Decrease quantity' })).toHaveAttribute(
+      'data-disabled',
+    );
   });
 
   it('ignores unparseable typed text', () => {

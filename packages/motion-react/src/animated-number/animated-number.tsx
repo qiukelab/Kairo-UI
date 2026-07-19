@@ -11,14 +11,13 @@ function defaultFormat(value: number): string {
   return defaultFormatter.format(Math.round(value));
 }
 
-export interface AnimatedNumberProps
-  extends Omit<
-    ComponentPropsWithoutRef<'span'>,
-    // Dropped: Motion's `motion.span` redefines these four with gesture/
-    // animation-lifecycle signatures incompatible with the native DOM
-    // event handlers of the same name.
-    'children' | 'onAnimationStart' | 'onDrag' | 'onDragStart' | 'onDragEnd'
-  > {
+export interface AnimatedNumberProps extends Omit<
+  ComponentPropsWithoutRef<'span'>,
+  // Dropped: Motion's `motion.span` redefines these four with gesture/
+  // animation-lifecycle signatures incompatible with the native DOM
+  // event handlers of the same name.
+  'children' | 'onAnimationStart' | 'onDrag' | 'onDragStart' | 'onDragEnd'
+> {
   /** The numeric value to display, and spring-animate towards on change. */
   value: number;
   /**
@@ -40,35 +39,34 @@ export interface AnimatedNumberProps
  * reduced motion (`useReducedMotion`), it skips the spring and snaps
  * straight to the formatted value instead.
  */
-export const AnimatedNumber = forwardRef<HTMLSpanElement, AnimatedNumberProps>(function AnimatedNumber(
-  { value, format = defaultFormat, transition, className, ...props },
-  ref,
-) {
-  const shouldReduceMotion = useReducedMotion();
-  // `useSpring(value, ...)` seeds the returned `MotionValue` with the first
-  // render's `value` and wires it to spring towards whatever it's next
-  // `.set()` to — it does NOT automatically track later changes to the
-  // `value` argument itself, hence the effect below.
-  const spring = useSpring(value, transition);
-  const display = useTransform(spring, format);
+export const AnimatedNumber = forwardRef<HTMLSpanElement, AnimatedNumberProps>(
+  function AnimatedNumber({ value, format = defaultFormat, transition, className, ...props }, ref) {
+    const shouldReduceMotion = useReducedMotion();
+    // `useSpring(value, ...)` seeds the returned `MotionValue` with the first
+    // render's `value` and wires it to spring towards whatever it's next
+    // `.set()` to — it does NOT automatically track later changes to the
+    // `value` argument itself, hence the effect below.
+    const spring = useSpring(value, transition);
+    const display = useTransform(spring, format);
 
-  useEffect(() => {
-    spring.set(value);
-  }, [spring, value]);
+    useEffect(() => {
+      spring.set(value);
+    }, [spring, value]);
 
-  if (shouldReduceMotion) {
+    if (shouldReduceMotion) {
+      return (
+        <span ref={ref} className={className} {...props}>
+          {format(value)}
+        </span>
+      );
+    }
+
     return (
-      <span ref={ref} className={className} {...props}>
-        {format(value)}
-      </span>
+      <motion.span ref={ref} className={className} {...props}>
+        {display}
+      </motion.span>
     );
-  }
-
-  return (
-    <motion.span ref={ref} className={className} {...props}>
-      {display}
-    </motion.span>
-  );
-});
+  },
+);
 
 AnimatedNumber.displayName = 'AnimatedNumber';

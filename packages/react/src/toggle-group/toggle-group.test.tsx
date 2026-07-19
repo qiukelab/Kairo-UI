@@ -145,9 +145,7 @@ describe('ToggleGroup (single-select)', () => {
 
   it('supports a controlled value + onValueChange', () => {
     const onValueChange = vi.fn();
-    const { rerender } = render(
-      <SingleGroup value={['left']} onValueChange={onValueChange} />,
-    );
+    const { rerender } = render(<SingleGroup value={['left']} onValueChange={onValueChange} />);
     expect(screen.getByRole('button', { name: 'Left' })).toHaveAttribute('data-pressed');
 
     fireEvent.click(screen.getByRole('button', { name: 'Right' }));

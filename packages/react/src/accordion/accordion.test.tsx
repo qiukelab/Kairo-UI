@@ -114,10 +114,7 @@ describe('Accordion', () => {
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
     const panelId = trigger.getAttribute('aria-controls');
     expect(panelId).toBeTruthy();
-    expect(screen.getByText('Content A').closest('[role="region"]')).toHaveAttribute(
-      'id',
-      panelId,
-    );
+    expect(screen.getByText('Content A').closest('[role="region"]')).toHaveAttribute('id', panelId);
   });
 
   it('does not expand a disabled item', () => {

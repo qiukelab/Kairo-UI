@@ -1,7 +1,10 @@
 'use client';
 
 import { Toast as BaseToast } from '@base-ui/react/toast';
-import type { ToastProviderProps as BaseToastProviderProps, ToastObject } from '@base-ui/react/toast';
+import type {
+  ToastProviderProps as BaseToastProviderProps,
+  ToastObject,
+} from '@base-ui/react/toast';
 import { useKairoLocale, useKairoMessages } from '../i18n/use-kairo-messages';
 
 export interface ToastProviderProps extends BaseToastProviderProps {
@@ -111,7 +114,9 @@ function ToastItem({
 }) {
   return (
     <BaseToast.Root toast={toast} className="kairo-toast">
-      {toast.title ? <BaseToast.Title className="kairo-toast-title">{toast.title}</BaseToast.Title> : null}
+      {toast.title ? (
+        <BaseToast.Title className="kairo-toast-title">{toast.title}</BaseToast.Title>
+      ) : null}
       {toast.description ? (
         <BaseToast.Description className="kairo-toast-description">
           {toast.description}

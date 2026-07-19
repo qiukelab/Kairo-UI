@@ -59,8 +59,9 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(function Toggle
 
 Toggle.displayName = 'Toggle';
 
-export interface ToggleGroupProps<Value extends string = string>
-  extends BaseToggleGroupProps<Value> {}
+export interface ToggleGroupProps<
+  Value extends string = string,
+> extends BaseToggleGroupProps<Value> {}
 
 /**
  * Kairo's ToggleGroup: a set of related `Toggle`s that share pressed state.

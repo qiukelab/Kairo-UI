@@ -73,7 +73,9 @@ export const AlertDialogTrigger = forwardRef<HTMLButtonElement, AlertDialogTrigg
     return (
       <BaseAlertDialog.Trigger
         ref={ref}
-        className={className ? `kairo-alert-dialog-trigger ${className}` : 'kairo-alert-dialog-trigger'}
+        className={
+          className ? `kairo-alert-dialog-trigger ${className}` : 'kairo-alert-dialog-trigger'
+        }
         {...props}
       />
     );
@@ -126,7 +128,9 @@ export const AlertDialogContent = forwardRef<HTMLDivElement, AlertDialogContentP
         <BaseAlertDialog.Popup
           ref={ref}
           lang={locale}
-          className={className ? `kairo-alert-dialog-popup ${className}` : 'kairo-alert-dialog-popup'}
+          className={
+            className ? `kairo-alert-dialog-popup ${className}` : 'kairo-alert-dialog-popup'
+          }
           {...props}
         >
           {children}
@@ -165,7 +169,9 @@ export const AlertDialogDescription = forwardRef<
   return (
     <BaseAlertDialog.Description
       ref={ref}
-      className={className ? `kairo-alert-dialog-description ${className}` : 'kairo-alert-dialog-description'}
+      className={
+        className ? `kairo-alert-dialog-description ${className}` : 'kairo-alert-dialog-description'
+      }
       {...props}
     />
   );

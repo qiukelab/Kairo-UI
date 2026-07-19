@@ -33,7 +33,9 @@ export const Route = createFileRoute('/th/docs/$')({
       ? {
           meta: [
             { title: loaderData.title },
-            ...(loaderData.description ? [{ name: 'description', content: loaderData.description }] : []),
+            ...(loaderData.description
+              ? [{ name: 'description', content: loaderData.description }]
+              : []),
           ],
         }
       : {},

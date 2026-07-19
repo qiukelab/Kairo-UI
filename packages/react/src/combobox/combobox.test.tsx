@@ -176,9 +176,7 @@ describe('Combobox', () => {
 
   it('supports a controlled value', async () => {
     const onValueChange = vi.fn();
-    const { rerender } = render(
-      <Example value={fruits[0]} onValueChange={onValueChange} />,
-    );
+    const { rerender } = render(<Example value={fruits[0]} onValueChange={onValueChange} />);
     const input = screen.getByRole('combobox', { name: 'Fruit' });
     expect(input).toHaveValue('Apple');
     await openWithArrowDown(input);

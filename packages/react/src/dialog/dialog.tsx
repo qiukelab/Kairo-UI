@@ -143,25 +143,26 @@ export interface DialogContentProps extends DialogPopupProps {
  * any `lang` set further up the tree, so CSS `:lang()` rules can't otherwise
  * reach it. Pass `lang` explicitly to override.
  */
-export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
-  function DialogContent({ className, children, container, ...props }, ref) {
-    const locale = useKairoLocale();
-    const modal = useContext(DialogModalityContext);
-    return (
-      <BaseDialog.Portal container={container}>
-        {modal === true && <BaseDialog.Backdrop className="kairo-dialog-backdrop" />}
-        <BaseDialog.Popup
-          ref={ref}
-          lang={locale}
-          className={className ? `kairo-dialog-popup ${className}` : 'kairo-dialog-popup'}
-          {...props}
-        >
-          {children}
-        </BaseDialog.Popup>
-      </BaseDialog.Portal>
-    );
-  },
-);
+export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(function DialogContent(
+  { className, children, container, ...props },
+  ref,
+) {
+  const locale = useKairoLocale();
+  const modal = useContext(DialogModalityContext);
+  return (
+    <BaseDialog.Portal container={container}>
+      {modal === true && <BaseDialog.Backdrop className="kairo-dialog-backdrop" />}
+      <BaseDialog.Popup
+        ref={ref}
+        lang={locale}
+        className={className ? `kairo-dialog-popup ${className}` : 'kairo-dialog-popup'}
+        {...props}
+      >
+        {children}
+      </BaseDialog.Popup>
+    </BaseDialog.Portal>
+  );
+});
 
 DialogContent.displayName = 'DialogContent';
 
