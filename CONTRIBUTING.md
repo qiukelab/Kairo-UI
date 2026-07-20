@@ -121,6 +121,79 @@ without `globals: true`). Please don't remove or "simplify" the manual
 `expect.extend`/`cleanup()` wiring there — it's intentional, not leftover
 scaffolding.
 
+## Branching and commits
+
+Outside contributors work from a fork: click "Fork" on GitHub, clone your
+fork, then branch off `main`. Nobody — maintainers included — commits
+directly to `main`; every change, however small, goes through a branch and a
+pull request. Keep branches narrow: one branch should represent one intent,
+so it maps cleanly onto one PR and one changelog entry.
+
+Name the branch after what it does, not who's doing it:
+
+| Prefix   | For                                                                    | Example                     |
+| -------- | ----------------------------------------------------------------------| ---------------------------- |
+| `feat/`  | A new component, prop, or capability                                  | `feat/avatar-group`         |
+| `fix/`   | A bug fix                                                              | `fix/dialog-focus-trap`     |
+| `chore/` | Maintenance with no user-facing behavior change (deps, tooling, etc.) | `chore/bump-turborepo`      |
+| `docs/`  | Docs-only changes (public docs site or repo docs)                     | `docs/translate-th-sidebar` |
+| `ci/`    | CI/workflow changes                                                   | `ci/cache-pnpm-store`       |
+
+Use a kebab-case slug after the prefix — short enough to read in a branch
+list, specific enough to tell PRs apart.
+
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/):
+a lowercase, imperative subject describing the outcome, no trailing period,
+an optional scope in parentheses, and `!` right before the colon if the
+change is breaking.
+
+```
+<type>(<scope>)!: <subject>
+```
+
+| Type       | For                                        |
+| ---------- | ------------------------------------------- |
+| `feat`     | New feature or capability                  |
+| `fix`      | Bug fix                                    |
+| `chore`    | Maintenance, deps, release                 |
+| `docs`     | Documentation                              |
+| `ci`       | CI/CD, workflows                           |
+| `style`    | Formatting only, no logic change           |
+| `refactor` | Code change that isn't a fix or a feature  |
+| `test`     | Adding or fixing tests                     |
+| `perf`     | Performance improvement                    |
+
+Real examples from this repo's history:
+
+```
+feat(theme)!: put every rule in a cascade layer
+fix(docs): let a collapsed sidebar be brought back
+style: format repo with oxfmt
+```
+
+Scope is optional — common ones here are `react`, `theme`, `docs` and
+`release`, but leave it off if the change doesn't belong to a single
+package.
+
+Keep commits to one reviewable decision each: a refactor and the behavior
+change it enables don't share a commit, and a formatting-only pass is its
+own commit (and gets added to `.git-blame-ignore-revs`, since a repo-wide
+reformat commit has no business showing up in `git blame`). It's a small
+amount of discipline that pays off the moment someone has to review the
+diff, `git revert` one part of it, or `git bisect` a regression.
+
+A full loop, start to finish:
+
+```bash
+git checkout -b feat/avatar-group
+# ...make the change...
+pnpm format:check && pnpm lint && pnpm build && pnpm typecheck && pnpm test
+git add packages/react/src/avatar-group
+git commit -m "feat(react): add AvatarGroup component"
+git push -u origin feat/avatar-group
+gh pr create --fill
+```
+
 ## Before opening a pull request
 
 Make sure the full verification suite is green:
@@ -135,6 +208,12 @@ fixes it.
 
 Then, in your PR:
 
+- Title the PR the same way you'd title a commit — a Conventional Commits
+  subject (e.g. `feat(react): add AvatarGroup component`). Maintainers
+  squash-merge PRs, so this title becomes the commit subject on `main`
+  (GitHub appends the PR number automatically), regardless of how the
+  commits on your branch are titled — which is why the format matters here
+  too.
 - Write a clear description of **what** changed and **why**; link any
   related issue.
 - Include a changeset (`pnpm changeset`) for any user-facing change to
