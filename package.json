@@ -23,6 +23,7 @@
     "typecheck": "turbo run typecheck",
     "lint": "oxlint",
     "check-exports": "turbo run check-exports",
+    "check-component-wiring": "node scripts/check-component-wiring.mjs",
     "format": "oxfmt",
     "changeset": "changeset",
     "release": "pnpm build && changeset publish",

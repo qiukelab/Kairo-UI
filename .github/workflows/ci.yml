@@ -41,6 +41,18 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # Adding a component means editing 13 registration points across three
+      # packages, and none of them depend on each other — miss one and you get
+      # a component that silently doesn't export, isn't styled, or isn't
+      # documented, with a green build. Two of the 13 are worse than silent:
+      # an unknown `icon:` in MDX frontmatter renders nothing instead of
+      # throwing, and the page-count floors below use `-ge`, so a stale floor
+      # keeps passing even when half the site fails to render. This derives
+      # every side from the source files, so it cannot drift the way the gaps
+      # it closes did. Runs before the build because it is pure file reads.
+      - name: Verify component wiring
+        run: pnpm check-component-wiring
+
       - name: Build
         run: pnpm build
 
@@ -83,7 +95,9 @@ jobs:
           # components plus the components folder index => 67 HTML, 64 raw),
           # not a token low number. A floor far below reality passes even when
           # half the site fails to render, which is exactly the failure this
-          # step exists to catch — so raise these whenever pages are added.
+          # step exists to catch. You no longer have to remember to raise them:
+          # the "Verify component wiring" step above derives both numbers from
+          # `apps/docs/vite.config.ts` and fails if these literals drift.
           test "$html" -ge 67 || { echo "::error::expected >=67 prerendered pages, got $html"; exit 1; }
           test "$raw" -ge 64 || { echo "::error::expected >=64 raw markdown files, got $raw"; exit 1; }
           # Frontmatter must be stripped — a raw file starting with `---` means
