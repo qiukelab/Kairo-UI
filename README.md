@@ -5,8 +5,8 @@
     <strong>Lightweight, accessible React components with a CSS-first theme system.</strong>
   </p>
 
-[![License: MIT](https://img.shields.io/github/license/qiukelab/Kairo-UI)](./LICENSE)
-[![CI](https://github.com/qiukelab/Kairo-UI/actions/workflows/ci.yml/badge.svg)](https://github.com/qiukelab/Kairo-UI/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/yindeejs/kairo-ui)](./LICENSE)
+[![CI](https://github.com/yindeejs/kairo-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/yindeejs/kairo-ui/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/%40kairo-ui%2Freact.svg)](https://www.npmjs.com/package/@kairo-ui/react)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![TypeScript](https://img.shields.io/badge/types-TypeScript-blue.svg)](https://www.typescriptlang.org/)
@@ -101,9 +101,9 @@ pnpm --filter @kairo-ui/docs dev
 
 Contributions are very welcome — whether it's a bug fix, a new component, a
 docs improvement, or just filing a well-written issue. Check the
-[open issues](https://github.com/qiukelab/Kairo-UI/issues) (look for
+[open issues](https://github.com/yindeejs/kairo-ui/issues) (look for
 `good first issue`) or start a
-[discussion](https://github.com/qiukelab/Kairo-UI/discussions) if you'd
+[discussion](https://github.com/yindeejs/kairo-ui/discussions) if you'd
 like to propose something bigger first.
 
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the full setup guide,

@@ -6,12 +6,12 @@
   "author": "Kairo Contributors",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qiukelab/Kairo-UI.git"
+    "url": "git+https://github.com/yindeejs/kairo-ui.git"
   },
   "bugs": {
-    "url": "https://github.com/qiukelab/Kairo-UI/issues"
+    "url": "https://github.com/yindeejs/kairo-ui/issues"
   },
-  "homepage": "https://github.com/qiukelab/Kairo-UI#readme",
+  "homepage": "https://github.com/yindeejs/kairo-ui#readme",
   "packageManager": "pnpm@10.24.0",
   "engines": {
     "node": ">=20"

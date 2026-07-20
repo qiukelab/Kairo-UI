@@ -1,7 +1,7 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
 import type { Locale } from '@/lib/i18n';
 
-export const GITHUB_REPO_URL = 'https://github.com/qiukelab/Kairo-UI';
+export const GITHUB_REPO_URL = 'https://github.com/yindeejs/kairo-ui';
 
 /**
  * Top-level header nav.

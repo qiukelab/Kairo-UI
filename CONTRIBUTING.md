@@ -13,8 +13,8 @@ need to get set up, make a change, and open a pull request.
 ## Getting set up
 
 ```bash
-git clone https://github.com/qiukelab/Kairo-UI.git
-cd Kairo-UI
+git clone https://github.com/yindeejs/kairo-ui.git
+cd kairo-ui
 pnpm install
 ```
 
@@ -154,7 +154,7 @@ curious how that works.
 
 ## Questions?
 
-Feel free to open a [discussion](https://github.com/qiukelab/Kairo-UI/discussions)
+Feel free to open a [discussion](https://github.com/yindeejs/kairo-ui/discussions)
 or an issue if anything here is unclear. Please also read our
 [Code of Conduct](./CODE_OF_CONDUCT.md) — we want Kairo to be a welcoming
 project for everyone.

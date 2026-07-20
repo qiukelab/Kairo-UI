@@ -17,7 +17,7 @@ Please **do not** open a public GitHub issue for security vulnerabilities.
 
 Instead, report it privately using GitHub's security advisory feature:
 
-**https://github.com/qiukelab/Kairo-UI/security/advisories/new**
+**https://github.com/yindeejs/kairo-ui/security/advisories/new**
 
 This opens a private conversation with the maintainers so the issue isn't
 disclosed publicly before a fix is available.
