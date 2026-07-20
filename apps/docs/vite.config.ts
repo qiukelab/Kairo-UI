@@ -53,7 +53,13 @@ const COMPONENT_SLUGS = [
   'tooltip',
 ] as const;
 
-const DOC_SLUGS = ['', 'theming', 'motion', ...COMPONENT_SLUGS.map((s) => `components/${s}`)];
+const DOC_SLUGS = [
+  '',
+  'theming',
+  'motion',
+  'components',
+  ...COMPONENT_SLUGS.map((s) => `components/${s}`),
+];
 
 const RAW_MARKDOWN_PAGES = (['docs', 'th/docs'] as const).flatMap((base) =>
   DOC_SLUGS.map((slug) => ({ path: slug ? `/raw/${base}/${slug}.md` : `/raw/${base}.md` })),
@@ -84,6 +90,11 @@ export default defineConfig({
         // `/th/docs/...` page through the (real, `<a href>`-based) sidebar
         // links rendered by the Thai page tree.
         { path: '/th' },
+        // Seeded explicitly for the same reason as `/` above: the header nav
+        // and sidebar links to this page are the only route in, so a future
+        // change to either would silently drop it from the crawl.
+        { path: '/docs/components' },
+        { path: '/th/docs/components' },
         // Has no `component` (server-route-only), so it is never picked up
         // by automatic static-path discovery or link crawling.
         { path: '/static-search-en.json' },
