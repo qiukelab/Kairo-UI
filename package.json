@@ -24,6 +24,7 @@
     "lint": "oxlint",
     "check-exports": "turbo run check-exports",
     "check-component-wiring": "node scripts/check-component-wiring.mjs",
+    "scaffold-component": "node scripts/scaffold-component.mjs",
     "format": "oxfmt",
     "changeset": "changeset",
     "release": "pnpm build && changeset publish",
