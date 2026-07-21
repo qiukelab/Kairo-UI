@@ -1,0 +1,76 @@
+name: Deploy docs
+
+# Builds the docs site and deploys it to Cloudflare (Workers static assets).
+#
+# The `check` job gates everything on the `CLOUDFLARE_API_TOKEN` secret being
+# present, so this workflow stays green (deploy simply skipped) until the
+# Cloudflare credentials are configured — rather than failing on every push
+# while the account is still being set up. To enable deploys, add two repo
+# secrets: `CLOUDFLARE_API_TOKEN` (an API token with the Workers Scripts:Edit
+# permission) and `CLOUDFLARE_ACCOUNT_ID`. See PUBLISHING.md / the deploy note.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/docs/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/deploy.yml'
+
+concurrency:
+  group: deploy-docs
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Check Cloudflare credentials
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.guard.outputs.enabled }}
+    steps:
+      - id: guard
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::CLOUDFLARE_API_TOKEN is not set — skipping the docs deploy. Add it and CLOUDFLARE_ACCOUNT_ID as repo secrets to enable."
+          fi
+
+  deploy:
+    name: Build & deploy docs
+    needs: check
+    if: needs.check.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Builds every workspace package the docs depend on and prerenders the
+      # site to apps/docs/dist/client, which is what wrangler.jsonc's `assets`
+      # block uploads.
+      - name: Build
+        run: pnpm build
+
+      - name: Deploy to Cloudflare
+        run: pnpm --filter @kairo-ui/docs deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
