@@ -1,12 +1,17 @@
+# Default for every route — revalidate often so deploys show up quickly.
+# This MUST be a bare `/*`, not `/*.html`: pages are prerendered to
+# `index.html` but served at extensionless directory URLs (`/docs/components/
+# button`, not `.html`), and Cloudflare matches `_headers` against the request
+# path — so `/*.html` matched almost nothing users actually request and the
+# whole article tree fell through to the host default. `/*` is listed first so
+# the more-specific asset/search rules below win regardless of whether
+# Cloudflare resolves overlaps by specificity or by last-match.
+/*
+  Cache-Control: public, max-age=0, must-revalidate
+
 # Hashed, content-addressed build assets — safe to cache forever.
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
-
-# Prerendered HTML — revalidate often so deploys show up quickly.
-/*.html
-  Cache-Control: public, max-age=0, must-revalidate
-/
-  Cache-Control: public, max-age=0, must-revalidate
 
 # Static search index — one blob per locale, fetched in full on the first
 # search. These are the heaviest things served (~1.9 MB raw, ~290 KB gzipped
