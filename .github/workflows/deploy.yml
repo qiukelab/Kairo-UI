@@ -69,8 +69,12 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # `run deploy`, not `deploy`: `pnpm deploy` is a built-in pnpm command
+      # (it copies a workspace package into a deploy directory) and shadows the
+      # package's own `deploy` script, failing with ERR_PNPM_INVALID_DEPLOY_TARGET.
+      # The explicit `run` invokes the script (`wrangler deploy`) instead.
       - name: Deploy to Cloudflare
-        run: pnpm --filter @kairo-ui/docs deploy
+        run: pnpm --filter @kairo-ui/docs run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
