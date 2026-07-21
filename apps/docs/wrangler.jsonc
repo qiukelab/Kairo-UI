@@ -2,7 +2,13 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "kairo-docs",
   "compatibility_date": "2026-07-18",
-  // Fully static, prerendered site — no Worker script runs at request time.
+  // The Cloudflare account is supplied out-of-band, never committed here:
+  // `wrangler` reads `CLOUDFLARE_ACCOUNT_ID` from the environment (a repo
+  // secret in CI, your shell locally). Keeping it out of the file means this
+  // config is account-agnostic and safe to fork. See PUBLISHING/deploy docs.
+  //
+  // Fully static, prerendered site — no Worker script runs at request time
+  // (there is no `main`; `assets` with no Worker serves the files directly).
   // `dist/client` is the `vite build` output produced by
   // `@tanstack/react-start`'s prerender step (see vite.config.ts).
   "assets": {
