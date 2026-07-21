@@ -43,12 +43,13 @@ Kairo is a pnpm + Turborepo monorepo:
 | ------------------ | ------------------------------------------------------------------------------------------- |
 | `packages/react`   | `@kairo-ui/react` — React components                                                        |
 | `packages/theme`   | `@kairo-ui/theme` — CSS tokens, presets & the theming API (also owns every component's CSS) |
-| `apps/docs`        | Documentation site (Fumadocs + Next.js)                                                     |
+| `apps/docs`        | Documentation site (Fumadocs on Vite + TanStack Start)                                      |
 | `tooling/tsconfig` | Shared TypeScript configs                                                                   |
 | `docs/`            | Internal project docs (roadmap, conventions) — not the public docs site                     |
 
-`docs/PROJECT.md` has the full internal stack/conventions reference if you
-want more detail than this guide.
+This guide and the package READMEs are the reference for outside
+contributors. (The maintainers keep a deeper internal stack/conventions
+doc, but it lives under the git-ignored `docs/` folder and is not published.)
 
 ## Adding a component
 

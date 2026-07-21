@@ -100,7 +100,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
     },
 
     overviewLabel: 'Overview',
-    lead: 'UI that stays yours. Fourteen accessible components, plain CSS, and a token system you can re-skin with one variable — from a weekend project to a design system with its own opinions.',
+    lead: 'UI that stays yours. Twenty-eight accessible components, plain CSS, and a token system you can re-skin with one variable — from a weekend project to a design system with its own opinions.',
     installLabel: 'Install',
     builtOnLabel: 'Built on',
     builtOn: ['Base UI', 'React 19', 'TypeScript', 'oklch', 'CSS variables', 'ESM'],
@@ -200,7 +200,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
     },
 
     overviewLabel: 'ภาพรวม',
-    lead: 'UI ที่ยังเป็นของคุณ — คอมโพเนนต์ที่เข้าถึงง่าย 14 ตัว, CSS ธรรมดา และระบบ token ที่เปลี่ยนหน้าตาทั้งระบบได้ด้วยตัวแปรเดียว ตั้งแต่โปรเจกต์เล็กๆ ไปจนถึงดีไซน์ซิสเทมที่มีจุดยืนของตัวเอง',
+    lead: 'UI ที่ยังเป็นของคุณ — คอมโพเนนต์ที่เข้าถึงง่าย 28 ตัว, CSS ธรรมดา และระบบ token ที่เปลี่ยนหน้าตาทั้งระบบได้ด้วยตัวแปรเดียว ตั้งแต่โปรเจกต์เล็กๆ ไปจนถึงดีไซน์ซิสเทมที่มีจุดยืนของตัวเอง',
     installLabel: 'ติดตั้ง',
     builtOnLabel: 'สร้างบน',
     builtOn: ['Base UI', 'React 19', 'TypeScript', 'oklch', 'CSS variables', 'ESM'],
