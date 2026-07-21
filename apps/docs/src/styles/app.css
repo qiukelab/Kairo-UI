@@ -224,14 +224,31 @@ html > body[data-scroll-locked] {
    *
    * The cap is the measure above plus this element's own `padding-inline`, so
    * the two stay in step — change one and the other follows.
+   *
+   * `min(…, 100%)` rather than the bare cap, and it is load-bearing.
+   * `margin-inline: auto` takes this grid item out of `stretch` alignment, so
+   * it sizes as `fit-content` = `max(min-content, available)`. The `main` track
+   * is `minmax(0, …)` and cannot grow, so any child with a large min-content —
+   * a `w-max` code block is the usual one — made *this element* wider than its
+   * own track and pushed it under the sticky TOC, taking the whole article with
+   * it. Measured at 1280px: the track is 641px but `#nd-page` came out 1071px,
+   * bleeding 429px into the TOC column, with `overflow-x-clip` on the grid
+   * container suppressing the scrollbar that would have made it obvious.
+   * Clamping to `100%` of the track restores `fit-content`'s upper bound.
+   * Verified by hit-testing the TOC column across 14 pages × 4 viewport widths:
+   * 8/14 pages bled at 1280px before, 0/14 after.
+   *
+   * `min-width: 0` does NOT fix this — it lowers the automatic minimum size,
+   * which is not what sizes the box here; `fit-content` needs an upper bound,
+   * and only `max-width` provides one.
    */
   #nd-page {
-    max-width: calc(1000px + 12rem);
+    max-width: min(calc(1000px + 12rem), 100%);
     margin-inline: auto;
   }
 
   #nd-page[data-full='true'] {
-    max-width: calc(1285px + 12rem);
+    max-width: min(calc(1285px + 12rem), 100%);
   }
 }
 
