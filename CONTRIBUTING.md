@@ -54,33 +54,71 @@ want more detail than this guide.
 
 Kairo has an established convention for components — following it keeps the
 library consistent and keeps CSS portable to future non-React ports (Vue,
-etc). Using an existing component (e.g. `button`) as a reference is the
-fastest way to get this right.
+etc). Adding a single component touches 7 files and around a dozen
+registration points across `packages/react`, `packages/theme` and
+`apps/docs`, which is too much to reliably get right by hand. Start with the
+scaffolding script instead of copying an existing component:
 
-1. **CSS first** — add `packages/theme/css/components/<name>.css` and
-   `@import` it from `packages/theme/css/index.css`. Prefix classes with
-   `kairo-`; drive variants/sizes with `data-*` attributes and states with
-   pseudo-classes. Start the file with a comment documenting the selectors
-   the component hooks into (state attributes in particular), since this
-   CSS is meant to be reusable by non-React ports later.
-2. **React component** — add `packages/react/src/<name>/<name>.tsx` +
-   `index.ts`. Use `forwardRef`. Components with no interaction (e.g.
-   Button, Badge) should **not** have a `'use client'` directive, so they
-   stay RSC-safe; components built on Base UI or with interaction need one.
-   Merge `className` with a plain space-join — no `clsx`/`cva` — to keep
-   `@kairo-ui/react` dependency-free.
-3. **Wire up exports** — add a `./<name>` entry to `packages/react/package.json`
-   `exports`, add `src/<name>/index.ts` as a new entry in
-   `packages/react/tsdown.config.ts`, and export from `src/index.ts`.
-4. **Tests** — add Vitest + Testing Library tests covering render, props,
-   `ref` forwarding, and accessibility (`vitest-axe`). See
-   [the test infra note](#test-infra-note) below before touching
-   `packages/react/test/setup.ts`.
-5. **Docs page** — add `apps/docs/content/docs/components/<name>.mdx` (use
-   `<ComponentPreview>`) and register it in
-   `apps/docs/content/docs/components/meta.json`.
-6. **Changeset** — run `pnpm changeset` and describe the change. `theme` and
-   `react` are a fixed version group, so most component changes bump both.
+```bash
+node scripts/scaffold-component.mjs <kebab-name> [--static] [--icon <LucideName>]
+```
+
+Pass `--static` for a component with no interaction (like Button, Badge,
+Input): it skips the `'use client'` directive and the docs demo, and adds the
+component to `check-use-client.mjs`'s `STATIC` set instead of leaving it in
+the default interactive path. `--icon` names the lucide-react icon shown in
+the docs sidebar (default: a placeholder — pick a real one before shipping).
+
+The script creates working stubs for the component's CSS, its React
+component + `index.ts` + test, its `.mdx`/`.th.mdx` docs pages, and (unless
+`--static`) its docs demo — then wires all of it into the registration points
+that are easy to miss by hand: `packages/react`'s `package.json` exports,
+`tsdown.config.ts` entry, and `src/index.ts` barrel; `check-use-client.mjs`'s
+`EXPECTED_COMPONENT_COUNT` (and `STATIC` set, when `--static`);
+`packages/theme/css/index.css`'s `@import`; the docs' `meta.json` /
+`meta.th.json`, `components/index.mdx` / `index.th.mdx` (table row *and*
+component-count header), `vite.config.ts`'s `COMPONENT_SLUGS`, and the
+sidebar icon registration in `apps/docs/src/lib/source.ts`; both page-count
+floors in `.github/workflows/ci.yml`; and a changeset. It prints a summary of
+what it touched, what was already correct, and which docs category it filed
+the new component under — that last guess isn't always right, so move it by
+hand if it isn't.
+
+What the script does **not** do — still yours to write:
+
+1. **The real component** — `packages/react/src/<name>/<name>.tsx` is a
+   working stub, not the real implementation. Use `forwardRef`; merge
+   `className` with a plain space-join — no `clsx`/`cva` — to keep
+   `@kairo-ui/react` dependency-free; drive variants/state with `data-*`
+   attributes so the CSS (and any future non-React port) can key off the DOM
+   alone. Reading an existing component (e.g. `number-field` for something
+   interactive, `input` for something RSC-safe) is the fastest way to match
+   the house style.
+2. **The real CSS** — `packages/theme/css/components/<name>.css` is a
+   scaffolded stub too. Prefix classes with `kairo-`, drive variants/sizes
+   with `data-*` attributes and states with pseudo-classes, and keep the
+   file's header comment accurate about which selectors (state attributes
+   in particular) the component hooks into.
+3. **Real tests** — the scaffolded Vitest + Testing Library file already
+   covers render, `className` merging, `ref` forwarding and accessibility
+   (`vitest-axe`); extend it with real coverage of the component's actual
+   props and behavior. See [the test infra note](#test-infra-note) below
+   before touching `packages/react/test/setup.ts`.
+4. **The demo** (skipped entirely for `--static` components) — flesh out
+   `apps/docs/src/components/demos/<name>-demo.tsx` into a real interactive
+   demo.
+5. **Docs prose, in both languages** — replace the TODOs in
+   `apps/docs/content/docs/components/<name>.mdx` and the matching
+   `<name>.th.mdx` with real usage docs and a real Props table.
+6. **The Thai translation** — both the `.th.mdx` page itself, and (unless
+   `--static`) a `## <name>-demo.tsx` section in
+   `apps/docs/src/components/demos/DEMO_COPY.th.md` documenting the EN → TH
+   strings you chose for the demo, following the format of the sections
+   already there.
+7. **The changeset's content** — the script already creates
+   `.changeset/add-<name>.md` bumping `theme` and `react` (they're a fixed
+   version group), with a one-line description; expand it if the change
+   needs more detail.
 
 ## Coding standards
 
