@@ -1,6 +1,6 @@
 {
   "name": "@kairo-ui/theme",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "CSS design tokens and themes for Kairo.",
   "type": "module",
   "license": "MIT",
