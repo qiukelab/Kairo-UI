@@ -99,6 +99,12 @@ export default defineConfig({
         // by automatic static-path discovery or link crawling.
         { path: '/static-search-en.json' },
         { path: '/static-search-th.json' },
+        // Per-locale page tree + page metadata, fetched by the `/docs/$` and
+        // `/th/docs/$` loaders during client-side navigation (the server only
+        // reads `source` directly at prerender time). Server-route-only, so
+        // seeded here rather than discovered by the crawl.
+        { path: '/docs-data-en.json' },
+        { path: '/docs-data-th.json' },
         // Prerendered as `404.html` (not `404/index.html`) so Cloudflare's
         // `not_found_handling: "404-page"` can serve it for any unmatched path.
         { path: '/404', prerender: { autoSubfolderIndex: false } },
