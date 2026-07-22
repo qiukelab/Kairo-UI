@@ -115,7 +115,7 @@ be a welcoming project for everyone.
 
 Kairo has 28 components, theming and a full docs site — `v0.1.0` is being
 prepared for its first npm publish (both packages are still at `0.0.0`).
-Per [`docs/ROADMAP.md`](./docs/ROADMAP.md):
+Where things stand:
 
 - **Done** — the 14 → 28 component expansion, pushing/merging to GitHub,
   and CSS `@layer`s + Lightning CSS minification + typed tokens.
