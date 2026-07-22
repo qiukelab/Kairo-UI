@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Kairo">
+  <!--
+    Minimal, sharp-cornered brand mark: solid brand-primary square (no rx —
+    matches the site's radius-0 identity) with a geometric "K" drawn as
+    straight strokes (square caps/miter joins, not text) so it stays crisp at
+    16px and never depends on a font being installed wherever this renders.
+
+    #171717 is the resolved sRGB value of the kairo-primary token from the
+    default ("Black") preset at oklch(0.205 0 0) — see
+    packages/theme/css/tokens.css.
+  -->
+  <rect width="32" height="32" fill="#171717" />
+  <path
+    d="M10 6 L10 26 M10 16 L22 6 M10 16 L22 26"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="4"
+    stroke-linecap="square"
+    stroke-linejoin="miter"
+  />
+</svg>
