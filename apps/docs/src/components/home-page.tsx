@@ -12,7 +12,9 @@ import {
   Tabs,
   TabsList,
 } from '@kairo-ui/react';
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 import { ComponentPreview } from '@/components/component-preview';
+import { HomeGallery } from '@/components/home-gallery';
 import { HomeNav } from '@/components/home-nav';
 import { HOME_COPY, INSTALL_COMMANDS, THEMING_SNIPPET } from '@/lib/home-copy';
 import type { Locale } from '@/lib/i18n';
@@ -177,9 +179,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </TabsList>
             {INSTALL_COMMANDS.map((entry) => (
               <TabPanel key={entry.id} value={entry.id}>
-                <pre className="overflow-x-auto border border-fd-border bg-fd-secondary px-4 py-3 text-sm">
-                  <code>{entry.command}</code>
-                </pre>
+                <DynamicCodeBlock lang="bash" code={entry.command} />
               </TabPanel>
             ))}
           </Tabs>
@@ -209,6 +209,7 @@ export function HomePage({ locale }: { locale: Locale }) {
               <Button variant="ghost">Ghost</Button>
             </div>
           </ComponentPreview>
+          <HomeGallery locale={locale} />
         </section>
 
         {/* Feature grid — numbered, in the reference's two-up rhythm */}
@@ -248,10 +249,12 @@ export function HomePage({ locale }: { locale: Locale }) {
           <div className="grid grid-cols-1 gap-px border border-fd-border bg-fd-border xl:grid-cols-[1.4fr_1fr]">
             {/* Same `minmax(auto, 1fr)` trap as the page columns — without
                   `min-w-0` the snippet's longest line sets this track's floor
-                  and pushes the points list off the edge. */}
-            <pre className="min-w-0 overflow-x-auto bg-fd-secondary p-4 text-xs leading-relaxed">
-              <code>{THEMING_SNIPPET}</code>
-            </pre>
+                  and pushes the points list off the edge. `DynamicCodeBlock`
+                  scrolls its own overflow, but the grid cell wrapping it still
+                  needs the override to shrink below that content's width. */}
+            <div className="min-w-0">
+              <DynamicCodeBlock lang="ts" code={THEMING_SNIPPET} />
+            </div>
             <ul className="flex flex-col gap-px bg-fd-border">
               {copy.themingPoints.map((point) => (
                 <li key={point.title} className="flex-1 bg-fd-background p-4">
