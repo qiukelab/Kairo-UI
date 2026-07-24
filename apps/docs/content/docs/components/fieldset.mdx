@@ -1,0 +1,95 @@
+---
+title: Fieldset
+description: Groups related fields under a shared legend, and can disable all of them at once, built on Base UI.
+icon: Frame
+---
+
+import { FieldsetDemo } from '@/components/demos/fieldset-demo';
+
+## Usage
+
+```tsx
+import { Fieldset, FieldsetLegend, Field, FieldLabel, FieldControl } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Fieldset>
+      <FieldsetLegend>Shipping address</FieldsetLegend>
+      <Field>
+        <FieldLabel>Full name</FieldLabel>
+        <FieldControl />
+      </Field>
+      <Field>
+        <FieldLabel>Email</FieldLabel>
+        <FieldControl type="email" />
+      </Field>
+    </Fieldset>
+  );
+}
+```
+
+`Fieldset` renders a real native `<fieldset>` element, and `FieldsetLegend` is its
+caption — but `FieldsetLegend` renders a plain `<div>`, not a native `<legend>`,
+associated back to the fieldset for assistive tech via `aria-labelledby` instead of the
+native fieldset/legend pairing. That's deliberate: a real `<legend>` has notoriously
+inconsistent styling across engines (for years it couldn't reliably take part in a
+`display: flex`/`grid` layout set by its `<fieldset>` parent, and every engine's UA
+stylesheet still visually straddles it across the fieldset's border), so the legend
+stays easily stylable by keeping it a plain element wired up through ARIA.
+
+Because `Fieldset` renders a real `<fieldset>`, setting its `disabled` prop **natively**
+disables every focusable control nested inside it — text inputs, buttons, selects, and
+any Kairo component built on a Base UI root — with no extra wiring needed per control,
+even for controls Kairo itself has no special knowledge of.
+
+`Fieldset` is the natural container for one or more `Field`s — each pairing a label, a
+control, and an optional description/error message — but it groups whatever elements
+are inside it, so plain form markup works just as well.
+
+## Default & disabled
+
+<ComponentPreview
+  code={`<Fieldset>
+  <FieldsetLegend>Shipping address</FieldsetLegend>
+  <Field>
+    <FieldLabel>Full name</FieldLabel>
+    <FieldControl />
+  </Field>
+  <Field>
+    <FieldLabel>Email</FieldLabel>
+    <FieldControl type="email" />
+    <FieldDescription>We'll only use this to send delivery updates.</FieldDescription>
+  </Field>
+</Fieldset>
+
+<Fieldset disabled>
+  <FieldsetLegend>Shipping address (disabled)</FieldsetLegend>
+  <Field>
+    <FieldLabel>Full name</FieldLabel>
+    <FieldControl />
+  </Field>
+  <Field>
+    <FieldLabel>Email</FieldLabel>
+    <FieldControl type="email" />
+  </Field>
+</Fieldset>`}
+>
+  <FieldsetDemo />
+</ComponentPreview>
+
+## Props
+
+### `Fieldset`
+
+| Prop        | Type              | Default | Description                                                              |
+| ----------- | ----------------- | ------- | ------------------------------------------------------------------------- |
+| `disabled`  | `boolean`         | `false` | Natively disables every focusable control nested inside the fieldset.     |
+| `className` | `string`          | —       | Merged with the base `kairo-fieldset` class.                              |
+| ...         | Additional props | —       | All other props are forwarded to the underlying `<fieldset>` element.     |
+
+### `FieldsetLegend`
+
+| Prop        | Type              | Default | Description                                                    |
+| ----------- | ----------------- | ------- | ------------------------------------------------------------------ |
+| `className` | `string`          | —       | Merged with the base `kairo-fieldset-legend` class.                |
+| ...         | Additional props | —       | All other props are forwarded to the underlying element.           |

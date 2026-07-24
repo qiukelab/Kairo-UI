@@ -67,7 +67,19 @@
     <loc>https://kairo-docs.quantumdevq.workers.dev/docs/components/drawer</loc>
   </url>
   <url>
+    <loc>https://kairo-docs.quantumdevq.workers.dev/docs/components/field</loc>
+  </url>
+  <url>
+    <loc>https://kairo-docs.quantumdevq.workers.dev/docs/components/fieldset</loc>
+  </url>
+  <url>
+    <loc>https://kairo-docs.quantumdevq.workers.dev/docs/components/form</loc>
+  </url>
+  <url>
     <loc>https://kairo-docs.quantumdevq.workers.dev/docs/components/input</loc>
+  </url>
+  <url>
+    <loc>https://kairo-docs.quantumdevq.workers.dev/docs/components/label</loc>
   </url>
   <url>
     <loc>https://kairo-docs.quantumdevq.workers.dev/docs/components/menu</loc>
@@ -151,7 +163,19 @@
     <loc>https://kairo-docs.quantumdevq.workers.dev/th/docs/components/drawer</loc>
   </url>
   <url>
+    <loc>https://kairo-docs.quantumdevq.workers.dev/th/docs/components/field</loc>
+  </url>
+  <url>
+    <loc>https://kairo-docs.quantumdevq.workers.dev/th/docs/components/fieldset</loc>
+  </url>
+  <url>
+    <loc>https://kairo-docs.quantumdevq.workers.dev/th/docs/components/form</loc>
+  </url>
+  <url>
     <loc>https://kairo-docs.quantumdevq.workers.dev/th/docs/components/input</loc>
+  </url>
+  <url>
+    <loc>https://kairo-docs.quantumdevq.workers.dev/th/docs/components/label</loc>
   </url>
   <url>
     <loc>https://kairo-docs.quantumdevq.workers.dev/th/docs/components/menu</loc>

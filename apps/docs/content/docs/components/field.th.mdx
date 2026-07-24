@@ -1,0 +1,149 @@
+---
+title: Field
+description: รวม label, control, คำอธิบายและข้อความ error เข้าด้วยกัน พร้อมเชื่อมโยงกันให้อัตโนมัติ สร้างบน Base UI
+icon: TextCursorInput
+---
+
+import { FieldDemo } from '@/components/demos/field-demo';
+
+## การใช้งาน
+
+```tsx
+import { Field, FieldLabel, FieldControl, FieldDescription } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Field>
+      <FieldLabel>Email</FieldLabel>
+      <FieldControl type="email" />
+      <FieldDescription>We'll only use this to send a receipt.</FieldDescription>
+    </Field>
+  );
+}
+```
+
+`Field` รวม label, control, คำอธิบาย และข้อความ error เข้าด้วยกัน แล้วเชื่อมโยง
+ความสัมพันธ์ด้าน accessibility ระหว่างกันให้อัตโนมัติ: `htmlFor` ของ label ชี้ไปที่
+`id` ของ control และ `aria-describedby` ของ control จะซิงค์กับคำอธิบาย/ข้อความ
+error ที่ mount อยู่ในขณะนั้น รวมถึง `aria-invalid` เมื่อ validation ไม่ผ่าน
+ทั้งหมดนี้ไม่ต้องเขียนเองเลย
+
+`FieldControl` render `<input>` ธรรมดาที่มีสไตล์เหมือน `Input` ของ Kairo จึงใช้
+เดี่ยว ๆ ได้ตามตัวอย่างด้านบน หากต้องการใช้ `Input` จริงของ Kairo (หรือให้ control
+เป็น type อื่น) แทน ให้ส่งผ่าน prop `render` ของ `FieldControl` — Base UI จะรวม
+`id`/`aria-*`/change handler ที่สร้างขึ้นเข้ากับอีลีเมนต์ที่ `render` ชี้ไปให้เอง:
+
+```tsx
+<Field>
+  <FieldLabel>Email</FieldLabel>
+  <FieldControl render={<Input type="email" />} />
+</Field>
+```
+
+component ฟอร์มอื่น ๆ ของ Kairo — `Checkbox`, `Switch`, `Select`, `NumberField`,
+`Slider` และ `RadioGroup` — ไม่จำเป็นต้องใช้ `FieldControl` เลย เพราะเป็น thin
+wrapper บน Base UI primitive ที่อ่าน context ของ `Field` ที่ครอบอยู่ด้วยตัวเองอยู่
+แล้ว การวางไว้ตรง ๆ ก็เชื่อมโยงให้ทันที:
+
+```tsx
+<Field>
+  <FieldLabel>Notifications</FieldLabel>
+  <Switch />
+</Field>
+```
+
+Validation ทำงานผ่าน prop `validate` บน `Field`: คืนค่าข้อความ error (หรืออาเรย์
+ของข้อความ) เมื่อค่าไม่ถูกต้อง หรือ `null` เมื่อค่าถูกต้อง `validationMode` กำหนดว่า
+จะ validate ใหม่เมื่อไร — `'onSubmit'` (ค่าเริ่มต้น) validate ตอนฟอร์มที่ครอบอยู่ถูก
+submit แล้ว validate ใหม่ทุกครั้งที่มีการเปลี่ยนแปลงหลังจากนั้น `'onBlur'` validate
+ทันทีที่ control เสียโฟกัส และ `'onChange'` validate ทุกครั้งที่มีการเปลี่ยนแปลง
+(หน่วงเวลาได้ด้วย `validationDebounceTime`) `invalid` ทำให้ฟิลด์เป็น invalid
+โดยตรง สำหรับกรณีที่ความถูกต้องมาจากแหล่งภายนอก (เช่น การตอบกลับจากเซิร์ฟเวอร์)
+เมื่อ invalid แล้ว `FieldError` จะ mount และแสดงข้อความ — ส่ง prop `match` เป็น
+`ValidityState` key ที่ต้องการ (เช่น `'valueMissing'`) เพื่อให้แสดงเฉพาะเงื่อนไขนั้น
+หรือส่ง `true` เพื่อให้แสดงเสมอและยกการควบคุมการแสดงผลให้สิ่งที่จัดการ `invalid`
+จากภายนอกแทน
+
+สำหรับกรณีที่ต้องการมากกว่าข้อความธรรมดา `FieldValidity` ส่ง validity state
+ทั้งหมดของฟิลด์มาให้ผ่าน function-as-children เพื่อให้ render อะไรก็ได้ตามต้องการ
+
+## อีเมล, validation และปิดใช้งาน
+
+<ComponentPreview
+  code={`<Field className="w-64">
+  <FieldLabel>Email</FieldLabel>
+  <FieldControl render={<Input type="email" placeholder="you@example.com" />} />
+  <FieldDescription>We'll only use this to send a receipt.</FieldDescription>
+</Field>
+
+<Field
+  className="w-64"
+  validationMode="onBlur"
+  validate={(value) => (value ? null : 'Please enter a username.')}
+>
+  <FieldLabel>Username (required)</FieldLabel>
+  <FieldControl render={<Input required />} />
+  <FieldError />
+</Field>
+
+<Field className="w-64" disabled>
+  <FieldLabel>Email (disabled)</FieldLabel>
+  <FieldControl render={<Input defaultValue="disabled@example.com" />} />
+</Field>`}
+>
+  <FieldDemo />
+</ComponentPreview>
+
+## Props
+
+### `Field`
+
+| Prop                     | Type                                                                    | Default     | Description                                                                             |
+| ------------------------ | -------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------ |
+| `disabled`               | `boolean`                                                                   | `false`       | ปิดการโต้ตอบกับ control มีความสำคัญกว่า `disabled` ที่ตั้งบน control เอง                    |
+| `name`                   | `string`                                                                    | —             | ใช้ระบุฟิลด์นี้เมื่อ submit ฟอร์ม                                                            |
+| `validate`               | `(value, formValues) => string \| string[] \| null \| Promise<...>`        | —             | ฟังก์ชัน validate เอง คืนข้อความ error (หรือหลายข้อความ) เมื่อไม่ถูกต้อง หรือ `null` เมื่อถูกต้อง |
+| `validationMode`         | `'onSubmit' \| 'onBlur' \| 'onChange'`                                     | `'onSubmit'`  | ตัวกำหนดว่า `validate` จะทำงานใหม่เมื่อไร — ดูคำอธิบายด้านบน                                    |
+| `validationDebounceTime` | `number`                                                                    | `0`           | มิลลิวินาทีที่รอระหว่างการเรียก `validate` เมื่อ `validationMode="onChange"`                    |
+| `invalid`                | `boolean`                                                                   | —             | ทำให้ฟิลด์ invalid โดยตรง สำหรับความถูกต้องที่จัดการจากแหล่งภายนอก                             |
+| `dirty`                  | `boolean`                                                                   | —             | ทำให้ค่าของฟิลด์ถือว่าเปลี่ยนแล้ว สำหรับสถานะที่จัดการจากแหล่งภายนอก                             |
+| `touched`                | `boolean`                                                                   | —             | ทำให้ฟิลด์ถือว่าถูก touch แล้ว สำหรับสถานะที่จัดการจากแหล่งภายนอก                                |
+| `actionsRef`             | `RefObject<{ validate: () => void }>`                                      | —             | ref ที่เปิดเมธอด `validate()` ไว้ให้เรียก validation แบบ imperative                            |
+| `className`              | `string`                                                                    | —             | รวมกับคลาสพื้นฐาน `kairo-field`                                                              |
+| ...                      | Additional props | —       | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยัง `<div>` ด้านใน                                       |
+
+### `FieldLabel`
+
+| Prop          | Type      | Default | Description                                                                                                                    |
+| ------------- | --------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `nativeLabel` | `boolean` | `true`  | ตั้งเป็น `false` เฉพาะเมื่อ `render` แทน `<label>` ด้วยอีลีเมนต์ที่ไม่ใช่ label (เช่น เพื่อเลี่ยงพฤติกรรมคลิก label บน control ที่คล้ายปุ่ม) |
+| `className`   | `string`  | —       | รวมกับคลาสพื้นฐาน `kairo-field-label`                                                                                                    |
+| ...           | Additional props | — | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยัง `<label>` ด้านใน                                                                             |
+
+### `FieldControl`
+
+| Prop        | Type     | Default | Description                                                                                    |
+| ----------- | -------- | ------- | -------------------------------------------------------------------------------------------------- |
+| `className` | `string` | —       | รวมกับคลาสพื้นฐาน `kairo-field-control`                                                              |
+| ...         | Additional props | — | props อื่น ๆ ที่เหลือ (เช่น `type`, `placeholder`, `required`) จะถูกส่งต่อไปยัง `<input>` ด้านใน หรือไปยังอีลีเมนต์ที่ส่งให้ `render` |
+
+### `FieldDescription`
+
+| Prop        | Type     | Default | Description                                            |
+| ----------- | -------- | ------- | --------------------------------------------------------- |
+| `className` | `string` | —       | รวมกับคลาสพื้นฐาน `kairo-field-description`                 |
+| ...         | Additional props | — | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยัง `<p>` ด้านใน |
+
+### `FieldError`
+
+| Prop        | Type                                | Default | Description                                                                        |
+| ----------- | -------------------------------------- | ------- | ---------------------------------------------------------------------------------------- |
+| `match`     | `boolean \| keyof ValidityState`      | —       | จำกัดว่าจะแสดงข้อความเมื่อเงื่อนไข validity ใด หรือบังคับให้แสดงเสมอ (`true`)                |
+| `className` | `string`                              | —       | รวมกับคลาสพื้นฐาน `kairo-field-error`                                                     |
+| ...         | Additional props | — | props อื่น ๆ ที่เหลือจะถูกส่งต่อไปยัง `<div>` ด้านใน |
+
+### `FieldValidity`
+
+รับ function `children` ที่ได้รับ validity state ของฟิลด์
+(`{ validity, value, error, errors, transitionStatus, ... }`) แล้ว render สิ่งที่
+ฟังก์ชันนั้นคืนกลับมา ไม่มี DOM element เป็นของตัวเอง

@@ -121,6 +121,41 @@ Keyboard shortcuts `Ctrl+C` / `Ctrl+V` are unchanged in both locales.
 
 Trigger/title text is `capitalize(sideLabel)` + " drawer" in English (e.g. "Top drawer"); in Thai it's `capitalize(sideLabel)` + " drawer" with the Thai side word (e.g. "บน drawer" — `capitalize` is a no-op on Thai text). The `side` prop passed to `<Drawer>` stays the English data key (`top`/`right`/`bottom`/`left`).
 
+## field-demo.tsx
+
+| Key | English | Thai |
+| --- | --- | --- |
+| emailLabel | Email | อีเมล |
+| emailDescription | We'll only use this to send a receipt. | เราจะใช้อีเมลนี้เพื่อส่งใบเสร็จเท่านั้น |
+| emailPlaceholder | you@example.com | you@example.com |
+| usernameLabel | Username (required) | ชื่อผู้ใช้ (จำเป็นต้องกรอก) |
+| usernameError | Please enter a username. | กรุณากรอกชื่อผู้ใช้ |
+| disabledLabel | Email (disabled) | อีเมล (ปิดใช้งาน) |
+
+`emailPlaceholder` is left untranslated on purpose: `you@example.com` is a reserved example address, not prose.
+
+## fieldset-demo.tsx
+
+| Key | English | Thai |
+| --- | --- | --- |
+| legend | Shipping address | ที่อยู่จัดส่ง |
+| disabledLegend | Shipping address (disabled) | ที่อยู่จัดส่ง (ปิดใช้งาน) |
+| name | Full name | ชื่อ-นามสกุล |
+| email | Email | อีเมล |
+| emailDescription | We'll only use this to send delivery updates. | เราจะใช้อีเมลนี้เพื่อแจ้งสถานะการจัดส่งเท่านั้น |
+
+## form-demo.tsx
+
+| Key | English | Thai |
+| --- | --- | --- |
+| emailLabel | Email | อีเมล |
+| emailTaken | That email is already registered. | อีเมลนี้ถูกใช้ลงทะเบียนไปแล้ว |
+| submit | Create account | สร้างบัญชี |
+| checking | Checking… | กำลังตรวจสอบ… |
+| success | Account created! | สร้างบัญชีสำเร็จ! |
+
+`taken@example.com` is the reserved address the demo's fake server rejects — a data key, not prose, so it stays as-is in both locales.
+
 ## menu-demo.tsx
 
 | Key | English | Thai |

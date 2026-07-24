@@ -1,0 +1,153 @@
+---
+title: Field
+description: Groups a label, control, description and error message with the wiring between them handled automatically, built on Base UI.
+icon: TextCursorInput
+---
+
+import { FieldDemo } from '@/components/demos/field-demo';
+
+## Usage
+
+```tsx
+import { Field, FieldLabel, FieldControl, FieldDescription } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <Field>
+      <FieldLabel>Email</FieldLabel>
+      <FieldControl type="email" />
+      <FieldDescription>We'll only use this to send a receipt.</FieldDescription>
+    </Field>
+  );
+}
+```
+
+`Field` groups a label, a control, a description and an error message, and
+wires the accessibility relationships between them for you: the label's
+`htmlFor` points at the control's `id`, and the control's `aria-describedby`
+is kept in sync with whichever of the description/error are currently
+mounted, plus `aria-invalid` once validation fails. None of that needs to be
+written by hand.
+
+`FieldControl` renders a plain `<input>` styled like Kairo's `Input`, so it
+works standalone as shown above. To use Kairo's actual `Input` (or give the
+control a different type, like a textarea) instead, pass it through
+`FieldControl`'s `render` prop — Base UI merges the generated `id`/`aria-*`/
+change handlers onto whatever element `render` points at:
+
+```tsx
+<Field>
+  <FieldLabel>Email</FieldLabel>
+  <FieldControl render={<Input type="email" />} />
+</Field>
+```
+
+You don't need `FieldControl` at all for Kairo's other form components —
+`Checkbox`, `Switch`, `Select`, `NumberField`, `Slider` and `RadioGroup` are
+thin wrappers over Base UI primitives that already read the surrounding
+`Field`'s context on their own, so nesting one directly wires it up:
+
+```tsx
+<Field>
+  <FieldLabel>Notifications</FieldLabel>
+  <Switch />
+</Field>
+```
+
+Validation runs through the `validate` prop on `Field`: return an error
+string (or an array of strings) for an invalid value, or `null` when it's
+valid. `validationMode` decides when that re-runs — `'onSubmit'` (the
+default) validates when a surrounding form submits and keeps re-validating on
+every change afterward, `'onBlur'` validates as soon as the control loses
+focus, and `'onChange'` validates on every change (optionally debounced with
+`validationDebounceTime`). `invalid` marks the field invalid directly, for
+when validity comes from somewhere external (like a server response). Once
+invalid, `FieldError` mounts and shows the message — pass its `match` prop a
+specific `ValidityState` key (e.g. `'valueMissing'`) to only show it for that
+condition, or `true` to always show it and hand display control to whatever
+manages `invalid` externally.
+
+For anything beyond a plain message, `FieldValidity` hands you the field's
+full validity state as a function-as-children so you can render whatever you
+need from it.
+
+## Email, validation & disabled
+
+<ComponentPreview
+  code={`<Field className="w-64">
+  <FieldLabel>Email</FieldLabel>
+  <FieldControl render={<Input type="email" placeholder="you@example.com" />} />
+  <FieldDescription>We'll only use this to send a receipt.</FieldDescription>
+</Field>
+
+<Field
+  className="w-64"
+  validationMode="onBlur"
+  validate={(value) => (value ? null : 'Please enter a username.')}
+>
+  <FieldLabel>Username (required)</FieldLabel>
+  <FieldControl render={<Input required />} />
+  <FieldError />
+</Field>
+
+<Field className="w-64" disabled>
+  <FieldLabel>Email (disabled)</FieldLabel>
+  <FieldControl render={<Input defaultValue="disabled@example.com" />} />
+</Field>`}
+>
+  <FieldDemo />
+</ComponentPreview>
+
+## Props
+
+### `Field`
+
+| Prop                     | Type                                                                    | Default     | Description                                                                                     |
+| ------------------------ | -------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
+| `disabled`               | `boolean`                                                                   | `false`       | Prevents interaction with the control. Takes precedence over `disabled` on the control itself.        |
+| `name`                   | `string`                                                                    | —             | Identifies the field when a form is submitted.                                                        |
+| `validate`               | `(value, formValues) => string \| string[] \| null \| Promise<...>`        | —             | Custom validation. Return an error message (or messages) when invalid, or `null` when valid.           |
+| `validationMode`         | `'onSubmit' \| 'onBlur' \| 'onChange'`                                     | `'onSubmit'`  | When `validate` re-runs — see the description above.                                                  |
+| `validationDebounceTime` | `number`                                                                    | `0`           | Milliseconds to wait between `validate` calls when `validationMode="onChange"`.                        |
+| `invalid`                | `boolean`                                                                   | —             | Marks the field invalid directly, for validity managed by an external source.                          |
+| `dirty`                  | `boolean`                                                                   | —             | Marks the field's value as changed, for state managed by an external source.                           |
+| `touched`                | `boolean`                                                                   | —             | Marks the field as touched, for state managed by an external source.                                    |
+| `actionsRef`             | `RefObject<{ validate: () => void }>`                                      | —             | A ref that exposes a `validate()` method to trigger validation imperatively.                            |
+| `className`              | `string`                                                                    | —             | Merged with the base `kairo-field` class.                                                              |
+| ...                      | Additional props | —       | All other props are forwarded to the underlying `<div>`.                                             |
+
+### `FieldLabel`
+
+| Prop          | Type      | Default | Description                                                                                                      |
+| ------------- | --------- | ------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `nativeLabel` | `boolean` | `true`  | Set to `false` only if `render` replaces the `<label>` with a non-label element (e.g. to avoid label click behavior on button-like controls). |
+| `className`   | `string`  | —       | Merged with the base `kairo-field-label` class.                                                                          |
+| ...           | Additional props | — | All other props are forwarded to the underlying `<label>`.                                                       |
+
+### `FieldControl`
+
+| Prop        | Type     | Default | Description                                                                                     |
+| ----------- | -------- | ------- | -------------------------------------------------------------------------------------------------------- |
+| `className` | `string` | —       | Merged with the base `kairo-field-control` class.                                                        |
+| ...         | Additional props | — | All other props (e.g. `type`, `placeholder`, `required`) are forwarded to the underlying `<input>`, or to the element given to `render`. |
+
+### `FieldDescription`
+
+| Prop        | Type     | Default | Description                                                    |
+| ----------- | -------- | ------- | ---------------------------------------------------------------- |
+| `className` | `string` | —       | Merged with the base `kairo-field-description` class.              |
+| ...         | Additional props | — | All other props are forwarded to the underlying `<p>`. |
+
+### `FieldError`
+
+| Prop        | Type                                | Default | Description                                                                                  |
+| ----------- | -------------------------------------- | ------- | ------------------------------------------------------------------------------------------------ |
+| `match`     | `boolean \| keyof ValidityState`      | —       | Narrows which validity condition shows the message, or forces it to always show (`true`).        |
+| `className` | `string`                              | —       | Merged with the base `kairo-field-error` class.                                                  |
+| ...         | Additional props | — | All other props are forwarded to the underlying `<div>`. |
+
+### `FieldValidity`
+
+Takes a function `children` that receives the field's validity state
+(`{ validity, value, error, errors, transitionStatus, ... }`) and renders
+whatever it returns. Introduces no DOM element of its own.

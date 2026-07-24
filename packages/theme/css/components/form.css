@@ -1,0 +1,29 @@
+/**
+ * Kairo Form.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-form` — the root `<form>` element, always present. Form has no
+ *     variants and no state of its own (validation/error state lives on the
+ *     `Field`/`Fieldset` it wraps, not here), so this is the only selector.
+ */
+
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
+
+@layer kairo.components {
+  /*
+   * Deliberately layout-neutral: a form is a container, not a look. No
+   * display/gap/padding is imposed here — consumers arrange their Fields and
+   * Fieldsets however they like (flex column, grid, ...) with nothing of
+   * ours to override first. `font-family` is the one declaration that earns
+   * its keep unconditionally, matching `.kairo-card`: it keeps the text
+   * inside consistent even where `<Form>` is the outermost element in the
+   * tree and nothing further up already cascades Kairo's font.
+   */
+  .kairo-form {
+    font-family: var(--kairo-font-sans);
+  }
+}

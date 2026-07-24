@@ -1,0 +1,99 @@
+---
+title: Label
+description: A native `<label>` for associating text with a form control, explicitly via `htmlFor`/`id` or implicitly by wrapping it.
+icon: Tag
+---
+
+import { Label, Input } from '@kairo-ui/react';
+
+## Usage
+
+```tsx
+import { Label, Input } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <>
+      <Label htmlFor="email">Email address</Label>
+      <Input id="email" type="email" />
+    </>
+  );
+}
+```
+
+`Label` renders a plain native `<label>` — there's no interaction or state of
+its own, it just carries the styling and the accessibility wiring the browser
+already gives `<label>` for free. Use it to label any native or Kairo form
+control: `Input`, `NumberField`, `Checkbox`, `Switch`, `Radio`, `Select`,
+`Combobox`, `Slider`, `Meter`, and so on.
+
+There are two ways to associate a `Label` with a control, and both work with
+every control above:
+
+- **Explicit** — pass `htmlFor` on the `Label` matching the control's `id`, as
+  in the example above. Works even when the label and the control aren't
+  adjacent in the DOM.
+- **Implicit** — wrap the control in the `Label` instead. No `id` needed at
+  all, since the browser associates them by nesting.
+
+Wrapping a disabled control dims the label automatically, with no extra prop
+needed. With the `htmlFor` style the label and control are siblings, so pass
+`disabled` on the `Label` itself too, to keep the two in sync.
+
+If you're building a `Field`, you don't need to choose either one yourself —
+its own label part generates and wires a matching `id` automatically.
+
+## Explicit: `htmlFor` + `id`
+
+<ComponentPreview code={`<Label htmlFor="email">Email address</Label>
+<Input id="email" type="email" placeholder="you@example.com" />`}>
+  <div className="flex w-full max-w-sm flex-col items-start gap-1.5">
+    <Label htmlFor="email">Email address</Label>
+    <Input id="email" type="email" placeholder="you@example.com" />
+  </div>
+</ComponentPreview>
+
+## Implicit: wrapping the control
+
+Clicking anywhere on the label — the text or the control — toggles the
+checkbox, with no `id`/`htmlFor` pair to keep in sync.
+
+<ComponentPreview code={`<Label>
+  <input type="checkbox" defaultChecked />
+  Remember me
+</Label>`}>
+  <Label>
+    <input type="checkbox" defaultChecked />
+    Remember me
+  </Label>
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview code={`<Label htmlFor="username" disabled>Username</Label>
+<Input id="username" placeholder="Disabled" disabled />
+
+<Label>
+  <input type="checkbox" disabled />
+  Notify me by email
+</Label>`}>
+  <div className="flex w-full max-w-sm flex-col items-start gap-4">
+    <div className="flex w-full flex-col items-start gap-1.5">
+      <Label htmlFor="username" disabled>Username</Label>
+      <Input id="username" placeholder="Disabled" disabled />
+    </div>
+    <Label>
+      <input type="checkbox" disabled />
+      Notify me by email
+    </Label>
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop        | Type                                   | Default | Description                                              |
+| ----------- | ----------------------------------------- | ------- | ------------------------------------------------------------ |
+| `htmlFor`   | `string`                                   | —       | The `id` of the control this label describes.                |
+| `disabled`  | `boolean`                                   | `false` | Dims the label. Only needed with `htmlFor` — wrapping a disabled control dims automatically. |
+| `className` | `string`                                   | —       | Merged with the base `kairo-label` class.                     |
+| ...         | `LabelHTMLAttributes<HTMLLabelElement>` | —       | All other native `<label>` props are passed through.          |

@@ -1,0 +1,144 @@
+/**
+ * Kairo Field — groups a label, a control, a description and an error
+ * message with the accessibility relationships between them already wired
+ * up by Base UI (label `htmlFor`/control `id`, control `aria-describedby`,
+ * control `aria-invalid`).
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-field`             — Base UI's `Field.Root`; a plain layout
+ *     container, no border/background of its own.
+ *   - `.kairo-field-label`       — Base UI's `Field.Label`; the `<label>`.
+ *   - `.kairo-field-control`     — Base UI's `Field.Control`; a plain
+ *     `<input>` styled to match `.kairo-input` (same border/padding/
+ *     min-height/focus ring) so it looks right when used standalone (no
+ *     `render` prop). When composed with `render` onto another element (e.g.
+ *     Kairo's `Input`), that element's own class merges in and this class's
+ *     rules apply on top of it.
+ *   - `.kairo-field-description` — Base UI's `Field.Description`; the `<p>`.
+ *   - `.kairo-field-error`       — Base UI's `Field.Error`; only mounted
+ *     while there is a message to show (see `[data-starting-style]`/
+ *     `[data-ending-style]` below).
+ *   - `[data-disabled]`  — present on all four above while the field (or the
+ *     control specifically) is disabled. The control is also a real
+ *     `<input>`, so `:disabled` applies there too — used instead of
+ *     `[data-disabled]` for it, matching `.kairo-input`.
+ *   - `[data-invalid]` / `[data-valid]` — present once the field's validity
+ *     has been computed (native constraint validation plus the `validate`
+ *     prop) and is `false`/`true`. Absent while validity is `null` (not yet
+ *     validated). The control also gets the native `aria-invalid="true"`
+ *     attribute when invalid, same as `.kairo-input`.
+ *   - `[data-touched]` / `[data-dirty]` / `[data-filled]` / `[data-focused]`
+ *     — present on all four per Base UI's field state; not used for styling
+ *     here (`:focus-visible` drives the control's own focus ring instead, to
+ *     match `.kairo-input`), but available for consumer overrides.
+ *   - `[data-starting-style]` / `[data-ending-style]` — present on
+ *     `.kairo-field-error` while its message is animating in/out (Base UI
+ *     keeps it mounted a tick longer on the way out so the exit animation can
+ *     play); drives the fade here via the shared `kairo-fade-in`/
+ *     `kairo-fade-out` `@keyframes` from `base.css`.
+ *
+ * `prefers-reduced-motion: reduce` is already handled globally in `base.css`
+ * for any `[class*='kairo-']` element, so no extra guard is needed here.
+ *
+ * Note for future Vue port: this anatomy (a root providing label/control
+ * association plus described-by wiring) is Base UI-specific — Reka UI has no
+ * direct equivalent primitive at the time of writing; a Vue port would need
+ * to hand-roll the `id`/`aria-describedby`/`aria-invalid` wiring this
+ * component gets for free here.
+ */
+
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
+
+@layer kairo.components {
+  .kairo-field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .kairo-field-label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-family: var(--kairo-font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: var(--kairo-leading-normal);
+    color: var(--kairo-foreground);
+  }
+
+  .kairo-field-label[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .kairo-field-control {
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border: var(--kairo-border-width) solid var(--kairo-input);
+    border-radius: var(--kairo-radius-md);
+    background-color: var(--kairo-background);
+    color: var(--kairo-foreground);
+    font-family: var(--kairo-font-sans);
+    font-size: 0.875rem;
+    line-height: var(--kairo-leading-normal);
+    outline: none;
+    transition-property: border-color, box-shadow;
+    transition-duration: var(--kairo-duration-fast);
+    transition-timing-function: var(--kairo-ease-standard);
+  }
+
+  .kairo-field-control::placeholder {
+    color: var(--kairo-muted-foreground);
+  }
+
+  .kairo-field-control:focus-visible {
+    border-color: var(--kairo-ring);
+    outline: var(--kairo-ring-width) solid var(--kairo-ring);
+    outline-offset: var(--kairo-ring-offset);
+  }
+
+  .kairo-field-control:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .kairo-field-control[data-invalid] {
+    border-color: var(--kairo-danger);
+  }
+
+  .kairo-field-control[data-invalid]:focus-visible {
+    border-color: var(--kairo-danger);
+    outline-color: var(--kairo-danger);
+  }
+
+  .kairo-field-description {
+    margin-top: 0.375rem;
+    font-family: var(--kairo-font-sans);
+    font-size: 0.8125rem;
+    line-height: var(--kairo-leading-normal);
+    color: var(--kairo-muted-foreground);
+  }
+
+  .kairo-field-error {
+    margin-top: 0.375rem;
+    font-family: var(--kairo-font-sans);
+    font-size: 0.8125rem;
+    line-height: var(--kairo-leading-normal);
+    color: var(--kairo-danger);
+  }
+
+  .kairo-field-error[data-starting-style] {
+    animation: kairo-fade-in var(--kairo-duration-fast) var(--kairo-ease-out);
+  }
+
+  .kairo-field-error[data-ending-style] {
+    animation: kairo-fade-out var(--kairo-duration-fast) var(--kairo-ease-standard);
+  }
+}
