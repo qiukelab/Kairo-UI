@@ -5,6 +5,11 @@ import { fetchDocsData } from '@/lib/docs-data-client';
 import { docsClientLoader, DocsPageBody } from '@/lib/docs-page';
 import { source } from '@/lib/source';
 
+// Deployed origin (see `apps/docs/wrangler.jsonc`'s Worker name and the
+// matching constant in `routes/__root.tsx`) — the canonical link below must
+// be absolute.
+const SITE_URL = 'https://kairo-docs.quantumdevq.workers.dev';
+
 // Kept as a direct, top-level `createServerFn(...).handler(...)` call (not
 // factored into a shared helper) — see the note in `src/lib/docs-page.tsx`.
 // This runs at prerender time; `source` (and the eager `collections/server`
@@ -47,7 +52,11 @@ export const Route = createFileRoute('/th/docs/$')({
     await docsClientLoader.preload(data.path);
     return data;
   },
-  head: ({ loaderData }) =>
+  // `match.pathname` is this route's own resolved pathname — since
+  // `/th/docs/$` is a leaf route, that's the exact current URL, used as-is
+  // for the canonical link below (no need to reconstruct it from
+  // `params._splat`).
+  head: ({ loaderData, match }) =>
     loaderData
       ? {
           meta: [
@@ -55,7 +64,12 @@ export const Route = createFileRoute('/th/docs/$')({
             ...(loaderData.description
               ? [{ name: 'description', content: loaderData.description }]
               : []),
+            { property: 'og:title', content: loaderData.title },
+            ...(loaderData.description
+              ? [{ property: 'og:description', content: loaderData.description }]
+              : []),
           ],
+          links: [{ rel: 'canonical', href: `${SITE_URL}${match.pathname}` }],
         }
       : {},
 });

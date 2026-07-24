@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kairo-docs.quantumdevq.workers.dev/sitemap.xml
