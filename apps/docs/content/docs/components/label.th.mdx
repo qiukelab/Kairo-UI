@@ -1,0 +1,98 @@
+---
+title: Label
+description: "`<label>` ดั้งเดิมสำหรับผูกข้อความเข้ากับ form control ได้ทั้งแบบระบุชัดเจนผ่าน `htmlFor`/`id` หรือแบบโดยนัยด้วยการครอบ control ไว้"
+icon: Tag
+---
+
+import { Label, Input } from '@kairo-ui/react';
+
+## การใช้งาน
+
+```tsx
+import { Label, Input } from '@kairo-ui/react';
+
+export function Example() {
+  return (
+    <>
+      <Label htmlFor="email">Email address</Label>
+      <Input id="email" type="email" />
+    </>
+  );
+}
+```
+
+`Label` render `<label>` ดั้งเดิมล้วน ๆ — ตัวมันเองไม่มี interaction หรือ state
+ใด ๆ มีหน้าที่แค่ใส่สไตล์และการเชื่อมโยงเชิง accessibility ที่เบราว์เซอร์ให้มากับ
+`<label>` อยู่แล้ว ใช้มันเพื่อผูกข้อความกับ form control ได้ทั้งของดั้งเดิมและของ
+Kairo ไม่ว่าจะเป็น `Input`, `NumberField`, `Checkbox`, `Switch`, `Radio`,
+`Select`, `Combobox`, `Slider`, `Meter` และอื่น ๆ
+
+การผูก `Label` เข้ากับ control ทำได้สองแบบ และทั้งสองแบบใช้ได้กับ control
+ทุกตัวข้างต้น:
+
+- **ระบุชัดเจน** — ส่ง `htmlFor` ให้ `Label` ให้ตรงกับ `id` ของ control ตาม
+  ตัวอย่างด้านบน ใช้ได้แม้ label กับ control จะไม่ได้อยู่ติดกันใน DOM
+- **โดยนัย** — ครอบ control ไว้ด้วย `Label` แทน ไม่ต้องมี `id` เลยแม้แต่ตัวเดียว
+  เพราะเบราว์เซอร์จะผูกทั้งสองเข้าด้วยกันจากการซ้อนกันโดยตรง
+
+การครอบ control ที่ปิดใช้งานไว้จะทำให้ label จางลงเองโดยอัตโนมัติ ไม่ต้องส่ง
+prop เพิ่มเลย แต่แบบ `htmlFor` นั้น label กับ control เป็นพี่น้องกัน (sibling)
+จึงต้องส่ง `disabled` ให้ `Label` เองด้วย เพื่อให้ทั้งสองตรงกัน
+
+ถ้ากำลังสร้าง `Field` อยู่ ไม่จำเป็นต้องเลือกวิธีใดวิธีหนึ่งเอง เพราะ label
+part ของมันสร้างและผูก `id` ที่ตรงกันให้อัตโนมัติอยู่แล้ว
+
+## ระบุชัดเจน: `htmlFor` + `id`
+
+<ComponentPreview code={`<Label htmlFor="email">ที่อยู่อีเมล</Label>
+<Input id="email" type="email" placeholder="you@example.com" />`}>
+  <div className="flex w-full max-w-sm flex-col items-start gap-1.5">
+    <Label htmlFor="email">ที่อยู่อีเมล</Label>
+    <Input id="email" type="email" placeholder="you@example.com" />
+  </div>
+</ComponentPreview>
+
+## โดยนัย: ครอบ control ไว้
+
+คลิกตรงไหนก็ได้บน label — ทั้งข้อความหรือตัว control เอง — จะสลับสถานะ
+checkbox ได้ทันที โดยไม่ต้องคอยดูแลคู่ `id`/`htmlFor` ให้ตรงกันเลย
+
+<ComponentPreview code={`<Label>
+  <input type="checkbox" defaultChecked />
+  จดจำฉันไว้
+</Label>`}>
+  <Label>
+    <input type="checkbox" defaultChecked />
+    จดจำฉันไว้
+  </Label>
+</ComponentPreview>
+
+## ปิดใช้งาน
+
+<ComponentPreview code={`<Label htmlFor="username" disabled>ชื่อผู้ใช้</Label>
+<Input id="username" placeholder="ปิดใช้งาน" disabled />
+
+<Label>
+  <input type="checkbox" disabled />
+  แจ้งเตือนทางอีเมล
+</Label>`}>
+  <div className="flex w-full max-w-sm flex-col items-start gap-4">
+    <div className="flex w-full flex-col items-start gap-1.5">
+      <Label htmlFor="username" disabled>ชื่อผู้ใช้</Label>
+      <Input id="username" placeholder="ปิดใช้งาน" disabled />
+    </div>
+    <Label>
+      <input type="checkbox" disabled />
+      แจ้งเตือนทางอีเมล
+    </Label>
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop        | Type                                   | Default | Description                                              |
+| ----------- | ----------------------------------------- | ------- | ------------------------------------------------------------ |
+| `htmlFor`   | `string`                                   | —       | `id` ของ control ที่ label นี้อธิบาย                          |
+| `disabled`  | `boolean`                                   | `false` | ทำให้ label จางลง จำเป็นเฉพาะกับ `htmlFor` — ถ้าครอบ control ที่ปิดใช้งานไว้จะจางลงเองอัตโนมัติ |
+| `className` | `string`                                   | —       | รวมกับคลาสพื้นฐาน `kairo-label`                                |
+| ...         | `LabelHTMLAttributes<HTMLLabelElement>` | —       | รับ props ดั้งเดิมของ `<label>` ที่เหลือทั้งหมด                |

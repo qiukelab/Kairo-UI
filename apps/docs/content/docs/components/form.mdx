@@ -1,0 +1,139 @@
+---
+title: Form
+description: A form that coordinates validation across its fields and can display server-side errors by input name, built on Base UI.
+icon: ClipboardList
+---
+
+import { FormDemo } from '@/components/demos/form-demo';
+
+## Usage
+
+```tsx
+import { useState } from 'react';
+import { Form, Field, FieldLabel, FieldControl, FieldError, Input } from '@kairo-ui/react';
+
+export function Example() {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  return (
+    <Form
+      errors={errors}
+      onFormSubmit={async (values) => {
+        const result = await createAccount(values);
+        if (result.error) setErrors({ email: result.error });
+      }}
+    >
+      <Field name="email">
+        <FieldLabel>Email</FieldLabel>
+        <FieldControl render={<Input type="email" />} required />
+        <FieldError />
+      </Field>
+    </Form>
+  );
+}
+```
+
+`Form` renders a native `<form>` with `noValidate` set, so the browser's own
+validation-bubble UI never appears — an invalid `Field` shows its message
+through its own `FieldError` part instead, styled like the rest of the page.
+It carries no look of its own beyond that: no spacing or layout is imposed, so
+arrange the `Field`s and buttons inside it however you like.
+
+Pair it with `Field` (and that component's `FieldLabel`/`FieldControl`/
+`FieldError` parts) to get id and ARIA wiring, per-field validation and error
+display for free — see `Field`'s own docs page for its anatomy.
+
+### When validation runs
+
+Each `Field` validates itself — via its own `validate` function and any
+native constraint attributes (`required`, `pattern`, ...) on its control.
+`validationMode` decides *when* that check runs for every `Field` that
+doesn't set its own:
+
+- **`'onSubmit'`** (default) — a field is checked when the form is submitted;
+  once a submit has been attempted, it re-checks on every change afterwards,
+  so its error clears the moment it's fixed.
+- **`'onBlur'`** — a field is checked as soon as it loses focus.
+- **`'onChange'`** — a field is checked on every keystroke or change.
+
+Submitting with an invalid field cancels the submit, moves focus to the first
+invalid field, and shows its error — neither `onSubmit` nor `onFormSubmit`
+below runs in that case.
+
+### Server-side errors
+
+This is Form's headline feature: once every field is valid on the client,
+hand back an `errors` object keyed by each control's `name` — typically set
+from whatever your server or form action responded with — and the matching
+`Field`'s `FieldError` displays it automatically. No manual lookup is
+required, and a `Field` clears its own entry the moment its value changes, so
+a stale server error never lingers once the user starts fixing it.
+
+### Reacting to a valid submit
+
+Two props fire once every field has validated successfully, and they can be
+combined:
+
+- **`onSubmit`** — the plain native submit event. Use it for a traditional
+  submission (e.g. posting to a `<form action="...">`) that `Form` only gates
+  on validity.
+- **`onFormSubmit`** — called with the fields' values already collected into a
+  plain object keyed by `name`. It additionally calls `preventDefault()` on
+  the submit event, so nothing posts natively — use it to send the values
+  yourself (`fetch`, a server function, ...).
+
+`actionsRef` exposes a `validate(name?)` action for triggering validation
+imperatively — every field when called with no argument, or a single named
+one — without waiting for a submit.
+
+## Rejecting an email server-side
+
+Submitting `taken@example.com` simulates a server rejecting that address —
+`onFormSubmit` hands the rejection back through `errors`, and the `email`
+field's `FieldError` shows it without any extra wiring.
+
+<ComponentPreview
+  code={`<Form
+  errors={errors}
+  onFormSubmit={async (values) => {
+    setStatus('checking');
+    const available = await checkEmailAvailable(String(values.email ?? ''));
+    if (available) {
+      setErrors({});
+      setStatus('success');
+    } else {
+      setErrors({ email: 'That email is already registered.' });
+      setStatus('idle');
+    }
+  }}
+  className="flex w-full max-w-sm flex-col items-start gap-4"
+>
+  <Field name="email" className="flex w-full flex-col gap-1.5">
+    <FieldLabel>Email</FieldLabel>
+    <FieldControl render={<Input type="email" />} required />
+    <FieldError />
+  </Field>
+  <Button type="submit" disabled={status === 'checking'}>
+    {status === 'checking' ? 'Checking…' : 'Create account'}
+  </Button>
+  {status === 'success' && (
+    <p className="text-sm" style={{ color: 'var(--kairo-success)' }}>
+      Account created!
+    </p>
+  )}
+</Form>`}
+>
+  <FormDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop             | Type                                             | Default      | Description                                                                                    |
+| ---------------- | ------------------------------------------------ | ------------ | ------------------------------------------------------------------------------------------------ |
+| `validationMode` | `'onSubmit' \| 'onBlur' \| 'onChange'`           | `'onSubmit'` | When fields validate — see **When validation runs** above.                                       |
+| `errors`         | `Record<string, string \| string[]>`             | —            | Errors keyed by control `name`, typically from a server response — see **Server-side errors**.   |
+| `onSubmit`       | `(event: FormEvent<HTMLFormElement>) => void`    | —            | Called on a valid native submit. See **Reacting to a valid submit**.                              |
+| `onFormSubmit`   | `(values: Record<string, unknown>, eventDetails) => void` | —  | Called on a valid submit with the fields' values collected by `name`; prevents the native submit. |
+| `actionsRef`     | `RefObject<{ validate: (name?: string) => void } \| null>` | — | Ref exposing an imperative `validate` action.                                                     |
+| `className`      | `string`                                          | —            | Merged with the base `kairo-form` class.                                                          |
+| ...              | Additional props                                  | —            | All other props (e.g. `id`, `name`) are forwarded to the underlying `<form>` element.              |

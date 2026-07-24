@@ -1,0 +1,39 @@
+/**
+ * Kairo Label.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-label`     — the root element, a native `<label>`.
+ *   - `[data-disabled]`  — Kairo-authored disabled state, set via the
+ *     `disabled` prop. Covers the `htmlFor` wiring style, where the label
+ *     and its control are siblings and there is no DOM signal to key off
+ *     otherwise.
+ *   - `:has(:disabled)`  — dims the label when it wraps a disabled native
+ *     control (e.g. `<Label><Checkbox disabled /> Remember me</Label>`),
+ *     with no extra prop needed for that style.
+ */
+
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
+
+@layer kairo.components {
+  .kairo-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--kairo-font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: var(--kairo-leading-tight);
+    color: var(--kairo-foreground);
+    cursor: pointer;
+  }
+
+  .kairo-label[data-disabled],
+  .kairo-label:has(:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

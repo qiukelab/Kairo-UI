@@ -1,0 +1,72 @@
+/**
+ * Kairo Fieldset.
+ *
+ * Selectors this component keys on (for future ports, e.g. Vue):
+ *   - `.kairo-fieldset`         — Base UI's `Fieldset.Root`; renders a real
+ *     `<fieldset>` element, so a `disabled` fieldset natively disables every
+ *     focusable descendant control without any extra wiring.
+ *   - `.kairo-fieldset-legend`  — Base UI's `Fieldset.Legend`; renders a plain
+ *     `<div>`, *not* a native `<legend>`. This is Base UI's own design choice,
+ *     not a Kairo shortcut: a real `<legend>` has notoriously erratic UA
+ *     styling across engines (for years it couldn't reliably participate in
+ *     `display: flex`/`grid` laid out by its `<fieldset>` parent, and it visually
+ *     straddles the fieldset's border in every engine's UA stylesheet, which
+ *     makes consistent padding/alignment hard to guarantee). Base UI sidesteps
+ *     all of that by rendering a `<div>` and wiring it back to the `<fieldset>`
+ *     via `aria-labelledby` instead of relying on the native fieldset/legend
+ *     pairing. Do NOT "fix" this by pointing `render` at a real `<legend>` —
+ *     that reintroduces the exact rendering quirks this sidesteps.
+ *   - `[data-disabled]`         — present on both the fieldset and the legend
+ *     (each independently receives it from Base UI's shared disabled state)
+ *     when `Fieldset`'s `disabled` prop is set, or when an ancestor `Fieldset`
+ *     is disabled (nested fieldsets inherit it).
+ *
+ * Because the legend is a `<div>`, it needs none of the classic `<legend>`
+ * reset (no `margin-inline`/border-straddling to undo) — only `.kairo-fieldset`
+ * itself needs its native `<fieldset>` UA defaults (border, padding, the
+ * historical `min-width: min-content`) reset, which the rules below do
+ * deliberately and explicitly. Leave that reset in place even though it looks
+ * redundant with modern UA stylesheets — some engines still ship it, and
+ * without the reset here a consumer overriding `border`/`padding` on
+ * `.kairo-fieldset` would have to out-specificity the UA sheet too.
+ */
+
+/* Cascade order, declared in every file so that importing a single sheet
+   through the `@kairo-ui/theme/css/*` subpath yields the same cascade as the
+   bundled `styles.css`. Repeating it is harmless: only the first declaration
+   of a layer name fixes its position. See `css/index.css`. */
+@layer kairo.tokens, kairo.base, kairo.components, kairo.overrides;
+
+@layer kairo.components {
+  .kairo-fieldset {
+    /* Reset native `<fieldset>` UA defaults deliberately — see the file
+       comment above for why this must stay even though it looks like
+       redundant "cleanup". */
+    margin: 0;
+    min-width: 0;
+    border: var(--kairo-border-width) solid var(--kairo-border);
+    border-radius: var(--kairo-radius-lg);
+    padding: 1.25rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: var(--kairo-background);
+    color: var(--kairo-foreground);
+    font-family: var(--kairo-font-sans);
+  }
+
+  .kairo-fieldset-legend {
+    margin: 0;
+    padding: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: var(--kairo-leading-tight);
+    color: var(--kairo-foreground);
+  }
+
+  .kairo-fieldset[data-disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}

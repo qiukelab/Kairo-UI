@@ -98,8 +98,8 @@ jobs:
           # step exists to catch. You no longer have to remember to raise them:
           # the "Verify component wiring" step above derives both numbers from
           # `apps/docs/vite.config.ts` and fails if these literals drift.
-          test "$html" -ge 67 || { echo "::error::expected >=67 prerendered pages, got $html"; exit 1; }
-          test "$raw" -ge 64 || { echo "::error::expected >=64 raw markdown files, got $raw"; exit 1; }
+          test "$html" -ge 75 || { echo "::error::expected >=75 prerendered pages, got $html"; exit 1; }
+          test "$raw" -ge 72 || { echo "::error::expected >=72 raw markdown files, got $raw"; exit 1; }
           # Frontmatter must be stripped — a raw file starting with `---` means
           # the strip step regressed.
           head -c 3 "$out/raw/docs/components/button.md" | grep -qv -- '---' \

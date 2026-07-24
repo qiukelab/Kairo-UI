@@ -87,6 +87,18 @@
       "types": "./dist/drawer/index.d.mts",
       "import": "./dist/drawer/index.mjs"
     },
+    "./field": {
+      "types": "./dist/field/index.d.mts",
+      "import": "./dist/field/index.mjs"
+    },
+    "./fieldset": {
+      "types": "./dist/fieldset/index.d.mts",
+      "import": "./dist/fieldset/index.mjs"
+    },
+    "./form": {
+      "types": "./dist/form/index.d.mts",
+      "import": "./dist/form/index.mjs"
+    },
     "./i18n": {
       "types": "./dist/i18n/index.d.mts",
       "import": "./dist/i18n/index.mjs"
@@ -94,6 +106,10 @@
     "./input": {
       "types": "./dist/input/index.d.mts",
       "import": "./dist/input/index.mjs"
+    },
+    "./label": {
+      "types": "./dist/label/index.d.mts",
+      "import": "./dist/label/index.mjs"
     },
     "./menu": {
       "types": "./dist/menu/index.d.mts",

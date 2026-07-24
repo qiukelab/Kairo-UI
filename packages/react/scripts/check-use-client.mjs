@@ -42,6 +42,7 @@ const STATIC = new Set([
   'progress',
   'meter',
   'input',
+  'label',
 ]);
 
 /**
@@ -190,7 +191,7 @@ function main() {
   // STATIC), so this is really asserting componentNames.length === 28 — a
   // renamed or dropped component subpath must fail loudly here rather than
   // silently shrinking (or growing) the set this check covers.
-  const EXPECTED_COMPONENT_COUNT = 28;
+  const EXPECTED_COMPONENT_COUNT = 32;
   if (componentNames.length !== EXPECTED_COMPONENT_COUNT) {
     console.error(
       `Expected ${EXPECTED_COMPONENT_COUNT} component subpaths in "exports", found ${componentNames.length}: ${componentNames.join(', ')}`,

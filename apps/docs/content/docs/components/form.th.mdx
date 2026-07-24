@@ -1,0 +1,137 @@
+---
+title: Form
+description: ฟอร์มที่ประสานการตรวจสอบความถูกต้องข้ามฟิลด์ และแสดงข้อผิดพลาดจากเซิร์ฟเวอร์ตามชื่ออินพุตได้ สร้างบน Base UI
+icon: ClipboardList
+---
+
+import { FormDemo } from '@/components/demos/form-demo';
+
+## การใช้งาน
+
+```tsx
+import { useState } from 'react';
+import { Form, Field, FieldLabel, FieldControl, FieldError, Input } from '@kairo-ui/react';
+
+export function Example() {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  return (
+    <Form
+      errors={errors}
+      onFormSubmit={async (values) => {
+        const result = await createAccount(values);
+        if (result.error) setErrors({ email: result.error });
+      }}
+    >
+      <Field name="email">
+        <FieldLabel>Email</FieldLabel>
+        <FieldControl render={<Input type="email" />} required />
+        <FieldError />
+      </Field>
+    </Form>
+  );
+}
+```
+
+`Form` render `<form>` ดั้งเดิมโดยตั้ง `noValidate` ไว้ให้ ดังนั้น UI แจ้งเตือนความ
+ถูกต้องของเบราว์เซอร์เองจะไม่ขึ้นมาเลย — `Field` ที่ไม่ผ่านการตรวจสอบจะแสดงข้อความ
+ผ่าน `FieldError` ของมันเองแทน จัดสไตล์ให้เข้ากับหน้าเว็บได้ตามต้องการ ตัว `Form`
+เองไม่มีลุคใด ๆ นอกเหนือจากนี้ — ไม่มี spacing หรือ layout ใด ๆ ถูกกำหนดไว้ล่วงหน้า
+จะจัดวาง `Field` และปุ่มต่าง ๆ ข้างในยังไงก็ได้ตามใจ
+
+จับคู่กับ `Field` (และ part ของมันอย่าง `FieldLabel`/`FieldControl`/`FieldError`)
+เพื่อให้ได้การผูก id และ ARIA รวมถึงการตรวจสอบและแสดงข้อผิดพลาดต่อฟิลด์แบบไม่ต้อง
+ทำเอง — ดูหน้า docs ของ `Field` เองสำหรับโครงสร้างของมัน
+
+### การตรวจสอบทำงานเมื่อไหร่
+
+`Field` แต่ละตัวตรวจสอบตัวเอง — ผ่านฟังก์ชัน `validate` ของตัวมันเองและ constraint
+attribute ดั้งเดิม (`required`, `pattern`, ...) บน control ของมัน ส่วน `validationMode`
+เป็นตัวกำหนดว่า *เมื่อไหร่* การตรวจสอบนั้นจะทำงาน สำหรับทุก `Field` ที่ไม่ได้กำหนด
+ของตัวเองไว้:
+
+- **`'onSubmit'`** (ค่าเริ่มต้น) — ฟิลด์จะถูกตรวจสอบตอนฟอร์ม submit เมื่อเคย submit
+  ไปแล้วครั้งหนึ่ง ฟิลด์จะตรวจสอบซ้ำทุกครั้งที่มีการเปลี่ยนแปลงหลังจากนั้น ทำให้
+  ข้อผิดพลาดหายไปทันทีที่แก้ไขถูกต้อง
+- **`'onBlur'`** — ฟิลด์จะถูกตรวจสอบทันทีที่เสียโฟกัส
+- **`'onChange'`** — ฟิลด์จะถูกตรวจสอบทุกครั้งที่มีการพิมพ์หรือเปลี่ยนแปลงค่า
+
+การ submit ขณะมีฟิลด์ที่ไม่ผ่านการตรวจสอบจะยกเลิกการ submit ย้ายโฟกัสไปที่ฟิลด์แรก
+ที่ไม่ผ่าน และแสดงข้อผิดพลาดของมัน — ทั้ง `onSubmit` และ `onFormSubmit` ด้านล่างจะ
+ไม่ทำงานในกรณีนี้
+
+### ข้อผิดพลาดจากฝั่งเซิร์ฟเวอร์
+
+นี่คือฟีเจอร์เด่นของ Form: เมื่อทุกฟิลด์ผ่านการตรวจสอบฝั่ง client แล้ว ส่งอ็อบเจ็กต์
+`errors` ที่ key ด้วยชื่อ (`name`) ของแต่ละ control กลับมา — โดยทั่วไปมาจากสิ่งที่
+เซิร์ฟเวอร์หรือ form action ของคุณตอบกลับมา — แล้ว `FieldError` ของ `Field` ที่ตรงกัน
+จะแสดงมันให้อัตโนมัติ ไม่ต้องมาค้นหาเองเลย และ `Field` จะล้างค่าของตัวเองออกจาก
+`errors` ทันทีที่ค่าของมันเปลี่ยน ทำให้ข้อผิดพลาดจากเซิร์ฟเวอร์ที่เก่าแล้วไม่ค้างอยู่
+เมื่อผู้ใช้เริ่มแก้ไข
+
+### เมื่อ submit สำเร็จ
+
+มี 2 prop ที่ทำงานเมื่อทุกฟิลด์ผ่านการตรวจสอบแล้ว และใช้ร่วมกันได้:
+
+- **`onSubmit`** — submit event ดั้งเดิมของเบราว์เซอร์ ใช้กับการ submit แบบดั้งเดิม
+  (เช่น การ post ไปที่ `<form action="...">`) ที่ `Form` แค่คอยกันไว้ด้วยความถูกต้อง
+- **`onFormSubmit`** — เรียกพร้อมกับค่าของฟิลด์ทั้งหมดที่รวบรวมเป็นอ็อบเจ็กต์ธรรมดา
+  key ด้วย `name` ให้แล้ว และยังเรียก `preventDefault()` บน submit event ให้ด้วย
+  ทำให้ไม่มีการ post แบบดั้งเดิมเกิดขึ้น — ใช้ตัวนี้เพื่อส่งค่าเองด้วย `fetch` หรือ
+  server function
+
+`actionsRef` เปิด action `validate(name?)` ไว้ให้เรียกตรวจสอบเองได้ทันที — ตรวจทุก
+ฟิลด์เมื่อเรียกโดยไม่ใส่ argument หรือตรวจฟิลด์เดียวตามชื่อที่ระบุ — โดยไม่ต้องรอ
+การ submit
+
+## ปฏิเสธอีเมลจากฝั่งเซิร์ฟเวอร์
+
+การ submit `taken@example.com` จำลองว่าเซิร์ฟเวอร์ปฏิเสธอีเมลนั้น — `onFormSubmit`
+ส่งการปฏิเสธนี้กลับผ่าน `errors` และ `FieldError` ของฟิลด์ `email` จะแสดงมันให้โดย
+ไม่ต้องต่อสายอะไรเพิ่มเลย
+
+<ComponentPreview
+  code={`<Form
+  errors={errors}
+  onFormSubmit={async (values) => {
+    setStatus('checking');
+    const available = await checkEmailAvailable(String(values.email ?? ''));
+    if (available) {
+      setErrors({});
+      setStatus('success');
+    } else {
+      setErrors({ email: 'อีเมลนี้ถูกใช้ลงทะเบียนไปแล้ว' });
+      setStatus('idle');
+    }
+  }}
+  className="flex w-full max-w-sm flex-col items-start gap-4"
+>
+  <Field name="email" className="flex w-full flex-col gap-1.5">
+    <FieldLabel>อีเมล</FieldLabel>
+    <FieldControl render={<Input type="email" />} required />
+    <FieldError />
+  </Field>
+  <Button type="submit" disabled={status === 'checking'}>
+    {status === 'checking' ? 'กำลังตรวจสอบ…' : 'สร้างบัญชี'}
+  </Button>
+  {status === 'success' && (
+    <p className="text-sm" style={{ color: 'var(--kairo-success)' }}>
+      สร้างบัญชีสำเร็จ!
+    </p>
+  )}
+</Form>`}
+>
+  <FormDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop             | Type                                             | Default      | Description                                                                                    |
+| ---------------- | ------------------------------------------------ | ------------ | ------------------------------------------------------------------------------------------------ |
+| `validationMode` | `'onSubmit' \| 'onBlur' \| 'onChange'`           | `'onSubmit'` | การตรวจสอบทำงานเมื่อไหร่ — ดู **การตรวจสอบทำงานเมื่อไหร่** ด้านบน                                  |
+| `errors`         | `Record<string, string \| string[]>`             | —            | ข้อผิดพลาด key ด้วยชื่อ (`name`) ของ control โดยทั่วไปมาจากการตอบกลับของเซิร์ฟเวอร์ — ดู **ข้อผิดพลาดจากฝั่งเซิร์ฟเวอร์** |
+| `onSubmit`       | `(event: FormEvent<HTMLFormElement>) => void`    | —            | เรียกเมื่อ submit ดั้งเดิมผ่านการตรวจสอบ ดู **เมื่อ submit สำเร็จ**                                |
+| `onFormSubmit`   | `(values: Record<string, unknown>, eventDetails) => void` | —  | เรียกเมื่อ submit ผ่านการตรวจสอบ พร้อมค่าฟิลด์ที่รวบรวมด้วย `name` แล้ว และป้องกันการ submit ดั้งเดิม |
+| `actionsRef`     | `RefObject<{ validate: (name?: string) => void } \| null>` | — | ref ที่เปิด action `validate` ให้เรียกใช้เอง                                                     |
+| `className`      | `string`                                          | —            | รวมกับคลาสพื้นฐาน `kairo-form`                                                                  |
+| ...              | Additional props                                  | —            | props อื่น ๆ ที่เหลือ (เช่น `id`, `name`) จะถูกส่งต่อไปยังอีลีเมนต์ `<form>` ด้านใน                  |
