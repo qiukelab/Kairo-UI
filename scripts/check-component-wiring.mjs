@@ -57,6 +57,51 @@ function walkFiles(dir, predicate, results = []) {
   return results;
 }
 
+/** English cardinal words for 0–99 — enough to cover any realistic component
+ * count. Used to verify the spelled-out count in the EN hero lead, which is
+ * written as a word ("Twenty-eight") rather than a digit for readability. */
+const ONES_WORDS = [
+  'zero',
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+  'ten',
+  'eleven',
+  'twelve',
+  'thirteen',
+  'fourteen',
+  'fifteen',
+  'sixteen',
+  'seventeen',
+  'eighteen',
+  'nineteen',
+];
+const TENS_WORDS = [
+  '',
+  '',
+  'twenty',
+  'thirty',
+  'forty',
+  'fifty',
+  'sixty',
+  'seventy',
+  'eighty',
+  'ninety',
+];
+function numberToWords(n) {
+  if (n < 0 || n > 99) throw new Error(`numberToWords only supports 0–99, got ${n}`);
+  if (n < 20) return ONES_WORDS[n];
+  const tens = Math.floor(n / 10);
+  const ones = n % 10;
+  return ones === 0 ? TENS_WORDS[tens] : `${TENS_WORDS[tens]}-${ONES_WORDS[ones]}`;
+}
+
 // ---------------------------------------------------------------------------
 // Source of truth: the component directories themselves.
 // ---------------------------------------------------------------------------
@@ -336,6 +381,91 @@ if (ciHtmlFloor !== expectedHtml) {
   fail(
     `${toDisplayPath(ciYmlPath)}: "$html" floor is ${ciHtmlFloor}, but the derived prerendered-page count implies ${expectedHtml} — update the -ge ${ciHtmlFloor} floor`,
   );
+}
+
+// ---------------------------------------------------------------------------
+// 16. Human-facing component-count literals — the landing/index copy that
+//     tells a reader how many components Kairo ships. Unlike the registration
+//     points above, nothing breaks the build when these drift, but a page
+//     claiming "28 components" while 32 ship is a visible lie. Each entry
+//     anchors on its surrounding phrase so an unrelated number is never
+//     matched; a reworded sentence throws (a signal to update the anchor
+//     here), a stale number fails. The EN hero writes the count as a word for
+//     readability, so it is checked against numberToWords().
+// ---------------------------------------------------------------------------
+
+const countWord = numberToWords(componentNames.length);
+const countLiterals = [
+  {
+    file: 'apps/docs/src/lib/home-copy.ts',
+    form: 'word',
+    regex: /\b([A-Za-z]+(?:-[A-Za-z]+)?) accessible components\b/,
+    where: 'EN hero lead',
+  },
+  {
+    file: 'apps/docs/src/lib/home-copy.ts',
+    form: 'digit',
+    regex: /คอมโพเนนต์ที่เข้าถึงง่าย (\d+) ตัว/,
+    where: 'TH hero lead',
+  },
+  {
+    file: 'apps/docs/content/docs/index.mdx',
+    form: 'digit',
+    regex: /Browse all (\d+) components and their props/,
+    where: 'EN docs-index Components card',
+  },
+  {
+    file: 'apps/docs/content/docs/index.th.mdx',
+    form: 'digit',
+    regex: /ดูคอมโพเนนต์ทั้ง (\d+) ตัวพร้อม props/,
+    where: 'TH docs-index Components card',
+  },
+  {
+    file: 'apps/docs/content/docs/components/index.mdx',
+    form: 'digit',
+    regex: /Browse all (\d+) Kairo components/,
+    where: 'EN components-index frontmatter',
+  },
+  {
+    file: 'apps/docs/content/docs/components/index.mdx',
+    form: 'digit',
+    regex: /Kairo ships (\d+) components across/,
+    where: 'EN components-index body',
+  },
+  {
+    file: 'apps/docs/content/docs/components/index.th.mdx',
+    form: 'digit',
+    regex: /เรียกดูคอมโพเนนต์ Kairo ทั้ง (\d+) ตัว/,
+    where: 'TH components-index frontmatter',
+  },
+  {
+    file: 'apps/docs/content/docs/components/index.th.mdx',
+    form: 'digit',
+    regex: /รวมทั้งหมด (\d+) คอมโพเนนต์/,
+    where: 'TH components-index body',
+  },
+];
+
+const countLiteralSrc = new Map();
+for (const { file, form, regex, where } of countLiterals) {
+  if (!countLiteralSrc.has(file)) countLiteralSrc.set(file, readText(join(ROOT, file)));
+  const captured = extract(
+    countLiteralSrc.get(file),
+    regex,
+    `the ${where} component-count phrase in ${file} (reword safely, but keep the anchor in scripts/check-component-wiring.mjs in sync)`,
+  );
+  if (form === 'digit') {
+    if (Number(captured) !== componentNames.length) {
+      fail(
+        `${file}: the ${where} says "${captured}" components, but ${componentNames.length} exist under packages/react/src/`,
+      );
+    }
+  } else if (captured.toLowerCase() !== countWord) {
+    const titled = `${countWord[0].toUpperCase()}${countWord.slice(1)}`;
+    fail(
+      `${file}: the ${where} says "${captured}", but ${componentNames.length} components exist (write "${titled}")`,
+    );
+  }
 }
 
 // ---------------------------------------------------------------------------
