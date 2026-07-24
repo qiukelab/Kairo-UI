@@ -33,6 +33,24 @@ export interface HomeCopy {
 
   previewHeading: string;
   previewDescription: string;
+  /** Labels for the live component gallery below the preview. Order matches
+   *  the cells rendered by `components/home-gallery.tsx`. */
+  gallery: {
+    switch: string;
+    checkbox: string;
+    badges: string;
+    badgeDefault: string;
+    badgePrimary: string;
+    badgeSuccess: string;
+    badgeWarning: string;
+    badgeDanger: string;
+    slider: string;
+    select: string;
+    selectPlaceholder: string;
+    selectSmall: string;
+    selectMedium: string;
+    selectLarge: string;
+  };
 
   featuresHeading: string;
   featuresDescription: string;
@@ -108,6 +126,22 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
     previewHeading: 'See it in action',
     previewDescription:
       'Real components, rendered straight from @kairo-ui/react — variants, sizes and all.',
+    gallery: {
+      switch: 'Switch',
+      checkbox: 'Checkbox',
+      badges: 'Badges',
+      badgeDefault: 'Default',
+      badgePrimary: 'Primary',
+      badgeSuccess: 'Success',
+      badgeWarning: 'Warning',
+      badgeDanger: 'Danger',
+      slider: 'Volume',
+      select: 'Size',
+      selectPlaceholder: 'Choose a size',
+      selectSmall: 'Small',
+      selectMedium: 'Medium',
+      selectLarge: 'Large',
+    },
 
     featuresHeading: "Everything you need, nothing you don't",
     featuresDescription:
@@ -207,6 +241,22 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
 
     previewHeading: 'ดูการทำงานจริง',
     previewDescription: 'คอมโพเนนต์จริง render ตรงจาก @kairo-ui/react — ครบทั้ง variant และขนาด',
+    gallery: {
+      switch: 'สวิตช์',
+      checkbox: 'เช็คบ็อกซ์',
+      badges: 'แบดจ์',
+      badgeDefault: 'ค่าเริ่มต้น',
+      badgePrimary: 'หลัก',
+      badgeSuccess: 'สำเร็จ',
+      badgeWarning: 'เตือน',
+      badgeDanger: 'อันตราย',
+      slider: 'ระดับเสียง',
+      select: 'ขนาด',
+      selectPlaceholder: 'เลือกขนาด',
+      selectSmall: 'เล็ก',
+      selectMedium: 'กลาง',
+      selectLarge: 'ใหญ่',
+    },
 
     featuresHeading: 'ครบทุกสิ่งที่ต้องการ ไม่มีสิ่งที่ไม่จำเป็น',
     featuresDescription:
